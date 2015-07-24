@@ -3,7 +3,9 @@ JavaScript utilities for use with the [Ninchat](https://ninchat.com) API.
 Points of interest:
 
 - `src/ninchatclient/` contains Go sources for NinchatClient, a library for
-  accessing `api.ninchat.com` from a web browser.
+  accessing `api.ninchat.com` from a web browser.  It is a thin wrapper on the
+  [`ninchat-go`](https://github.com/ninchat/ninchat-go) package (referenced as
+  a Git submodule).
 
 - `gen/ninchatclient.js` contains JavaScript sources generated with
   [GopherJS](https://github.com/gopherjs/gopherjs).  Regenerate with `make`

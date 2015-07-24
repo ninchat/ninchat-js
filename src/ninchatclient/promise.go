@@ -2,65 +2,67 @@ package main
 
 import (
 	"github.com/gopherjs/gopherjs/js"
+	"github.com/ninchat/ninchat-go"
 )
 
-const (
-	promiseResolveInvocationName = namespace + " promise resolve callback"
-	promiseRejectInvocationName  = namespace + " promise reject callback"
-	promiseNotifyInvocationName  = namespace + " promise notify callback"
-)
+type callback1 func(params map[string]interface{})
+type callback2 func(params map[string]interface{}, payload []*js.Object)
 
-// Deferred
-type Deferred struct {
-	resolve []*js.Object
-	reject  []*js.Object
-	notify  []*js.Object
+type promise struct {
+	resolvers []callback2
+	rejecters []callback1
+	notifiers []callback2
+	onPanic   func(string, interface{})
 }
 
-// Defer
-func Defer() (d *Deferred, promise map[string]interface{}) {
-	d = &Deferred{}
+func (p *promise) object() map[string]interface{} {
+	return map[string]interface{}{
+		"then": func(resolve callback2, reject callback1, notify callback2) {
+			if resolve != nil {
+				p.resolvers = append(p.resolvers, resolve)
+			}
 
-	promise = map[string]interface{}{
-		"then": d.then,
-	}
+			if reject != nil {
+				p.rejecters = append(p.rejecters, reject)
+			}
 
-	return
-}
-
-// then implements the Promise.then(function|null[, function|null[,
-// function|null]]) JavaScript API.
-func (d *Deferred) then(resolve, reject, notify *js.Object) {
-	if resolve != js.Undefined && resolve != nil {
-		d.resolve = append(d.resolve, resolve)
-	}
-
-	if reject != js.Undefined && reject != nil {
-		d.reject = append(d.reject, reject)
-	}
-
-	if notify != js.Undefined && notify != nil {
-		d.notify = append(d.notify, notify)
+			if notify != nil {
+				p.notifiers = append(p.notifiers, notify)
+			}
+		},
 	}
 }
 
-// Resolve
-func (d *Deferred) Resolve(args ...interface{}) {
-	for _, callback := range d.resolve {
-		jsInvoke(promiseResolveInvocationName, callback, args...)
+func (p *promise) onReply(e *ninchat.Event) {
+	if e != nil {
+		if e.String() == "error" {
+			for _, f := range p.rejecters {
+				p.invoke1(f, e, "Promise reject callback:")
+			}
+		} else if e.LastReply {
+			for _, f := range p.resolvers {
+				p.invoke2(f, e, "Promise resolve callback:")
+			}
+		} else {
+			for _, f := range p.notifiers {
+				p.invoke2(f, e, "Promise notify callback:")
+			}
+		}
 	}
 }
 
-// Reject
-func (d *Deferred) Reject(args ...interface{}) {
-	for _, callback := range d.reject {
-		jsInvoke(promiseRejectInvocationName, callback, args...)
-	}
+func (p *promise) invoke1(f callback1, e *ninchat.Event, logPrefix string) {
+	defer func() {
+		p.onPanic(logPrefix, recover())
+	}()
+
+	f(e.Params)
 }
 
-// Notify
-func (d *Deferred) Notify(args ...interface{}) {
-	for _, callback := range d.notify {
-		jsInvoke(promiseNotifyInvocationName, callback, args...)
-	}
+func (p *promise) invoke2(f callback2, e *ninchat.Event, logPrefix string) {
+	defer func() {
+		p.onPanic(logPrefix, recover())
+	}()
+
+	f(e.Params, e.Payload)
 }

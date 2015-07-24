@@ -11,7 +11,7 @@ export GOPATH
 
 build: gen/ninchatclient.js gen/ninchatclient.min.js
 
-gen/ninchatclient.js gen/ninchatclient.min.js: $(wildcard src/ninchatclient/*.go) $(GOPHERJS)
+gen/ninchatclient.js gen/ninchatclient.min.js: $(wildcard src/ninchatclient/*.go) $(wildcard src/github.com/ninchat/ninchat-go/*.go) $(GOPHERJS)
 	@ mkdir -p gen
 	$(GOPHERJS) build -o gen/ninchatclient.js ninchatclient
 	$(GOPHERJS) build -m -o gen/ninchatclient.min.js ninchatclient
