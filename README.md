@@ -7,7 +7,9 @@ Points of interest:
 
 - `gen/ninchatclient.js` contains JavaScript sources generated with
   [GopherJS](https://github.com/gopherjs/gopherjs).  Regenerate with `make`
-  (requires [Go](https://golang.org)).
+  (requires [Go](https://golang.org)).  The latest stable version is available
+  at `https://ninchat.com/js/ninchatclient.js` and
+  `https://ninchat.com/js/ninchatclient.min.js`.
 
 - `doc/ninchatclient.js` contains API documentation.
 
