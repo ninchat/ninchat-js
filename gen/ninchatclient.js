@@ -237,14 +237,14 @@ var $copyString = function(dst, src) {
 
 var $copySlice = function(dst, src) {
   var n = Math.min(src.$length, dst.$length);
-  $internalCopy(dst.$array, src.$array, dst.$offset, src.$offset, n, dst.constructor.elem);
+  $copyArray(dst.$array, src.$array, dst.$offset, src.$offset, n, dst.constructor.elem);
   return n;
 };
 
 var $copy = function(dst, src, typ) {
   switch (typ.kind) {
   case $kindArray:
-    $internalCopy(dst, src, 0, 0, src.length, typ.elem);
+    $copyArray(dst, src, 0, 0, src.length, typ.elem);
     break;
   case $kindStruct:
     for (var i = 0; i < typ.fields.length; i++) {
@@ -263,7 +263,7 @@ var $copy = function(dst, src, typ) {
   }
 };
 
-var $internalCopy = function(dst, src, dstOffset, srcOffset, n, elem) {
+var $copyArray = function(dst, src, dstOffset, srcOffset, n, elem) {
   if (n === 0 || (dst === src && dstOffset === srcOffset)) {
     return;
   }
@@ -364,7 +364,7 @@ var $internalAppend = function(slice, array, offset, length) {
     }
   }
 
-  $internalCopy(newArray, array, newOffset + slice.$length, offset, length, slice.constructor.elem);
+  $copyArray(newArray, array, newOffset + slice.$length, offset, length, slice.constructor.elem);
 
   var newSlice = new slice.constructor(newArray);
   newSlice.$offset = newOffset;
@@ -474,6 +474,8 @@ var $ifaceKeyFor = function(x) {
 };
 
 var $identity = function(x) { return x; };
+
+var $typeIDCounter = 0;
 
 var $newType = function(size, kind, string, name, pkg, constructor) {
   var typ;
@@ -786,6 +788,8 @@ var $newType = function(size, kind, string, name, pkg, constructor) {
     $panic(new $String("invalid kind: " + kind));
   }
 
+  typ.id = $typeIDCounter;
+  $typeIDCounter++;
   typ.size = size;
   typ.kind = kind;
   typ.string = string;
@@ -920,11 +924,11 @@ var $toNativeArray = function(elemKind, array) {
 };
 var $arrayTypes = {};
 var $arrayType = function(elem, len) {
-  var string = "[" + len + "]" + elem.string;
-  var typ = $arrayTypes[string];
+  var typeKey = elem.id + "$" + len;
+  var typ = $arrayTypes[typeKey];
   if (typ === undefined) {
-    typ = $newType(12, $kindArray, string, "", "", null);
-    $arrayTypes[string] = typ;
+    typ = $newType(12, $kindArray, "[" + len + "]" + elem.string, "", "", null);
+    $arrayTypes[typeKey] = typ;
     typ.init(elem, len);
   }
   return typ;
@@ -944,20 +948,21 @@ var $chanType = function(elem, sendOnly, recvOnly) {
 
 var $funcTypes = {};
 var $funcType = function(params, results, variadic) {
-  var paramTypes = $mapArray(params, function(p) { return p.string; });
-  if (variadic) {
-    paramTypes[paramTypes.length - 1] = "..." + paramTypes[paramTypes.length - 1].substr(2);
-  }
-  var string = "func(" + paramTypes.join(", ") + ")";
-  if (results.length === 1) {
-    string += " " + results[0].string;
-  } else if (results.length > 1) {
-    string += " (" + $mapArray(results, function(r) { return r.string; }).join(", ") + ")";
-  }
-  var typ = $funcTypes[string];
+  var typeKey = $mapArray(params, function(p) { return p.id; }).join(",") + "$" + $mapArray(results, function(r) { return r.id; }).join(",") + "$" + variadic;
+  var typ = $funcTypes[typeKey];
   if (typ === undefined) {
+    var paramTypes = $mapArray(params, function(p) { return p.string; });
+    if (variadic) {
+      paramTypes[paramTypes.length - 1] = "..." + paramTypes[paramTypes.length - 1].substr(2);
+    }
+    var string = "func(" + paramTypes.join(", ") + ")";
+    if (results.length === 1) {
+      string += " " + results[0].string;
+    } else if (results.length > 1) {
+      string += " (" + $mapArray(results, function(r) { return r.string; }).join(", ") + ")";
+    }
     typ = $newType(4, $kindFunc, string, "", "", null);
-    $funcTypes[string] = typ;
+    $funcTypes[typeKey] = typ;
     typ.init(params, results, variadic);
   }
   return typ;
@@ -965,16 +970,17 @@ var $funcType = function(params, results, variadic) {
 
 var $interfaceTypes = {};
 var $interfaceType = function(methods) {
-  var string = "interface {}";
-  if (methods.length !== 0) {
-    string = "interface { " + $mapArray(methods, function(m) {
-      return (m.pkg !== "" ? m.pkg + "." : "") + m.name + m.typ.string.substr(4);
-    }).join("; ") + " }";
-  }
-  var typ = $interfaceTypes[string];
+  var typeKey = $mapArray(methods, function(m) { return m.pkg + "," + m.name + "," + m.typ.id; }).join("$");
+  var typ = $interfaceTypes[typeKey];
   if (typ === undefined) {
+    var string = "interface {}";
+    if (methods.length !== 0) {
+      string = "interface { " + $mapArray(methods, function(m) {
+        return (m.pkg !== "" ? m.pkg + "." : "") + m.name + m.typ.string.substr(4);
+      }).join("; ") + " }";
+    }
     typ = $newType(8, $kindInterface, string, "", "", null);
-    $interfaceTypes[string] = typ;
+    $interfaceTypes[typeKey] = typ;
     typ.init(methods);
   }
   return typ;
@@ -993,11 +999,11 @@ var $Map = function() {};
 })();
 var $mapTypes = {};
 var $mapType = function(key, elem) {
-  var string = "map[" + key.string + "]" + elem.string;
-  var typ = $mapTypes[string];
+  var typeKey = key.id + "$" + elem.id;
+  var typ = $mapTypes[typeKey];
   if (typ === undefined) {
-    typ = $newType(4, $kindMap, string, "", "", null);
-    $mapTypes[string] = typ;
+    typ = $newType(4, $kindMap, "map[" + key.string + "]" + elem.string, "", "", null);
+    $mapTypes[typeKey] = typ;
     typ.init(key, elem);
   }
   return typ;
@@ -1026,10 +1032,10 @@ var $indexPtr = function(array, index, constructor) {
 };
 
 var $sliceType = function(elem) {
-  var typ = elem.Slice;
+  var typ = elem.slice;
   if (typ === undefined) {
     typ = $newType(12, $kindSlice, "[]" + elem.string, "", "", null);
-    elem.Slice = typ;
+    elem.slice = typ;
     typ.init(elem);
   }
   return typ;
@@ -1049,14 +1055,15 @@ var $makeSlice = function(typ, length, capacity) {
 
 var $structTypes = {};
 var $structType = function(fields) {
-  var string = "struct { " + $mapArray(fields, function(f) {
-    return f.name + " " + f.typ.string + (f.tag !== "" ? (" \"" + f.tag.replace(/\\/g, "\\\\").replace(/"/g, "\\\"") + "\"") : "");
-  }).join("; ") + " }";
-  if (fields.length === 0) {
-    string = "struct {}";
-  }
-  var typ = $structTypes[string];
+  var typeKey = $mapArray(fields, function(f) { return f.name + "," + f.typ.id + "," + f.tag; }).join("$");
+  var typ = $structTypes[typeKey];
   if (typ === undefined) {
+    var string = "struct { " + $mapArray(fields, function(f) {
+      return f.name + " " + f.typ.string + (f.tag !== "" ? (" \"" + f.tag.replace(/\\/g, "\\\\").replace(/"/g, "\\\"") + "\"") : "");
+    }).join("; ") + " }";
+    if (fields.length === 0) {
+      string = "struct {}";
+    }
     typ = $newType(0, $kindStruct, string, "", "", function() {
       this.$val = this;
       for (var i = 0; i < fields.length; i++) {
@@ -1065,7 +1072,7 @@ var $structType = function(fields) {
         this[f.prop] = arg !== undefined ? arg : f.typ.zero();
       }
     });
-    $structTypes[string] = typ;
+    $structTypes[typeKey] = typ;
     typ.init(fields);
   }
   return typ;
@@ -1728,7 +1735,7 @@ var $externalize = function(v, t) {
     return s;
   case $kindStruct:
     var timePkg = $packages["time"];
-    if (timePkg && v.constructor === timePkg.Time.ptr) {
+    if (timePkg !== undefined && v.constructor === timePkg.Time.ptr) {
       var milli = $div64(v.UnixNano(), new $Int64(0, 1000000));
       return new Date($flatten64(milli));
     }
@@ -1820,6 +1827,13 @@ var $internalize = function(v, t, recv) {
   if (t === $jsObjectPtr.elem) {
     $panic(new $String("cannot internalize js.Object, use *js.Object instead"));
   }
+  var timePkg = $packages["time"];
+  if (timePkg !== undefined && t === timePkg.Time) {
+    if (!(v !== null && v !== undefined && v.constructor === Date)) {
+      $panic(new $String("cannot internalize time.Time from " + typeof v + ", must be Date"));
+    }
+    return timePkg.Unix(new $Int64(0, 0), new $Int64(0, v.getTime() * 1000000));
+  }
   switch (t.kind) {
   case $kindBool:
     return !!v;
@@ -1909,10 +1923,11 @@ var $internalize = function(v, t, recv) {
     case Boolean:
       return new $Bool(!!v);
     case Date:
-      var timePkg = $packages["time"];
-      if (timePkg) {
-        return new timePkg.Time(timePkg.Unix(new $Int64(0, 0), new $Int64(0, v.getTime() * 1000000)));
+      if (timePkg === undefined) {
+        /* time package is not present, internalize as &js.Object{Date} so it can be externalized into original Date. */
+        return new $jsObjectPtr(v);
       }
+      return new timePkg.Time($internalize(v, timePkg.Time));
     case Function:
       var funcType = $funcType([$sliceType($emptyInterface)], [$jsObjectPtr], true);
       return new funcType($internalize(v, funcType));
@@ -3412,6 +3427,9 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 			var $ptr, _selection, $r;
 			/* */ var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _selection = $f._selection; $r = $f.$r; }
 			_selection = $select([[s.sendNotify, new structType.ptr()], []]);
+			if (_selection[0] === 0) {
+			} else if (_selection[0] === 1) {
+			}
 			/* */ if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._selection = _selection; $f.$r = $r; return $f;
 		}), []);
 		return;
@@ -3425,6 +3443,9 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 			var $ptr, _selection, $r;
 			/* */ var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _selection = $f._selection; $r = $f.$r; }
 			_selection = $select([[s.sendNotify, new structType.ptr()], []]);
+			if (_selection[0] === 0) {
+			} else if (_selection[0] === 1) {
+			}
 			/* */ if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._selection = _selection; $f.$r = $r; return $f;
 		}), []);
 	};
@@ -3907,6 +3928,9 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 				var $ptr, _selection, $r;
 				/* */ var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _selection = $f._selection; $r = $f.$r; }
 				_selection = $select([[ws.notify, new structType.ptr()], []]);
+				if (_selection[0] === 0) {
+				} else if (_selection[0] === 1) {
+				}
 				/* */ if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._selection = _selection; $f.$r = $r; return $f;
 			}), []);
 		}), funcType$1);
@@ -4048,33 +4072,36 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 			_r = $select([[ws[0].notify], [s.closeNotify]]); /* */ $s = 4; case 4: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 			_selection = _r;
 			/* */ if (_selection[0] === 0) { $s = 5; continue; }
-			/* */ $s = 6; continue;
+			/* */ if (_selection[0] === 1) { $s = 6; continue; }
+			/* */ $s = 7; continue;
 			/* if (_selection[0] === 0) { */ case 5:
 				_tuple = _selection[1]; connected = _tuple[1];
-				/* */ if (connected) { $s = 7; continue; }
-				/* */ $s = 8; continue;
-				/* if (connected) { */ case 7:
-					$r = s.log(new sliceType$1([new $String("connected")])); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$r = s.connState("connected"); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ if (connected) { $s = 8; continue; }
+				/* */ $s = 9; continue;
+				/* if (connected) { */ case 8:
+					$r = s.log(new sliceType$1([new $String("connected")])); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$r = s.connState("connected"); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					connWorked = true;
-					_r$1 = webSocketHandshake(s, ws[0]); /* */ $s = 12; case 12: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+					_r$1 = webSocketHandshake(s, ws[0]); /* */ $s = 13; case 13: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 					_tuple$1 = _r$1; gotOnline = _tuple$1[0]; hostHealthy = _tuple$1[1];
-					$s = 9; continue;
-				/* } else { */ case 8:
-					$r = s.log(new sliceType$1([new $String("connection failed:"), ws[0].err])); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 9:
-			/* } */ case 6:
+					$s = 10; continue;
+				/* } else { */ case 9:
+					$r = s.log(new sliceType$1([new $String("connection failed:"), ws[0].err])); /* */ $s = 14; case 14: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 10:
+				$s = 7; continue;
+			/* } else if (_selection[0] === 1) { */ case 6:
+			/* } */ case 7:
 			goingAway = ws[0].goingAway;
 			ws[0].close();
 			ws[0] = ptrType$8.nil;
-			/* */ if (goingAway) { $s = 14; continue; }
-			/* */ $s = 15; continue;
-			/* if (goingAway) { */ case 14:
-				$r = s.log(new sliceType$1([new $String("disconnected (server is going away)")])); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$s = 16; continue;
-			/* } else { */ case 15:
-				$r = s.log(new sliceType$1([new $String("disconnected")])); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* } */ case 16:
+			/* */ if (goingAway) { $s = 15; continue; }
+			/* */ $s = 16; continue;
+			/* if (goingAway) { */ case 15:
+				$r = s.log(new sliceType$1([new $String("disconnected (server is going away)")])); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$s = 17; continue;
+			/* } else { */ case 16:
+				$r = s.log(new sliceType$1([new $String("disconnected")])); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 17:
 			if (!gotOnline || !hostHealthy || !s.running || goingAway) {
 				return [connWorked, gotOnline];
 			}
@@ -4352,6 +4379,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 					return [gotEvents, hostHealthy];
 				} else if (_selection[0] === 1) {
 					return [gotEvents, hostHealthy];
+				} else if (_selection[0] === 2) {
 				}
 			/* } */ $s = 3; continue; case 4:
 			if (ackNeeded && !acker.Active()) {
@@ -4790,15 +4818,18 @@ $packages["ninchatclient"] = (function() {
 		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		$r = js.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = ninchat.$init(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		main();
+		if ($pkg === $mainPkg) {
+			main();
+		}
 		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
 	};
 	$pkg.$init = $init;
 	return $pkg;
 })();
 $synthesizeMethods();
+var $mainPkg = $packages["ninchatclient"];
 $packages["runtime"].$init();
-$go($packages["ninchatclient"].$init, [], true);
+$go($mainPkg.$init, [], true);
 $flushConsole();
 
 }).call(this);

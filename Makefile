@@ -30,9 +30,12 @@ $(GOPHERJS):
 clean:
 	rm -rf bin
 	rm -rf pkg
+	rm -rf src/github.com/cpuguy83/go-md2man
 	rm -rf src/github.com/inconshreveable/mousetrap
 	rm -rf src/github.com/kardianos/osext
 	rm -rf src/github.com/neelance/sourcemap
+	rm -rf src/github.com/russross/blackfriday
+	rm -rf src/github.com/shurcooL/sanitized_anchor_name
 	rm -rf src/github.com/spf13/cobra
 	rm -rf src/github.com/spf13/pflag
 	rm -rf src/golang.org/x/crypto
