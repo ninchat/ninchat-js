@@ -3515,8 +3515,8 @@ $packages["ninchatclient"] = (function() {
 	};
 	Session.prototype.discover = function() { return this.$val.discover(); };
 	Session.ptr.prototype.connect = function(transport, hosts, backoff) {
-		var $ptr, _i, _r, _ref, _tuple, backoff, connWorked, delay, gotOnline, host, hosts, s, transport, transportWorked, trial, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _r = $f._r; _ref = $f._ref; _tuple = $f._tuple; backoff = $f.backoff; connWorked = $f.connWorked; delay = $f.delay; gotOnline = $f.gotOnline; host = $f.host; hosts = $f.hosts; s = $f.s; transport = $f.transport; transportWorked = $f.transportWorked; trial = $f.trial; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var $ptr, _i, _i$1, _r, _ref, _ref$1, _rune, _tuple, backoff, c, connWorked, delay, gotOnline, host, hosts, i, s, transport, transportWorked, trial, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _i$1 = $f._i$1; _r = $f._r; _ref = $f._ref; _ref$1 = $f._ref$1; _rune = $f._rune; _tuple = $f._tuple; backoff = $f.backoff; c = $f.c; connWorked = $f.connWorked; delay = $f.delay; gotOnline = $f.gotOnline; host = $f.host; hosts = $f.hosts; i = $f.i; s = $f.s; transport = $f.transport; transportWorked = $f.transportWorked; trial = $f.trial; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		transportWorked = false;
 		s = this;
 		trial = 0;
@@ -3528,6 +3528,19 @@ $packages["ninchatclient"] = (function() {
 				/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 4; continue; }
 				host = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
 				$r = s.connState("connecting"); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				_ref$1 = s.address;
+				_i$1 = 0;
+				while (true) {
+					if (!(_i$1 < _ref$1.length)) { break; }
+					_rune = $decodeRune(_ref$1, _i$1);
+					i = _i$1;
+					c = _rune[0];
+					if (c === 47) {
+						host = host + (s.address.substring(i));
+						break;
+					}
+					_i$1 += _rune[1];
+				}
 				_r = transport(s, host); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 				_tuple = _r; connWorked = _tuple[0]; gotOnline = _tuple[1];
 				if (connWorked) {
@@ -3553,7 +3566,7 @@ $packages["ninchatclient"] = (function() {
 			trial = trial + (1) >> 0;
 		/* } */ $s = 1; continue; case 2:
 		return transportWorked;
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.connect }; } $f.$ptr = $ptr; $f._i = _i; $f._r = _r; $f._ref = _ref; $f._tuple = _tuple; $f.backoff = backoff; $f.connWorked = connWorked; $f.delay = delay; $f.gotOnline = gotOnline; $f.host = host; $f.hosts = hosts; $f.s = s; $f.transport = transport; $f.transportWorked = transportWorked; $f.trial = trial; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.connect }; } $f.$ptr = $ptr; $f._i = _i; $f._i$1 = _i$1; $f._r = _r; $f._ref = _ref; $f._ref$1 = _ref$1; $f._rune = _rune; $f._tuple = _tuple; $f.backoff = backoff; $f.c = c; $f.connWorked = connWorked; $f.delay = delay; $f.gotOnline = gotOnline; $f.host = host; $f.hosts = hosts; $f.i = i; $f.s = s; $f.transport = transport; $f.transportWorked = transportWorked; $f.trial = trial; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	Session.prototype.connect = function(transport, hosts, backoff) { return this.$val.connect(transport, hosts, backoff); };
 	Session.ptr.prototype.canLogin = function() {
