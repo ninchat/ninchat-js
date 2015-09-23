@@ -2303,28 +2303,38 @@ $packages["sort"] = (function() {
 	$pkg.$init = $init;
 	return $pkg;
 })();
-$packages["ninchatclient"] = (function() {
-	var $pkg = {}, $init, errors, js, sort, Action, Backoff, Deferred, Transport, Session, Time, Duration, Timer, WebSocket, sliceType, mapType, sliceType$1, ptrType, funcType, ptrType$1, chanType, ptrType$2, funcType$1, funcType$2, funcType$3, ptrType$3, sliceType$2, funcType$4, chanType$1, ptrType$4, sliceType$3, funcType$5, mapType$1, funcType$6, funcType$7, ptrType$5, ptrType$6, sliceType$4, chanType$2, ptrType$7, ptrType$8, module, sessionEventAckWindow, xhrType, xhrRequestHeaderSupport, GetAddress, GetEndpointHosts, GetSessionEventCredentials, GetEventFrames, GetEventAndActionId, IsEventLastReply, GetEventError, Call, Jitter, JitterDuration, JitterUint64, jsError, jsInvoke, Atob, ParseDataURI, NewArray, NewArrayBuffer, NewUint8Array, NewObject, ParseJSON, StringifyJSON, Random, SetTimeout, ClearTimeout, Log, LongPollTransport, longPollTransfer, longPollPing, longPollClose, main, Defer, NewSession, Now, NewTimer, Sleep, NewWebSocket, StringifyFrame, WebSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive, init, XHR, XHR_JSON;
+$packages["github.com/ninchat/ninchat-go"] = (function() {
+	var $pkg = {}, $init, errors, js, sort, Action, Event, backoff, Caller, httpHeader, httpRequest, httpResponse, Session, transport, duration, timer, webSocket, sliceType, sliceType$1, mapType, ptrType, sliceType$2, ptrType$1, ptrType$2, ptrType$3, sliceType$3, sliceType$4, ptrType$4, chanType, funcType, ptrType$5, chanType$1, structType, chanType$2, ptrType$6, sliceType$5, ptrType$7, ptrType$8, funcType$1, funcType$2, ptrType$9, ptrType$10, ptrType$11, funcType$3, funcType$4, xhrType, xhrRequestHeaderSupport, sessionEventAckWindow, webSocketSupported, getAddress, getEndpointHosts, emptyData, singleData, dataLength, stringData, StringifyFrame, jsError, newJSONRequest, getJSONRequestResponseChannel, getResponseChannel, init, newGETRequest, newDataRequest, getResponseData, putResponseToChannel, jitterFloat64, jitterDuration, jitterInt64, jsonMarshal, jsonUnmarshalArray, jsonUnmarshalObject, jsonParse, longPollBinaryPayload, longPollTransport, longPollTransfer, longPollPing, longPollClose, logErrorResponse, randFloat64, newTimer, sleep, newWebSocket, webSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive;
 	errors = $packages["errors"];
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	sort = $packages["sort"];
-	Action = $pkg.Action = $newType(0, $kindStruct, "main.Action", "Action", "ninchatclient", function(Id_, Header_, Payload_, Deferred_, name_) {
+	Action = $pkg.Action = $newType(0, $kindStruct, "ninchat.Action", "Action", "github.com/ninchat/ninchat-go", function(Params_, Payload_, OnReply_, id_) {
 		this.$val = this;
 		if (arguments.length === 0) {
-			this.Id = new $Uint64(0, 0);
-			this.Header = null;
-			this.Payload = null;
-			this.Deferred = ptrType$3.nil;
-			this.name = "";
+			this.Params = false;
+			this.Payload = sliceType$3.nil;
+			this.OnReply = $throwNilPointerError;
+			this.id = new $Int64(0, 0);
 			return;
 		}
-		this.Id = Id_;
-		this.Header = Header_;
+		this.Params = Params_;
 		this.Payload = Payload_;
-		this.Deferred = Deferred_;
-		this.name = name_;
+		this.OnReply = OnReply_;
+		this.id = id_;
 	});
-	Backoff = $pkg.Backoff = $newType(0, $kindStruct, "main.Backoff", "Backoff", "ninchatclient", function(lastSlot_) {
+	Event = $pkg.Event = $newType(0, $kindStruct, "ninchat.Event", "Event", "github.com/ninchat/ninchat-go", function(Params_, Payload_, LastReply_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.Params = false;
+			this.Payload = sliceType$3.nil;
+			this.LastReply = false;
+			return;
+		}
+		this.Params = Params_;
+		this.Payload = Payload_;
+		this.LastReply = LastReply_;
+	});
+	backoff = $pkg.backoff = $newType(0, $kindStruct, "ninchat.backoff", "backoff", "github.com/ninchat/ninchat-go", function(lastSlot_) {
 		this.$val = this;
 		if (arguments.length === 0) {
 			this.lastSlot = 0;
@@ -2332,56 +2342,74 @@ $packages["ninchatclient"] = (function() {
 		}
 		this.lastSlot = lastSlot_;
 	});
-	Deferred = $pkg.Deferred = $newType(0, $kindStruct, "main.Deferred", "Deferred", "ninchatclient", function(resolve_, reject_, notify_) {
+	Caller = $pkg.Caller = $newType(0, $kindStruct, "ninchat.Caller", "Caller", "github.com/ninchat/ninchat-go", function(Address_) {
 		this.$val = this;
 		if (arguments.length === 0) {
-			this.resolve = sliceType$2.nil;
-			this.reject = sliceType$2.nil;
-			this.notify = sliceType$2.nil;
+			this.Address = "";
 			return;
 		}
-		this.resolve = resolve_;
-		this.reject = reject_;
-		this.notify = notify_;
+		this.Address = Address_;
 	});
-	Transport = $pkg.Transport = $newType(4, $kindFunc, "main.Transport", "Transport", "ninchatclient", null);
-	Session = $pkg.Session = $newType(0, $kindStruct, "main.Session", "Session", "ninchatclient", function(onSessionEvent_, onEvent_, onConnState_, onConnActive_, onLog_, address_, forceLongPoll_, sessionParams_, sessionId_, latestConnState_, latestConnActive_, lastActionId_, sendNotify_, sendBuffer_, numSent_, sendEventAck_, receivedEventId_, ackedEventId_, closeNotify_, closed_, stopped_) {
+	httpHeader = $pkg.httpHeader = $newType(4, $kindMap, "ninchat.httpHeader", "httpHeader", "github.com/ninchat/ninchat-go", null);
+	httpRequest = $pkg.httpRequest = $newType(0, $kindStruct, "ninchat.httpRequest", "httpRequest", "github.com/ninchat/ninchat-go", function(Method_, URL_, Header_, data_) {
 		this.$val = this;
 		if (arguments.length === 0) {
-			this.onSessionEvent = null;
-			this.onEvent = null;
-			this.onConnState = null;
-			this.onConnActive = null;
-			this.onLog = null;
-			this.address = "";
+			this.Method = "";
+			this.URL = "";
+			this.Header = false;
+			this.data = null;
+			return;
+		}
+		this.Method = Method_;
+		this.URL = URL_;
+		this.Header = Header_;
+		this.data = data_;
+	});
+	httpResponse = $pkg.httpResponse = $newType(0, $kindStruct, "ninchat.httpResponse", "httpResponse", "github.com/ninchat/ninchat-go", function(data_, err_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.data = null;
+			this.err = $ifaceNil;
+			return;
+		}
+		this.data = data_;
+		this.err = err_;
+	});
+	Session = $pkg.Session = $newType(0, $kindStruct, "ninchat.Session", "Session", "github.com/ninchat/ninchat-go", function(OnSessionEvent_, OnEvent_, OnConnState_, OnConnActive_, OnLog_, Address_, forceLongPoll_, sessionParams_, sessionId_, latestConnState_, lastActionId_, sendNotify_, sendBuffer_, numSent_, sendEventAck_, receivedEventId_, ackedEventId_, closeNotify_, closed_, running_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.OnSessionEvent = $throwNilPointerError;
+			this.OnEvent = $throwNilPointerError;
+			this.OnConnState = $throwNilPointerError;
+			this.OnConnActive = $throwNilPointerError;
+			this.OnLog = $throwNilPointerError;
+			this.Address = "";
 			this.forceLongPoll = false;
 			this.sessionParams = false;
-			this.sessionId = null;
+			this.sessionId = $ifaceNil;
 			this.latestConnState = "";
-			this.latestConnActive = new Time(0, 0);
-			this.lastActionId = new $Uint64(0, 0);
-			this.sendNotify = chanType$1.nil;
-			this.sendBuffer = sliceType$3.nil;
+			this.lastActionId = new $Int64(0, 0);
+			this.sendNotify = chanType$2.nil;
+			this.sendBuffer = sliceType$5.nil;
 			this.numSent = 0;
 			this.sendEventAck = false;
-			this.receivedEventId = new $Uint64(0, 0);
-			this.ackedEventId = new $Uint64(0, 0);
-			this.closeNotify = chanType$1.nil;
+			this.receivedEventId = new $Int64(0, 0);
+			this.ackedEventId = new $Int64(0, 0);
+			this.closeNotify = chanType$2.nil;
 			this.closed = false;
-			this.stopped = false;
+			this.running = false;
 			return;
 		}
-		this.onSessionEvent = onSessionEvent_;
-		this.onEvent = onEvent_;
-		this.onConnState = onConnState_;
-		this.onConnActive = onConnActive_;
-		this.onLog = onLog_;
-		this.address = address_;
+		this.OnSessionEvent = OnSessionEvent_;
+		this.OnEvent = OnEvent_;
+		this.OnConnState = OnConnState_;
+		this.OnConnActive = OnConnActive_;
+		this.OnLog = OnLog_;
+		this.Address = Address_;
 		this.forceLongPoll = forceLongPoll_;
 		this.sessionParams = sessionParams_;
 		this.sessionId = sessionId_;
 		this.latestConnState = latestConnState_;
-		this.latestConnActive = latestConnActive_;
 		this.lastActionId = lastActionId_;
 		this.sendNotify = sendNotify_;
 		this.sendBuffer = sendBuffer_;
@@ -2391,236 +2419,250 @@ $packages["ninchatclient"] = (function() {
 		this.ackedEventId = ackedEventId_;
 		this.closeNotify = closeNotify_;
 		this.closed = closed_;
-		this.stopped = stopped_;
+		this.running = running_;
 	});
-	Time = $pkg.Time = $newType(8, $kindInt64, "main.Time", "Time", "ninchatclient", null);
-	Duration = $pkg.Duration = $newType(8, $kindInt64, "main.Duration", "Duration", "ninchatclient", null);
-	Timer = $pkg.Timer = $newType(0, $kindStruct, "main.Timer", "Timer", "ninchatclient", function(C_, id_) {
+	transport = $pkg.transport = $newType(4, $kindFunc, "ninchat.transport", "transport", "github.com/ninchat/ninchat-go", null);
+	duration = $pkg.duration = $newType(8, $kindInt64, "ninchat.duration", "duration", "github.com/ninchat/ninchat-go", null);
+	timer = $pkg.timer = $newType(0, $kindStruct, "ninchat.timer", "timer", "github.com/ninchat/ninchat-go", function(C_, id_) {
 		this.$val = this;
 		if (arguments.length === 0) {
-			this.C = chanType$1.nil;
+			this.C = chanType$2.nil;
 			this.id = null;
 			return;
 		}
 		this.C = C_;
 		this.id = id_;
 	});
-	WebSocket = $pkg.WebSocket = $newType(0, $kindStruct, "main.WebSocket", "WebSocket", "ninchatclient", function(Notify_, GoingAway_, impl_, open_, error_, buffer_) {
+	webSocket = $pkg.webSocket = $newType(0, $kindStruct, "ninchat.webSocket", "webSocket", "github.com/ninchat/ninchat-go", function(notify_, goingAway_, err_, impl_, open_, buf_) {
 		this.$val = this;
 		if (arguments.length === 0) {
-			this.Notify = chanType$1.nil;
-			this.GoingAway = false;
+			this.notify = chanType$2.nil;
+			this.goingAway = false;
+			this.err = $ifaceNil;
 			this.impl = null;
 			this.open = false;
-			this.error = $ifaceNil;
-			this.buffer = sliceType$2.nil;
+			this.buf = sliceType$3.nil;
 			return;
 		}
-		this.Notify = Notify_;
-		this.GoingAway = GoingAway_;
+		this.notify = notify_;
+		this.goingAway = goingAway_;
+		this.err = err_;
 		this.impl = impl_;
 		this.open = open_;
-		this.error = error_;
-		this.buffer = buffer_;
+		this.buf = buf_;
 	});
 	sliceType = $sliceType($String);
-	mapType = $mapType($String, $emptyInterface);
 	sliceType$1 = $sliceType($emptyInterface);
-	ptrType = $ptrType(js.Error);
-	funcType = $funcType([], [], false);
-	ptrType$1 = $ptrType($Bool);
-	chanType = $chanType($String, false, true);
-	ptrType$2 = $ptrType(js.Object);
-	funcType$1 = $funcType([ptrType$2, ptrType$2, ptrType$2], [$emptyInterface], false);
-	funcType$2 = $funcType([], [mapType], false);
-	funcType$3 = $funcType([ptrType$2], [$String], false);
-	ptrType$3 = $ptrType(Deferred);
-	sliceType$2 = $sliceType(ptrType$2);
-	funcType$4 = $funcType([ptrType$2, ptrType$2, ptrType$2], [], false);
-	chanType$1 = $chanType($Bool, false, false);
-	ptrType$4 = $ptrType(Action);
-	sliceType$3 = $sliceType(ptrType$4);
-	funcType$5 = $funcType([ptrType$2], [], false);
-	mapType$1 = $mapType($String, ptrType$2);
-	funcType$6 = $funcType([mapType$1], [], false);
-	funcType$7 = $funcType([ptrType$2, ptrType$2], [$emptyInterface], false);
-	ptrType$5 = $ptrType(Timer);
-	ptrType$6 = $ptrType(WebSocket);
+	mapType = $mapType($String, $emptyInterface);
+	ptrType = $ptrType(Event);
+	sliceType$2 = $sliceType(ptrType);
+	ptrType$1 = $ptrType(sliceType$1);
+	ptrType$2 = $ptrType(mapType);
+	ptrType$3 = $ptrType(js.Object);
+	sliceType$3 = $sliceType(ptrType$3);
 	sliceType$4 = $sliceType($Uint8);
-	chanType$2 = $chanType($String, false, false);
-	ptrType$7 = $ptrType(Backoff);
-	ptrType$8 = $ptrType(Session);
-	Action.ptr.prototype.Name = function() {
-		var $ptr, a;
-		a = this;
-		if (a.name === "") {
-			a.name = $internalize(a.Header.action, $String);
-		}
-		return a.name;
-	};
-	Action.prototype.Name = function() { return this.$val.Name(); };
-	GetAddress = function(address) {
+	ptrType$4 = $ptrType(httpRequest);
+	chanType = $chanType(httpResponse, false, false);
+	funcType = $funcType([], [], false);
+	ptrType$5 = $ptrType($Bool);
+	chanType$1 = $chanType(httpResponse, false, true);
+	structType = $structType([]);
+	chanType$2 = $chanType(structType, false, false);
+	ptrType$6 = $ptrType(Action);
+	sliceType$5 = $sliceType(ptrType$6);
+	ptrType$7 = $ptrType(timer);
+	ptrType$8 = $ptrType(webSocket);
+	funcType$1 = $funcType([ptrType$3], [], false);
+	funcType$2 = $funcType([ptrType], [], false);
+	ptrType$9 = $ptrType(backoff);
+	ptrType$10 = $ptrType(Caller);
+	ptrType$11 = $ptrType(Session);
+	funcType$3 = $funcType([$String], [], false);
+	funcType$4 = $funcType([sliceType$1], [], true);
+	getAddress = function(address) {
 		var $ptr, address;
-		if (address === undefined || address === null) {
+		if (address === "") {
 			return "api.ninchat.com";
 		} else {
-			return $internalize(address, $String);
+			return address;
 		}
 	};
-	$pkg.GetAddress = GetAddress;
-	GetEndpointHosts = function(response) {
-		var $ptr, _tuple, endpoint, err, hosts, i, jsHosts, response, $deferred;
-		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+	getEndpointHosts = function(object) {
+		var $ptr, _entry, _i, _ref, _tuple, _tuple$1, err, hosts, object, ok, ok$1, s, x, x$1, xHosts;
 		hosts = sliceType.nil;
 		err = $ifaceNil;
-		$deferred.push([(function() {
-			var $ptr, e;
-			e = jsError($recover());
-			if (!($interfaceIsEqual(e, $ifaceNil))) {
-				err = e;
-			}
-		}), []]);
-		_tuple = ParseJSON(response); endpoint = _tuple[0]; err = _tuple[1];
-		if (!($interfaceIsEqual(err, $ifaceNil))) {
+		x = (_entry = object[$String.keyFor("hosts")], _entry !== undefined ? _entry.v : $ifaceNil);
+		if ($interfaceIsEqual(x, $ifaceNil)) {
+			err = errors.New("invalid endpoint document");
 			return [hosts, err];
 		}
-		jsHosts = endpoint.hosts;
-		if ($parseInt(jsHosts.length) === 0) {
-			err = errors.New("endpoint hosts array is empty");
+		_tuple = $assertType(x, sliceType$1, true); xHosts = _tuple[0]; ok = _tuple[1];
+		if (!ok) {
+			err = errors.New("invalid endpoint hosts type");
 			return [hosts, err];
 		}
-		hosts = $makeSlice(sliceType, $parseInt(jsHosts.length));
-		i = 0;
+		if (xHosts.$length === 0) {
+			err = errors.New("no endpoint hosts");
+			return [hosts, err];
+		}
+		_ref = xHosts;
+		_i = 0;
 		while (true) {
-			if (!(i < $parseInt(jsHosts.length))) { break; }
-			((i < 0 || i >= hosts.$length) ? $throwRuntimeError("index out of range") : hosts.$array[hosts.$offset + i] = $internalize(jsHosts[i], $String));
-			i = i + (1) >> 0;
+			if (!(_i < _ref.$length)) { break; }
+			x$1 = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+			_tuple$1 = $assertType(x$1, $String, true); s = _tuple$1[0]; ok$1 = _tuple$1[1];
+			if (ok$1) {
+				hosts = $append(hosts, s);
+			} else {
+				err = errors.New("invalid endpoint host value type");
+			}
+			_i++;
+		}
+		if (hosts.$length > 0) {
+			err = $ifaceNil;
 		}
 		return [hosts, err];
-		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [hosts, err]; } }
 	};
-	$pkg.GetEndpointHosts = GetEndpointHosts;
-	GetSessionEventCredentials = function(header) {
-		var $ptr, err, eventId, header, object, ok, sessionId, userAuth, userId, $deferred;
-		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-		userId = null;
-		userAuth = null;
-		sessionId = null;
-		eventId = new $Uint64(0, 0);
+	Action.ptr.prototype.String = function() {
+		var $ptr, _entry, _tuple, _tuple$1, a, ok, s, x;
+		s = "";
+		a = this;
+		_tuple = (_entry = a.Params[$String.keyFor("action")], _entry !== undefined ? [_entry.v, true] : [$ifaceNil, false]); x = _tuple[0]; ok = _tuple[1];
+		if (ok) {
+			_tuple$1 = $assertType(x, $String, true); s = _tuple$1[0];
+		}
+		return s;
+	};
+	Action.prototype.String = function() { return this.$val.String(); };
+	Event.ptr.prototype.Bool = function(param) {
+		var $ptr, _entry, _tuple, e, param, v, x;
+		v = false;
+		e = this;
+		x = (_entry = e.Params[$String.keyFor(param)], _entry !== undefined ? _entry.v : $ifaceNil);
+		if (!($interfaceIsEqual(x, $ifaceNil))) {
+			_tuple = $assertType(x, $Bool, true); v = _tuple[0];
+		}
+		return v;
+	};
+	Event.prototype.Bool = function(param) { return this.$val.Bool(param); };
+	Event.ptr.prototype.Int = function(param) {
+		var $ptr, _entry, _tuple, e, f, ok, param, v, x;
+		v = 0;
 		ok = false;
-		err = $ifaceNil;
-		$deferred.push([(function() {
-			var $ptr, e;
-			e = jsError($recover());
-			if (!($interfaceIsEqual(e, $ifaceNil))) {
-				err = e;
-			}
-		}), []]);
-		if (!($internalize(header.event, $String) === "session_created")) {
-			return [userId, userAuth, sessionId, eventId, ok, err];
-		}
-		userId = header.user_id;
-		object = header.user_auth;
-		if (!(object === undefined)) {
-			userAuth = object;
-		}
-		sessionId = header.session_id;
-		eventId = $internalize(header.event_id, $Uint64);
-		ok = true;
-		return [userId, userAuth, sessionId, eventId, ok, err];
-		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [userId, userAuth, sessionId, eventId, ok, err]; } }
-	};
-	$pkg.GetSessionEventCredentials = GetSessionEventCredentials;
-	GetEventFrames = function(header) {
-		var $ptr, err, frames, header, object, $deferred;
-		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-		frames = 0;
-		err = $ifaceNil;
-		$deferred.push([(function() {
-			var $ptr;
-			err = jsError($recover());
-		}), []]);
-		object = header.frames;
-		if (!(object === undefined)) {
-			frames = $parseInt(object) >> 0;
-			if (frames < 0) {
-				frames = 0;
+		e = this;
+		x = (_entry = e.Params[$String.keyFor(param)], _entry !== undefined ? _entry.v : $ifaceNil);
+		if (!($interfaceIsEqual(x, $ifaceNil))) {
+			f = 0;
+			_tuple = $assertType(x, $Float64, true); f = _tuple[0]; ok = _tuple[1];
+			if (ok) {
+				v = (f >> 0);
 			}
 		}
-		return [frames, err];
-		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [frames, err]; } }
+		return [v, ok];
 	};
-	$pkg.GetEventFrames = GetEventFrames;
-	GetEventAndActionId = function(header) {
-		var $ptr, actionId, err, eventId, header, object, object$1, $deferred;
-		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-		eventId = new $Uint64(0, 0);
-		actionId = new $Uint64(0, 0);
-		err = $ifaceNil;
-		$deferred.push([(function() {
-			var $ptr;
-			err = jsError($recover());
-		}), []]);
-		object = header.event_id;
-		if (!(object === undefined)) {
-			eventId = $internalize(object, $Uint64);
-		}
-		object$1 = header.action_id;
-		if (!(object$1 === undefined)) {
-			actionId = $internalize(object$1, $Uint64);
-		}
-		return [eventId, actionId, err];
-		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [eventId, actionId, err]; } }
-	};
-	$pkg.GetEventAndActionId = GetEventAndActionId;
-	IsEventLastReply = function(header, action) {
-		var $ptr, action, channels, err, header, historyLength, lastReply, users, $deferred;
-		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-		lastReply = false;
-		err = $ifaceNil;
-		$deferred.push([(function() {
-			var $ptr;
-			err = jsError($recover());
-		}), []]);
-		lastReply = true;
-		historyLength = header.history_length;
-		if (!(historyLength === undefined)) {
-			if (($parseInt(historyLength) >> 0) > 0) {
-				lastReply = false;
+	Event.prototype.Int = function(param) { return this.$val.Int(param); };
+	Event.ptr.prototype.Int64 = function(param) {
+		var $ptr, _entry, _tuple, e, f, ok, param, v, x;
+		v = new $Int64(0, 0);
+		ok = false;
+		e = this;
+		x = (_entry = e.Params[$String.keyFor(param)], _entry !== undefined ? _entry.v : $ifaceNil);
+		if (!($interfaceIsEqual(x, $ifaceNil))) {
+			f = 0;
+			_tuple = $assertType(x, $Float64, true); f = _tuple[0]; ok = _tuple[1];
+			if (ok) {
+				v = new $Int64(0, f);
 			}
 		}
-		if (action.Name() === "search") {
-			users = header.users;
-			channels = header.channels;
-			if (!(users === undefined) || !(channels === undefined)) {
-				lastReply = false;
+		return [v, ok];
+	};
+	Event.prototype.Int64 = function(param) { return this.$val.Int64(param); };
+	Event.ptr.prototype.Float64 = function(param) {
+		var $ptr, _entry, _tuple, e, ok, param, v, x;
+		v = 0;
+		ok = false;
+		e = this;
+		x = (_entry = e.Params[$String.keyFor(param)], _entry !== undefined ? _entry.v : $ifaceNil);
+		if (!($interfaceIsEqual(x, $ifaceNil))) {
+			_tuple = $assertType(x, $Float64, true); v = _tuple[0]; ok = _tuple[1];
+		}
+		return [v, ok];
+	};
+	Event.prototype.Float64 = function(param) { return this.$val.Float64(param); };
+	Event.ptr.prototype.Str = function(param) {
+		var $ptr, _entry, _tuple, e, ok, param, v, x;
+		v = "";
+		ok = false;
+		e = this;
+		x = (_entry = e.Params[$String.keyFor(param)], _entry !== undefined ? _entry.v : $ifaceNil);
+		if (!($interfaceIsEqual(x, $ifaceNil))) {
+			_tuple = $assertType(x, $String, true); v = _tuple[0]; ok = _tuple[1];
+		}
+		return [v, ok];
+	};
+	Event.prototype.Str = function(param) { return this.$val.Str(param); };
+	Event.ptr.prototype.Array = function(param) {
+		var $ptr, _entry, _tuple, e, ok, param, v, x;
+		v = sliceType$1.nil;
+		ok = false;
+		e = this;
+		x = (_entry = e.Params[$String.keyFor(param)], _entry !== undefined ? _entry.v : $ifaceNil);
+		if (!($interfaceIsEqual(x, $ifaceNil))) {
+			_tuple = $assertType(x, sliceType$1, true); v = _tuple[0]; ok = _tuple[1];
+		}
+		return [v, ok];
+	};
+	Event.prototype.Array = function(param) { return this.$val.Array(param); };
+	Event.ptr.prototype.Map = function(param) {
+		var $ptr, _entry, _tuple, e, ok, param, v, x;
+		v = false;
+		ok = false;
+		e = this;
+		x = (_entry = e.Params[$String.keyFor(param)], _entry !== undefined ? _entry.v : $ifaceNil);
+		if (!($interfaceIsEqual(x, $ifaceNil))) {
+			_tuple = $assertType(x, mapType, true); v = _tuple[0]; ok = _tuple[1];
+		}
+		return [v, ok];
+	};
+	Event.prototype.Map = function(param) { return this.$val.Map(param); };
+	Event.ptr.prototype.String = function() {
+		var $ptr, _tuple, e, s;
+		s = "";
+		e = this;
+		_tuple = e.Str("event"); s = _tuple[0];
+		return s;
+	};
+	Event.prototype.String = function() { return this.$val.String(); };
+	Event.ptr.prototype.initLastReply = function(action) {
+		var $ptr, _entry, _entry$1, _tuple, action, e, n;
+		e = this;
+		_tuple = e.Int("history_length"); n = _tuple[0];
+		if (n > 0) {
+			return;
+		}
+		if (action.String() === "search") {
+			if (!($interfaceIsEqual((_entry = e.Params[$String.keyFor("users")], _entry !== undefined ? _entry.v : $ifaceNil), $ifaceNil)) || !($interfaceIsEqual((_entry$1 = e.Params[$String.keyFor("channels")], _entry$1 !== undefined ? _entry$1.v : $ifaceNil), $ifaceNil))) {
+				return;
 			}
 		}
-		return [lastReply, err];
-		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [lastReply, err]; } }
+		e.LastReply = true;
 	};
-	$pkg.IsEventLastReply = IsEventLastReply;
-	GetEventError = function(header) {
-		var $ptr, _ref, err, errorReason, errorType, header, object, sessionLost, $deferred;
-		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+	Event.prototype.initLastReply = function(action) { return this.$val.initLastReply(action); };
+	Event.ptr.prototype.getError = function() {
+		var $ptr, _entry, _entry$1, _entry$2, _ref, _tuple, err, errorReason, errorType, event, found, sessionLost, x, x$1;
 		errorType = "";
 		errorReason = "";
 		sessionLost = false;
 		err = $ifaceNil;
-		$deferred.push([(function() {
-			var $ptr, e;
-			e = jsError($recover());
-			if (!($interfaceIsEqual(e, $ifaceNil))) {
-				err = e;
-			}
-		}), []]);
-		if (!($internalize(header.event, $String) === "error")) {
+		event = this;
+		_tuple = (_entry = event.Params[$String.keyFor("event")], _entry !== undefined ? [_entry.v, true] : [$ifaceNil, false]); x = _tuple[0]; found = _tuple[1];
+		if (!found || !($assertType(x, $String) === "error")) {
 			return [errorType, errorReason, sessionLost, err];
 		}
-		errorType = $internalize(header.error_type, $String);
-		object = header.error_reason;
-		if (!(object === undefined)) {
-			errorReason = $internalize(object, $String);
+		errorType = $assertType((_entry$1 = event.Params[$String.keyFor("error_type")], _entry$1 !== undefined ? _entry$1.v : $ifaceNil), $String);
+		x$1 = (_entry$2 = event.Params[$String.keyFor("error_reason")], _entry$2 !== undefined ? _entry$2.v : $ifaceNil);
+		if (!($interfaceIsEqual(x$1, $ifaceNil))) {
+			errorReason = $assertType(x$1, $String);
 		}
 		_ref = errorType;
 		if (_ref === "session_not_found") {
@@ -2638,775 +2680,698 @@ $packages["ninchatclient"] = (function() {
 			}
 		}
 		return [errorType, errorReason, sessionLost, err];
-		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [errorType, errorReason, sessionLost, err]; } }
 	};
-	$pkg.GetEventError = GetEventError;
-	Backoff.ptr.prototype.Success = function() {
+	Event.prototype.getError = function() { return this.$val.getError(); };
+	backoff.ptr.prototype.success = function() {
 		var $ptr, b;
 		b = this;
 		b.lastSlot = 0;
 	};
-	Backoff.prototype.Success = function() { return this.$val.Success(); };
-	Backoff.ptr.prototype.Failure = function(maxDelay) {
+	backoff.prototype.success = function() { return this.$val.success(); };
+	backoff.ptr.prototype.failure = function(maxDelay) {
 		var $ptr, b, delay, maxDelay;
-		delay = new Duration(0, 0);
+		delay = new duration(0, 0);
 		b = this;
 		if (b.lastSlot > 0) {
-			delay = new Duration(0, Jitter($flatten64(maxDelay) * b.lastSlot / 1024, -0.5));
+			delay = new duration(0, jitterFloat64($flatten64(maxDelay) * b.lastSlot / 1024, -0.5));
 		}
 		if (b.lastSlot < 1023) {
 			b.lastSlot = ((((b.lastSlot + 1 >> 0)) << 1 >> 0)) - 1 >> 0;
 		}
 		return delay;
 	};
-	Backoff.prototype.Failure = function(maxDelay) { return this.$val.Failure(maxDelay); };
-	Call = function(header, onLog, address) {
-		var $ptr, _tuple, address, deferred, header, onLog, promise, url;
-		promise = $ifaceNil;
-		url = "https://" + GetAddress(address) + "/v2/call";
-		_tuple = Defer(); deferred = _tuple[0]; promise = new mapType(_tuple[1]);
-		$go((function $b() {
-			var $ptr, _r, _tuple$1, _tuple$2, _tuple$3, channel, err, event, events, ok, response, $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; _tuple$3 = $f._tuple$3; channel = $f.channel; err = $f.err; event = $f.event; events = $f.events; ok = $f.ok; response = $f.response; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			_tuple$1 = XHR_JSON(url, new $jsObjectPtr(header), JitterDuration(new Duration(0, 11000), 0.1)); channel = _tuple$1[0]; err = _tuple$1[1];
-			/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 1; continue; }
-			/* */ $s = 2; continue;
-			/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 1:
-				$r = Log("NinchatClient.call onLog callback", onLog, new sliceType$1([new $String("call:"), err])); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$r = deferred.Reject(new sliceType$1([])); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				return;
-			/* } */ case 2:
-			_r = $recv(channel); /* */ $s = 5; case 5: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_tuple$2 = _r; response = _tuple$2[0]; ok = _tuple$2[1];
-			/* */ if (response === "") { $s = 6; continue; }
-			/* */ $s = 7; continue;
-			/* if (response === "") { */ case 6:
-				/* */ if (ok) { $s = 8; continue; }
-				/* */ $s = 9; continue;
-				/* if (ok) { */ case 8:
-					$r = Log("NinchatClient.call onLog callback", onLog, new sliceType$1([new $String("call error")])); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$s = 10; continue;
-				/* } else { */ case 9:
-					$r = Log("NinchatClient.call onLog callback", onLog, new sliceType$1([new $String("call timeout")])); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 10:
-				$r = deferred.Reject(new sliceType$1([])); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				return;
-			/* } */ case 7:
-			_tuple$3 = ParseJSON(response); event = _tuple$3[0]; err = _tuple$3[1];
-			/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 14; continue; }
-			/* */ $s = 15; continue;
-			/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 14:
-				$r = Log("NinchatClient.call onLog callback", onLog, new sliceType$1([new $String("call response:"), err])); /* */ $s = 16; case 16: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$r = deferred.Reject(new sliceType$1([])); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				return;
-			/* } */ case 15:
-			events = NewArray();
-			events.push(event);
-			$r = deferred.Resolve(new sliceType$1([new $jsObjectPtr(events)])); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._r = _r; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f._tuple$3 = _tuple$3; $f.channel = channel; $f.err = err; $f.event = event; $f.events = events; $f.ok = ok; $f.response = response; $f.$s = $s; $f.$r = $r; return $f;
-		}), []);
-		return promise;
-	};
-	$pkg.Call = Call;
-	Jitter = function(x, scale) {
-		var $ptr, scale, x;
-		return x + x * scale * Random();
-	};
-	$pkg.Jitter = Jitter;
-	JitterDuration = function(d, scale) {
-		var $ptr, d, scale;
-		return new Duration(0, Jitter($flatten64(d), scale));
-	};
-	$pkg.JitterDuration = JitterDuration;
-	JitterUint64 = function(n, scale) {
-		var $ptr, n, scale;
-		return new $Uint64(0, Jitter($flatten64(n), scale));
-	};
-	$pkg.JitterUint64 = JitterUint64;
-	jsError = function(x) {
-		var $ptr, _tuple, err, jsErr, msg, ok, x;
+	backoff.prototype.failure = function(maxDelay) { return this.$val.failure(maxDelay); };
+	Caller.ptr.prototype.Call = function(action) {
+		var $ptr, _i, _r, _ref, _tuple, _tuple$1, _tuple$2, action, caller, data, err, event, events, headers, i, ok, params, params$1, req, timeout, url, xParams, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _r = $f._r; _ref = $f._ref; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; action = $f.action; caller = $f.caller; data = $f.data; err = $f.err; event = $f.event; events = $f.events; headers = $f.headers; i = $f.i; ok = $f.ok; params = $f.params; params$1 = $f.params$1; req = $f.req; timeout = $f.timeout; url = $f.url; xParams = $f.xParams; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		headers = [headers];
+		params = [params];
+		events = sliceType$2.nil;
 		err = $ifaceNil;
-		if ($interfaceIsEqual(x, $ifaceNil)) {
-			return err;
+		caller = this;
+		url = "https://" + getAddress(caller.Address) + "/v2/call";
+		_tuple = newJSONRequest(url, action.Params); req = _tuple[0]; err = _tuple[1];
+		if (!($interfaceIsEqual(err, $ifaceNil))) {
+			return [events, err];
 		}
-		_tuple = $assertType(x, ptrType, true); jsErr = _tuple[0]; ok = _tuple[1];
-		if (ok) {
-			msg = $internalize(jsErr.Object.message, $String);
-			if (msg === "") {
-				msg = "error";
+		new httpHeader(req.Header).Set("Accept", "application/json");
+		new httpHeader(req.Header).Set("Content-Type", "application/json");
+		timeout = jitterDuration(new duration(0, 11000), 0.1);
+		_r = getResponseData(req, timeout); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_tuple$1 = _r; data = _tuple$1[0]; err = _tuple$1[1];
+		if (!($interfaceIsEqual(err, $ifaceNil))) {
+			return [events, err];
+		}
+		headers[0] = sliceType$1.nil;
+		if (!($interfaceIsEqual(jsonUnmarshalArray(data, (headers.$ptr || (headers.$ptr = new ptrType$1(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, headers)))), $ifaceNil))) {
+			params[0] = false;
+			err = jsonUnmarshalObject(data, (params.$ptr || (params.$ptr = new ptrType$2(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, params))));
+			if (!($interfaceIsEqual(err, $ifaceNil))) {
+				return [events, err];
 			}
-			err = errors.New(msg);
-			return err;
+			headers[0] = new sliceType$1([new mapType(params[0])]);
 		}
-		err = $assertType(x, $error);
+		events = $makeSlice(sliceType$2, 0, headers[0].$length);
+		_ref = headers[0];
+		_i = 0;
+		/* while (true) { */ case 2:
+			/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 3; continue; }
+			i = _i;
+			xParams = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+			_tuple$2 = $assertType(xParams, mapType, true); params$1 = _tuple$2[0]; ok = _tuple$2[1];
+			if (!ok) {
+				err = errors.New("response event header is not an object");
+				return [events, err];
+			}
+			event = new Event.ptr(params$1, sliceType$3.nil, i === (headers[0].$length - 1 >> 0));
+			/* */ if (!(action.OnReply === $throwNilPointerError)) { $s = 4; continue; }
+			/* */ $s = 5; continue;
+			/* if (!(action.OnReply === $throwNilPointerError)) { */ case 4:
+				$r = action.OnReply(event); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 5:
+			events = $append(events, event);
+			_i++;
+		/* } */ $s = 2; continue; case 3:
+		return [events, err];
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Caller.ptr.prototype.Call }; } $f.$ptr = $ptr; $f._i = _i; $f._r = _r; $f._ref = _ref; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.action = action; $f.caller = caller; $f.data = data; $f.err = err; $f.event = event; $f.events = events; $f.headers = headers; $f.i = i; $f.ok = ok; $f.params = params; $f.params$1 = params$1; $f.req = req; $f.timeout = timeout; $f.url = url; $f.xParams = xParams; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Caller.prototype.Call = function(action) { return this.$val.Call(action); };
+	emptyData = function() {
+		var $ptr;
+		return new ($global.String)();
+	};
+	singleData = function(x) {
+		var $ptr, x;
+		return new sliceType$3([x]);
+	};
+	dataLength = function(x) {
+		var $ptr, x;
+		return $parseInt(x.length);
+	};
+	stringData = function(x) {
+		var $ptr, x;
+		return StringifyFrame(x);
+	};
+	StringifyFrame = function(object) {
+		var $ptr, _tuple, goBytes, goString, jsView, object, ok;
+		_tuple = $assertType($internalize(object, $emptyInterface), $String, true); ok = _tuple[1];
+		if (ok) {
+			return object;
+		}
+		jsView = new ($global.Uint8Array)(object);
+		goBytes = $assertType($internalize(jsView, $emptyInterface), sliceType$4);
+		goString = $bytesToString(goBytes);
+		return new ($global.String)($externalize(goString, $String));
+	};
+	$pkg.StringifyFrame = StringifyFrame;
+	jsError = function(x) {
+		var $ptr, _ref, err, t, t$1, t$2, x;
+		err = $ifaceNil;
+		if (!($interfaceIsEqual(x, $ifaceNil))) {
+			_ref = x;
+			if ($assertType(_ref, $error, true)[1]) {
+				t = _ref;
+				err = t;
+			} else if ($assertType(_ref, $String, true)[1]) {
+				t$1 = _ref.$val;
+				err = errors.New(t$1);
+			} else {
+				t$2 = _ref;
+				err = errors.New("?");
+			}
+		}
 		return err;
 	};
-	jsInvoke = function(name, function$1, args) {
-		var $ptr, args, function$1, name, ok, $s, $deferred, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; args = $f.args; function$1 = $f.function$1; name = $f.name; ok = $f.ok; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-		name = [name];
-		ok = false;
-		$deferred.push([(function(name) { return function $b() {
-			var $ptr, _r, err, $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; err = $f.err; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			err = jsError($recover());
-			/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 1; continue; }
-			/* */ $s = 2; continue;
-			/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 1:
-				_r = err.Error(); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-				console.log(name[0] + " invocation error: " + _r);
-			/* } */ case 2:
-			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._r = _r; $f.err = err; $f.$s = $s; $f.$r = $r; return $f;
-		}; })(name), []]);
-		function$1.apply(undefined, $externalize(args, sliceType$1));
-		ok = true;
-		return ok;
-		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  ok; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: jsInvoke }; } $f.$ptr = $ptr; $f.args = args; $f.function$1 = function$1; $f.name = name; $f.ok = ok; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
-	};
-	Atob = function(string) {
-		var $ptr, binary, err, string, $deferred;
-		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-		binary = null;
+	newJSONRequest = function(url, action) {
+		var $ptr, _tuple, _tuple$1, action, data, err, req, url;
+		req = ptrType$4.nil;
 		err = $ifaceNil;
-		$deferred.push([(function() {
-			var $ptr;
-			err = jsError($recover());
-		}), []]);
-		binary = $global.atob(string);
-		return [binary, err];
-		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [binary, err]; } }
-	};
-	$pkg.Atob = Atob;
-	ParseDataURI = function(string) {
-		var $ptr, base64, err, string, $deferred;
-		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-		base64 = null;
-		err = $ifaceNil;
-		$deferred.push([(function() {
-			var $ptr;
-			err = jsError($recover());
-		}), []]);
-		base64 = string.split($externalize(",", $String))[1];
-		return [base64, err];
-		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [base64, err]; } }
-	};
-	$pkg.ParseDataURI = ParseDataURI;
-	NewArray = function() {
-		var $ptr;
-		return new ($global.Array)();
-	};
-	$pkg.NewArray = NewArray;
-	NewArrayBuffer = function(length) {
-		var $ptr, length;
-		return new ($global.ArrayBuffer)(length);
-	};
-	$pkg.NewArrayBuffer = NewArrayBuffer;
-	NewUint8Array = function(arrayBuffer) {
-		var $ptr, arrayBuffer;
-		return new ($global.Uint8Array)(arrayBuffer);
-	};
-	$pkg.NewUint8Array = NewUint8Array;
-	NewObject = function() {
-		var $ptr;
-		return new ($global.Object)();
-	};
-	$pkg.NewObject = NewObject;
-	ParseJSON = function(json) {
-		var $ptr, err, json, object, $deferred;
-		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-		object = null;
-		err = $ifaceNil;
-		$deferred.push([(function() {
-			var $ptr;
-			err = jsError($recover());
-		}), []]);
-		object = $global.JSON.parse($externalize(json, $String));
-		return [object, err];
-		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [object, err]; } }
-	};
-	$pkg.ParseJSON = ParseJSON;
-	StringifyJSON = function(object) {
-		var $ptr, err, json, object, $deferred;
-		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-		json = "";
-		err = $ifaceNil;
-		$deferred.push([(function() {
-			var $ptr;
-			err = jsError($recover());
-		}), []]);
-		json = $internalize($global.JSON.stringify($externalize(object, $emptyInterface)), $String);
-		return [json, err];
-		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [json, err]; } }
-	};
-	$pkg.StringifyJSON = StringifyJSON;
-	Random = function() {
-		var $ptr;
-		return $parseFloat($global.Math.random());
-	};
-	$pkg.Random = Random;
-	SetTimeout = function(callback, timeout) {
-		var $ptr, callback, id, timeout;
-		id = null;
-		id = $global.setTimeout($externalize(callback, funcType), $externalize(timeout, Duration));
-		return id;
-	};
-	$pkg.SetTimeout = SetTimeout;
-	ClearTimeout = function(id) {
-		var $ptr, id;
-		$global.clearTimeout(id);
-	};
-	$pkg.ClearTimeout = ClearTimeout;
-	Log = function(logInvocationName, onLog, tokens) {
-		var $ptr, _i, _r, _r$1, _ref, _tuple, _tuple$1, logInvocationName, message, ok, ok$1, onLog, str, tokens, x, y, y$1, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _r = $f._r; _r$1 = $f._r$1; _ref = $f._ref; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; logInvocationName = $f.logInvocationName; message = $f.message; ok = $f.ok; ok$1 = $f.ok$1; onLog = $f.onLog; str = $f.str; tokens = $f.tokens; x = $f.x; y = $f.y; y$1 = $f.y$1; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		if (onLog === undefined || onLog === null) {
-			return;
+		_tuple = jsonMarshal(action); data = _tuple[0]; err = _tuple[1];
+		if (!($interfaceIsEqual(err, $ifaceNil))) {
+			return [req, err];
 		}
-		message = "";
-		_ref = tokens;
-		_i = 0;
-		/* while (true) { */ case 1:
-			/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 2; continue; }
-			x = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
-			str = "?";
-			_tuple = $assertType(x, $String, true); y = _tuple[0]; ok = _tuple[1];
-			/* */ if (ok) { $s = 3; continue; }
-			/* */ $s = 4; continue;
-			/* if (ok) { */ case 3:
-				str = y;
-				$s = 5; continue;
-			/* } else { */ case 4:
-				_tuple$1 = $assertType(x, $error, true); y$1 = _tuple$1[0]; ok$1 = _tuple$1[1];
-				/* */ if (ok$1) { $s = 6; continue; }
-				/* */ $s = 7; continue;
-				/* if (ok$1) { */ case 6:
-					_r = y$1.Error(); /* */ $s = 8; case 8: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-					str = _r;
-				/* } */ case 7:
-			/* } */ case 5:
-			if (message.length > 0) {
-				message = message + (" ");
-			}
-			message = message + (str);
-			_i++;
-		/* } */ $s = 1; continue; case 2:
-		while (true) {
-			if (!(message.length > 0 && (message.charCodeAt((message.length - 1 >> 0)) === 32))) { break; }
-			message = message.substring(0, (message.length - 1 >> 0));
-		}
-		_r$1 = jsInvoke(logInvocationName, onLog, new sliceType$1([new $String(message)])); /* */ $s = 9; case 9: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-		_r$1;
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Log }; } $f.$ptr = $ptr; $f._i = _i; $f._r = _r; $f._r$1 = _r$1; $f._ref = _ref; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.logInvocationName = logInvocationName; $f.message = message; $f.ok = ok; $f.ok$1 = ok$1; $f.onLog = onLog; $f.str = str; $f.tokens = tokens; $f.x = x; $f.y = y; $f.y$1 = y$1; $f.$s = $s; $f.$r = $r; return $f;
+		_tuple$1 = newDataRequest("POST", url, data); req = _tuple$1[0]; err = _tuple$1[1];
+		return [req, err];
 	};
-	$pkg.Log = Log;
-	LongPollTransport = function(s, host) {
-		var $ptr, _r, _r$1, _selection, _tuple, _tuple$1, _tuple$2, array, connWorked, creator, err, err$1, err$2, gotOnline, header, header$1, host, ok, response, s, url, $s, $deferred, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; _selection = $f._selection; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; array = $f.array; connWorked = $f.connWorked; creator = $f.creator; err = $f.err; err$1 = $f.err$1; err$2 = $f.err$2; gotOnline = $f.gotOnline; header = $f.header; header$1 = $f.header$1; host = $f.host; ok = $f.ok; response = $f.response; s = $f.s; url = $f.url; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-		connWorked = [connWorked];
-		gotOnline = [gotOnline];
-		s = [s];
-		connWorked[0] = false;
-		gotOnline[0] = false;
-		$deferred.push([(function(connWorked, gotOnline, s) { return function $b() {
+	getJSONRequestResponseChannel = function(url, action, timeout) {
+		var $ptr, _tuple, action, c, err, req, timeout, url, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _tuple = $f._tuple; action = $f.action; c = $f.c; err = $f.err; req = $f.req; timeout = $f.timeout; url = $f.url; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		c = new chanType(1);
+		_tuple = newJSONRequest(url, action); req = _tuple[0]; err = _tuple[1];
+		/* */ if ($interfaceIsEqual(err, $ifaceNil)) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if ($interfaceIsEqual(err, $ifaceNil)) { */ case 1:
+			$r = putResponseToChannel(req, timeout, c); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$s = 3; continue;
+		/* } else { */ case 2:
+			$r = $send(c, new httpResponse.ptr(null, err)); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 3:
+		return c;
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: getJSONRequestResponseChannel }; } $f.$ptr = $ptr; $f._tuple = _tuple; $f.action = action; $f.c = c; $f.err = err; $f.req = req; $f.timeout = timeout; $f.url = url; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	getResponseChannel = function(req, timeout) {
+		var $ptr, c, req, timeout, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; c = $f.c; req = $f.req; timeout = $f.timeout; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		c = new chanType(1);
+		$r = putResponseToChannel(req, timeout, c); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		return c;
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: getResponseChannel }; } $f.$ptr = $ptr; $f.c = c; $f.req = req; $f.timeout = timeout; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	init = function() {
+		var $ptr;
+		xhrType = $global.XDomainRequest;
+		if (xhrType === undefined) {
+			xhrType = $global.XMLHttpRequest;
+			xhrRequestHeaderSupport = true;
+		}
+	};
+	httpHeader.prototype.Set = function(key, value) {
+		var $ptr, _key, h, key, value;
+		h = this.$val;
+		_key = key; (h || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key)] = { k: _key, v: value };
+	};
+	$ptrType(httpHeader).prototype.Set = function(key, value) { return new httpHeader(this.$get()).Set(key, value); };
+	newGETRequest = function(url) {
+		var $ptr, err, req, url;
+		req = ptrType$4.nil;
+		err = $ifaceNil;
+		req = new httpRequest.ptr("GET", url, new $Map(), null);
+		return [req, err];
+	};
+	newDataRequest = function(method, url, data) {
+		var $ptr, data, err, method, req, url;
+		req = ptrType$4.nil;
+		err = $ifaceNil;
+		req = new httpRequest.ptr(method, url, new $Map(), data);
+		return [req, err];
+	};
+	getResponseData = function(req, timeout) {
+		var $ptr, _r, _r$1, req, resp, timeout, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; req = $f.req; resp = $f.resp; timeout = $f.timeout; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		_r = getResponseChannel(req, timeout); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_r$1 = $recv(_r); /* */ $s = 2; case 2: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		resp = $clone(_r$1[0], httpResponse);
+		return [resp.data, resp.err];
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: getResponseData }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f.req = req; $f.resp = resp; $f.timeout = timeout; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	putResponseToChannel = function(req, timeout, c) {
+		var $ptr, _entry, _i, _keys, _ref, c, key, req, timeout, value, xhr, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _entry = $f._entry; _i = $f._i; _keys = $f._keys; _ref = $f._ref; c = $f.c; key = $f.key; req = $f.req; timeout = $f.timeout; value = $f.value; xhr = $f.xhr; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		c = [c];
+		xhr = [xhr];
+		$deferred.push([(function(c, xhr) { return function $b() {
 			var $ptr, err, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; err = $f.err; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 			err = jsError($recover());
 			/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 1; continue; }
 			/* */ $s = 2; continue;
 			/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 1:
-				$r = s[0].log(new sliceType$1([new $String("poll:"), err])); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = $send(c[0], new httpResponse.ptr(null, err)); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			/* } */ case 2:
 			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.err = err; $f.$s = $s; $f.$r = $r; return $f;
-		}; })(connWorked, gotOnline, s), []]);
+		}; })(c, xhr), []]);
+		xhr[0] = new (xhrType)();
+		xhr[0].onload = $externalize((function(c, xhr) { return function() {
+			var $ptr, response;
+			response = xhr[0].responseText;
+			$go((function(c, xhr) { return function $b() {
+				var $ptr, $s, $r;
+				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+				$r = $send(c[0], new httpResponse.ptr(response, $ifaceNil)); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
+			}; })(c, xhr), []);
+		}; })(c, xhr), funcType);
+		xhr[0].onprogress = $externalize((function(c, xhr) { return function() {
+			var $ptr;
+		}; })(c, xhr), funcType);
+		xhr[0].ontimeout = $externalize((function(c, xhr) { return function() {
+			var $ptr;
+			$go((function(c, xhr) { return function $b() {
+				var $ptr, $s, $r;
+				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+				$r = $send(c[0], new httpResponse.ptr(null, errors.New("timeout"))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
+			}; })(c, xhr), []);
+		}; })(c, xhr), funcType);
+		xhr[0].onerror = $externalize((function(c, xhr) { return function() {
+			var $ptr;
+			$go((function(c, xhr) { return function $b() {
+				var $ptr, $s, $r;
+				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+				$r = $send(c[0], new httpResponse.ptr(null, errors.New("error"))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
+			}; })(c, xhr), []);
+		}; })(c, xhr), funcType);
+		xhr[0].open($externalize(req.Method, $String), $externalize(req.URL, $String));
+		xhr[0].timeout = $externalize(timeout, duration);
+		if (xhrRequestHeaderSupport) {
+			_ref = req.Header;
+			_i = 0;
+			_keys = $keys(_ref);
+			while (true) {
+				if (!(_i < _keys.length)) { break; }
+				_entry = _ref[_keys[_i]];
+				if (_entry === undefined) {
+					_i++;
+					continue;
+				}
+				key = _entry.k;
+				value = _entry.v;
+				xhr[0].setRequestHeader($externalize(key, $String), $externalize(value, $String));
+				_i++;
+			}
+		}
+		xhr[0].send(req.data);
+		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: putResponseToChannel }; } $f.$ptr = $ptr; $f._entry = _entry; $f._i = _i; $f._keys = _keys; $f._ref = _ref; $f.c = c; $f.key = key; $f.req = req; $f.timeout = timeout; $f.value = value; $f.xhr = xhr; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+	};
+	jitterFloat64 = function(x, scale) {
+		var $ptr, scale, x;
+		return x + x * scale * randFloat64();
+	};
+	jitterDuration = function(d, scale) {
+		var $ptr, d, scale;
+		return new duration(0, jitterFloat64($flatten64(d), scale));
+	};
+	jitterInt64 = function(n, scale) {
+		var $ptr, n, scale;
+		return new $Int64(0, jitterFloat64($flatten64(n), scale));
+	};
+	jsonMarshal = function(v) {
+		var $ptr, data, err, v, $deferred;
+		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		data = null;
+		err = $ifaceNil;
+		$deferred.push([(function() {
+			var $ptr;
+			err = jsError($recover());
+		}), []]);
+		data = $global.JSON.stringify($externalize(v, mapType));
+		return [data, err];
+		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [data, err]; } }
+	};
+	jsonUnmarshalArray = function(data, v) {
+		var $ptr, _tuple, _tuple$1, data, err, object, ok, v, x;
+		err = $ifaceNil;
+		_tuple = jsonParse(data); object = _tuple[0]; err = _tuple[1];
+		if (!($interfaceIsEqual(err, $ifaceNil))) {
+			return err;
+		}
+		_tuple$1 = $assertType(object, sliceType$1, true); x = _tuple$1[0]; ok = _tuple$1[1];
+		if (!ok) {
+			err = errors.New("json: cannot unmarshal value into Go value of type *[]interface{}");
+			return err;
+		}
+		v.$set(x);
+		return err;
+	};
+	jsonUnmarshalObject = function(data, v) {
+		var $ptr, _tuple, _tuple$1, data, err, object, ok, v, x;
+		err = $ifaceNil;
+		_tuple = jsonParse(data); object = _tuple[0]; err = _tuple[1];
+		if (!($interfaceIsEqual(err, $ifaceNil))) {
+			return err;
+		}
+		_tuple$1 = $assertType(object, mapType, true); x = _tuple$1[0]; ok = _tuple$1[1];
+		if (!ok) {
+			err = errors.New("json: cannot unmarshal value into Go value of type *map[string]interface{}");
+			return err;
+		}
+		v.$set(x);
+		return err;
+	};
+	jsonParse = function(data) {
+		var $ptr, data, err, x, $deferred;
+		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		x = $ifaceNil;
+		err = $ifaceNil;
+		$deferred.push([(function() {
+			var $ptr;
+			err = jsError($recover());
+		}), []]);
+		x = $internalize($global.JSON.parse(data), $emptyInterface);
+		return [x, err];
+		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [x, err]; } }
+	};
+	longPollBinaryPayload = function(action) {
+		var $ptr, _i, _ref, action, base64, dataURI, payload;
+		payload = sliceType$1.nil;
+		_ref = action.Payload;
+		_i = 0;
+		while (true) {
+			if (!(_i < _ref.$length)) { break; }
+			dataURI = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+			base64 = dataURI.split($externalize(",", $String))[1];
+			payload = $append(payload, new $jsObjectPtr(base64));
+			_i++;
+		}
+		return payload;
+	};
+	longPollTransport = function(s, host) {
+		var $ptr, _r, _r$1, _r$2, _selection, _tuple, action, array, connWorked, err, event, gotOnline, host, ok, response, s, timeout, url, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _selection = $f._selection; _tuple = $f._tuple; action = $f.action; array = $f.array; connWorked = $f.connWorked; err = $f.err; event = $f.event; gotOnline = $f.gotOnline; host = $f.host; ok = $f.ok; response = $f.response; s = $f.s; timeout = $f.timeout; url = $f.url; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		array = [array];
+		connWorked = [connWorked];
+		gotOnline = [gotOnline];
+		connWorked[0] = false;
+		gotOnline[0] = false;
 		url = "https://" + host + "/v2/poll";
-		/* */ if (s[0].sessionId === null) { $s = 1; continue; }
+		/* */ if ($interfaceIsEqual(s.sessionId, $ifaceNil)) { $s = 1; continue; }
 		/* */ $s = 2; continue;
-		/* if (s[0].sessionId === null) { */ case 1:
-			$r = s[0].log(new sliceType$1([new $String("session creation")])); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			header = s[0].makeCreateSessionAction();
-			_tuple = XHR_JSON(url, new $jsObjectPtr(header), JitterDuration(new Duration(0, 13000), 0.2)); creator = _tuple[0]; err = _tuple[1];
-			/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 5; continue; }
-			/* */ $s = 6; continue;
-			/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 5:
-				$r = s[0].log(new sliceType$1([new $String("session creation:"), err])); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				return [connWorked[0], gotOnline[0]];
-			/* } */ case 6:
-			_r = $select([[creator], [s[0].closeNotify]]); /* */ $s = 8; case 8: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_selection = _r;
-			/* */ if (_selection[0] === 0) { $s = 9; continue; }
-			/* */ if (_selection[0] === 1) { $s = 10; continue; }
-			/* */ $s = 11; continue;
-			/* if (_selection[0] === 0) { */ case 9:
-				_tuple$1 = _selection[1]; response = _tuple$1[0]; ok = _tuple$1[1];
-				/* */ if (!ok) { $s = 12; continue; }
-				/* */ if (response === "") { $s = 13; continue; }
-				/* */ $s = 14; continue;
-				/* if (!ok) { */ case 12:
-					$r = s[0].log(new sliceType$1([new $String("session creation timeout")])); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* if ($interfaceIsEqual(s.sessionId, $ifaceNil)) { */ case 1:
+			$r = s.log(new sliceType$1([new $String("session creation")])); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			action = s.makeCreateSessionAction();
+			timeout = jitterDuration(new duration(0, 13000), 0.2);
+			_r = getJSONRequestResponseChannel(url, action, timeout); /* */ $s = 5; case 5: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_r$1 = $select([[_r], [s.closeNotify]]); /* */ $s = 6; case 6: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			_selection = _r$1;
+			/* */ if (_selection[0] === 0) { $s = 7; continue; }
+			/* */ if (_selection[0] === 1) { $s = 8; continue; }
+			/* */ $s = 9; continue;
+			/* if (_selection[0] === 0) { */ case 7:
+				response = $clone(_selection[1][0], httpResponse);
+				/* */ if (!($interfaceIsEqual(response.err, $ifaceNil))) { $s = 10; continue; }
+				/* */ $s = 11; continue;
+				/* if (!($interfaceIsEqual(response.err, $ifaceNil))) { */ case 10:
+					$r = s.log(new sliceType$1([new $String("session creation:"), response.err])); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					return [connWorked[0], gotOnline[0]];
-					$s = 14; continue;
-				/* } else if (response === "") { */ case 13:
-					$r = s[0].log(new sliceType$1([new $String("session creation error")])); /* */ $s = 16; case 16: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 11:
+				array[0] = sliceType$1.nil;
+				err = jsonUnmarshalArray(response.data, (array.$ptr || (array.$ptr = new ptrType$1(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, array))));
+				/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 13; continue; }
+				/* */ $s = 14; continue;
+				/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 13:
+					$r = s.log(new sliceType$1([new $String("session creation response:"), err])); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					return [connWorked[0], gotOnline[0]];
 				/* } */ case 14:
-				_tuple$2 = ParseJSON(response); array = _tuple$2[0]; err$1 = _tuple$2[1];
-				/* */ if (!($interfaceIsEqual(err$1, $ifaceNil))) { $s = 17; continue; }
-				/* */ $s = 18; continue;
-				/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ case 17:
-					$r = s[0].log(new sliceType$1([new $String("session creation response:"), err$1])); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ if (array[0].$length === 0) { $s = 16; continue; }
+				/* */ $s = 17; continue;
+				/* if (array[0].$length === 0) { */ case 16:
+					$r = s.log(new sliceType$1([new $String("session creation response JSON array is empty")])); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					return [connWorked[0], gotOnline[0]];
-				/* } */ case 18:
-				header$1 = array[0];
-				_r$1 = s[0].handleSessionEvent(header$1); /* */ $s = 22; case 22: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-				/* */ if (!_r$1) { $s = 20; continue; }
-				/* */ $s = 21; continue;
-				/* if (!_r$1) { */ case 20:
+				/* } */ case 17:
+				_tuple = $assertType((0 >= array[0].$length ? $throwRuntimeError("index out of range") : array[0].$array[array[0].$offset + 0]), mapType, true); event = _tuple[0]; ok = _tuple[1];
+				/* */ if (!ok) { $s = 19; continue; }
+				/* */ $s = 20; continue;
+				/* if (!ok) { */ case 19:
+					$r = s.log(new sliceType$1([new $String("session creation response header is not a JSON object")])); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					return [connWorked[0], gotOnline[0]];
-				/* } */ case 21:
-				$s = 11; continue;
-			/* } else if (_selection[0] === 1) { */ case 10:
-				$r = longPollClose(s[0], url); /* */ $s = 23; case 23: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 20:
+				_r$2 = s.handleSessionEvent(event); /* */ $s = 24; case 24: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+				/* */ if (!_r$2) { $s = 22; continue; }
+				/* */ $s = 23; continue;
+				/* if (!_r$2) { */ case 22:
+					return [connWorked[0], gotOnline[0]];
+				/* } */ case 23:
+				$s = 9; continue;
+			/* } else if (_selection[0] === 1) { */ case 8:
+				$r = longPollClose(s, url); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				return [connWorked[0], gotOnline[0]];
-			/* } */ case 11:
+			/* } */ case 9:
 			connWorked[0] = true;
 			gotOnline[0] = true;
-			$r = s[0].connState("connected"); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = s[0].connActive(); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = s.connState("connected"); /* */ $s = 26; case 26: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = s.connActive(); /* */ $s = 27; case 27: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$s = 3; continue;
 		/* } else { */ case 2:
-			$r = s[0].log(new sliceType$1([new $String("session resumption")])); /* */ $s = 26; case 26: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			err$2 = longPollPing(s[0], url);
-			/* */ if (!($interfaceIsEqual(err$2, $ifaceNil))) { $s = 27; continue; }
-			/* */ $s = 28; continue;
-			/* if (!($interfaceIsEqual(err$2, $ifaceNil))) { */ case 27:
-				$r = s[0].log(new sliceType$1([new $String("session resumption:"), err$2])); /* */ $s = 29; case 29: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				return [connWorked[0], gotOnline[0]];
-			/* } */ case 28:
+			$r = s.log(new sliceType$1([new $String("session resumption")])); /* */ $s = 28; case 28: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = longPollPing(s, url); /* */ $s = 29; case 29: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		/* } */ case 3:
-		$r = longPollTransfer(s[0], url, (connWorked.$ptr || (connWorked.$ptr = new ptrType$1(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, connWorked))), (gotOnline.$ptr || (gotOnline.$ptr = new ptrType$1(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, gotOnline)))); /* */ $s = 30; case 30: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = longPollTransfer(s, url, (connWorked.$ptr || (connWorked.$ptr = new ptrType$5(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, connWorked))), (gotOnline.$ptr || (gotOnline.$ptr = new ptrType$5(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, gotOnline)))); /* */ $s = 30; case 30: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		return [connWorked[0], gotOnline[0]];
-		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [connWorked[0], gotOnline[0]]; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: LongPollTransport }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.array = array; $f.connWorked = connWorked; $f.creator = creator; $f.err = err; $f.err$1 = err$1; $f.err$2 = err$2; $f.gotOnline = gotOnline; $f.header = header; $f.header$1 = header$1; $f.host = host; $f.ok = ok; $f.response = response; $f.s = s; $f.url = url; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: longPollTransport }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._selection = _selection; $f._tuple = _tuple; $f.action = action; $f.array = array; $f.connWorked = connWorked; $f.err = err; $f.event = event; $f.gotOnline = gotOnline; $f.host = host; $f.ok = ok; $f.response = response; $f.s = s; $f.timeout = timeout; $f.url = url; $f.$s = $s; $f.$r = $r; return $f;
 	};
-	$pkg.LongPollTransport = LongPollTransport;
 	longPollTransfer = function(s, url, connWorked, gotOnline) {
-		var $ptr, _r, _r$1, _selection, _tuple, _tuple$1, _tuple$2, _tuple$3, _tuple$4, _tuple$5, _tuple$6, _tuple$7, _tuple$8, _tuple$9, ackedActionId, action, array, base64, channel, connWorked, err, err$1, err$2, err$3, err$4, err$5, failures, frame, gotOnline, header, header$1, i, json, object, ok, ok$1, payload, payload$1, poller, request, response, s, sender, sending, sendingId, sessionLost, url, x, x$1, x$2, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; _selection = $f._selection; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; _tuple$3 = $f._tuple$3; _tuple$4 = $f._tuple$4; _tuple$5 = $f._tuple$5; _tuple$6 = $f._tuple$6; _tuple$7 = $f._tuple$7; _tuple$8 = $f._tuple$8; _tuple$9 = $f._tuple$9; ackedActionId = $f.ackedActionId; action = $f.action; array = $f.array; base64 = $f.base64; channel = $f.channel; connWorked = $f.connWorked; err = $f.err; err$1 = $f.err$1; err$2 = $f.err$2; err$3 = $f.err$3; err$4 = $f.err$4; err$5 = $f.err$5; failures = $f.failures; frame = $f.frame; gotOnline = $f.gotOnline; header = $f.header; header$1 = $f.header$1; i = $f.i; json = $f.json; object = $f.object; ok = $f.ok; ok$1 = $f.ok$1; payload = $f.payload; payload$1 = $f.payload$1; poller = $f.poller; request = $f.request; response = $f.response; s = $f.s; sender = $f.sender; sending = $f.sending; sendingId = $f.sendingId; sessionLost = $f.sessionLost; url = $f.url; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		poller = chanType.nil;
-		sender = chanType.nil;
-		sendingId = new $Uint64(0, 0);
+		var $ptr, _entry, _i, _key, _key$1, _key$2, _r, _r$1, _r$2, _r$3, _ref, _selection, _tuple, _tuple$1, _tuple$2, _tuple$3, _tuple$4, ackedActionId, action, action$1, array, channel, connWorked, err, err$1, err$2, event, failures, gotOnline, json, object, object$1, ok, ok$1, params, poller, response, s, sender, sending, sendingId, sessionLost, timeout, timeout$1, url, x, x$1, x$2, x$3, x$4, x$5, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _entry = $f._entry; _i = $f._i; _key = $f._key; _key$1 = $f._key$1; _key$2 = $f._key$2; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _ref = $f._ref; _selection = $f._selection; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; _tuple$3 = $f._tuple$3; _tuple$4 = $f._tuple$4; ackedActionId = $f.ackedActionId; action = $f.action; action$1 = $f.action$1; array = $f.array; channel = $f.channel; connWorked = $f.connWorked; err = $f.err; err$1 = $f.err$1; err$2 = $f.err$2; event = $f.event; failures = $f.failures; gotOnline = $f.gotOnline; json = $f.json; object = $f.object; object$1 = $f.object$1; ok = $f.ok; ok$1 = $f.ok$1; params = $f.params; poller = $f.poller; response = $f.response; s = $f.s; sender = $f.sender; sending = $f.sending; sendingId = $f.sendingId; sessionLost = $f.sessionLost; timeout = $f.timeout; timeout$1 = $f.timeout$1; url = $f.url; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; x$3 = $f.x$3; x$4 = $f.x$4; x$5 = $f.x$5; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		poller = chanType$1.nil;
+		sender = chanType$1.nil;
+		sendingId = new $Int64(0, 0);
 		failures = 0;
 		s.numSent = 0;
 		/* while (true) { */ case 1:
 			/* if (!(failures < 2)) { break; } */ if(!(failures < 2)) { $s = 2; continue; }
-			/* */ if (poller === chanType.nil) { $s = 3; continue; }
+			array = [array];
+			object = [object];
+			/* */ if (poller === chanType$1.nil) { $s = 3; continue; }
 			/* */ $s = 4; continue;
-			/* if (poller === chanType.nil) { */ case 3:
-				err = $ifaceNil;
-				header = s.makeResumeSessionAction(true);
-				_tuple = XHR_JSON(url, new $jsObjectPtr(header), JitterDuration(new Duration(0, 64000), 0.2)); poller = _tuple[0]; err = _tuple[1];
-				/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 5; continue; }
-				/* */ $s = 6; continue;
-				/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 5:
-					$r = s.log(new sliceType$1([new $String("poll:"), err])); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					return;
-				/* } */ case 6:
+			/* if (poller === chanType$1.nil) { */ case 3:
+				action = s.makeResumeSessionAction(true);
+				timeout = jitterDuration(new duration(0, 64000), 0.2);
+				_r = getJSONRequestResponseChannel(url, action, timeout); /* */ $s = 5; case 5: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+				poller = _r;
 			/* } */ case 4:
-			/* */ if (sender === chanType.nil && s.numSent < s.sendBuffer.$length) { $s = 8; continue; }
-			/* */ $s = 9; continue;
-			/* if (sender === chanType.nil && s.numSent < s.sendBuffer.$length) { */ case 8:
-				action = (x = s.sendBuffer, x$1 = s.numSent, ((x$1 < 0 || x$1 >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + x$1]));
-				/* */ if (!(action.Payload === null)) { $s = 10; continue; }
-				/* */ $s = 11; continue;
-				/* if (!(action.Payload === null)) { */ case 10:
-					payload = null;
-					err$1 = $ifaceNil;
-					frame = action.Payload[0];
-					/* */ if ($internalize(action.Header.action, $String) === "update_user") { $s = 12; continue; }
-					/* */ $s = 13; continue;
-					/* if ($internalize(action.Header.action, $String) === "update_user") { */ case 12:
-						_tuple$1 = ParseDataURI(frame); base64 = _tuple$1[0]; err$2 = _tuple$1[1];
-						/* */ if (!($interfaceIsEqual(err$2, $ifaceNil))) { $s = 15; continue; }
-						/* */ $s = 16; continue;
-						/* if (!($interfaceIsEqual(err$2, $ifaceNil))) { */ case 15:
-							$r = s.log(new sliceType$1([new $String("send:"), err$2])); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ if (sender === chanType$1.nil && s.numSent < s.sendBuffer.$length) { $s = 6; continue; }
+			/* */ $s = 7; continue;
+			/* if (sender === chanType$1.nil && s.numSent < s.sendBuffer.$length) { */ case 6:
+				action$1 = (x = s.sendBuffer, x$1 = s.numSent, ((x$1 < 0 || x$1 >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + x$1]));
+				/* */ if (!(action$1.Payload === sliceType$3.nil)) { $s = 8; continue; }
+				/* */ $s = 9; continue;
+				/* if (!(action$1.Payload === sliceType$3.nil)) { */ case 8:
+					/* */ if (action$1.String() === "update_user") { $s = 10; continue; }
+					/* */ $s = 11; continue;
+					/* if (action$1.String() === "update_user") { */ case 10:
+						_key = "payload"; (action$1.Params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key)] = { k: _key, v: longPollBinaryPayload(action$1) };
+						$s = 12; continue;
+					/* } else { */ case 11:
+						object[0] = false;
+						err = jsonUnmarshalObject((x$2 = action$1.Payload, (0 >= x$2.$length ? $throwRuntimeError("index out of range") : x$2.$array[x$2.$offset + 0])), (object.$ptr || (object.$ptr = new ptrType$2(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, object))));
+						/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 13; continue; }
+						/* */ $s = 14; continue;
+						/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 13:
+							$r = s.log(new sliceType$1([new $String("send:"), err])); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 							return;
-						/* } */ case 16:
-						payload = NewArray();
-						payload.push(base64);
-						$s = 14; continue;
-					/* } else { */ case 13:
-						_tuple$2 = ParseJSON($internalize(frame, $String)); payload = _tuple$2[0]; err$1 = _tuple$2[1];
-						/* */ if (!($interfaceIsEqual(err$1, $ifaceNil))) { $s = 18; continue; }
-						/* */ $s = 19; continue;
-						/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ case 18:
-							$r = s.log(new sliceType$1([new $String("send:"), err$1])); /* */ $s = 20; case 20: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-							return;
-						/* } */ case 19:
-					/* } */ case 14:
-					action.Header.payload = payload;
-				/* } */ case 11:
-				action.Header.session_id = s.sessionId;
-				_tuple$3 = StringifyJSON(new $jsObjectPtr(action.Header)); request = _tuple$3[0]; err$3 = _tuple$3[1];
-				delete action.Header[$externalize("session_id", $String)];
-				delete action.Header[$externalize("payload", $String)];
-				/* */ if (!($interfaceIsEqual(err$3, $ifaceNil))) { $s = 21; continue; }
-				/* */ $s = 22; continue;
-				/* if (!($interfaceIsEqual(err$3, $ifaceNil))) { */ case 21:
-					$r = s.log(new sliceType$1([new $String("send:"), err$3])); /* */ $s = 23; case 23: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					return;
-				/* } */ case 22:
-				_tuple$4 = XHR(url, request, JitterDuration(new Duration(0, 7000), 0.2)); channel = _tuple$4[0]; err$3 = _tuple$4[1];
-				/* */ if (!($interfaceIsEqual(err$3, $ifaceNil))) { $s = 24; continue; }
-				/* */ $s = 25; continue;
-				/* if (!($interfaceIsEqual(err$3, $ifaceNil))) { */ case 24:
-					$r = s.log(new sliceType$1([new $String("send:"), err$3])); /* */ $s = 26; case 26: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					return;
-				/* } */ case 25:
-				if ((x$2 = action.Id, (x$2.$high === 0 && x$2.$low === 0))) {
+						/* } */ case 14:
+						_key$1 = "payload"; (action$1.Params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$1)] = { k: _key$1, v: new mapType(object[0]) };
+					/* } */ case 12:
+				/* } */ case 9:
+				_key$2 = "session_id"; (action$1.Params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$2)] = { k: _key$2, v: s.sessionId };
+				timeout$1 = jitterDuration(new duration(0, 7000), 0.2);
+				_r$1 = getJSONRequestResponseChannel(url, action$1.Params, timeout$1); /* */ $s = 16; case 16: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+				channel = _r$1;
+				delete action$1.Params[$String.keyFor("session_id")];
+				delete action$1.Params[$String.keyFor("payload")];
+				if ((x$3 = action$1.id, (x$3.$high === 0 && x$3.$low === 0))) {
+					$go(logErrorResponse, [s, channel, "send error:"]);
 					s.sendBuffer = $appendSlice($subslice(s.sendBuffer, 0, s.numSent), $subslice(s.sendBuffer, (s.numSent + 1 >> 0)));
 				} else {
 					sender = channel;
-					sendingId = action.Id;
+					sendingId = action$1.id;
 				}
-			/* } */ case 9:
-			response = "";
-			ok = false;
-			_r = $select([[poller], [sender], [s.sendNotify], [s.closeNotify]]); /* */ $s = 27; case 27: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_selection = _r;
-			/* */ if (_selection[0] === 0) { $s = 28; continue; }
-			/* */ if (_selection[0] === 1) { $s = 29; continue; }
-			/* */ if (_selection[0] === 2) { $s = 30; continue; }
-			/* */ if (_selection[0] === 3) { $s = 31; continue; }
-			/* */ $s = 32; continue;
-			/* if (_selection[0] === 0) { */ case 28:
-				_tuple$5 = _selection[1]; response = _tuple$5[0]; ok = _tuple$5[1];
-				/* */ if (!ok) { $s = 33; continue; }
-				/* */ if (response === "") { $s = 34; continue; }
-				/* */ $s = 35; continue;
-				/* if (!ok) { */ case 33:
-					$r = s.log(new sliceType$1([new $String("poll timeout")])); /* */ $s = 36; case 36: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$s = 35; continue;
-				/* } else if (response === "") { */ case 34:
-					$r = s.log(new sliceType$1([new $String("poll error")])); /* */ $s = 37; case 37: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 35:
-				poller = chanType.nil;
-				$r = s.connActive(); /* */ $s = 38; case 38: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$s = 32; continue;
-			/* } else if (_selection[0] === 1) { */ case 29:
-				_tuple$6 = _selection[1]; response = _tuple$6[0]; ok = _tuple$6[1];
-				/* */ if (!ok) { $s = 39; continue; }
-				/* */ if (response === "") { $s = 40; continue; }
-				/* */ if ((sendingId.$high > 0 || (sendingId.$high === 0 && sendingId.$low > 0))) { $s = 41; continue; }
-				/* */ $s = 42; continue;
-				/* if (!ok) { */ case 39:
-					$r = s.log(new sliceType$1([new $String("send timeout")])); /* */ $s = 43; case 43: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$s = 42; continue;
-				/* } else if (response === "") { */ case 40:
-					$r = s.log(new sliceType$1([new $String("send error")])); /* */ $s = 44; case 44: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$s = 42; continue;
-				/* } else if ((sendingId.$high > 0 || (sendingId.$high === 0 && sendingId.$low > 0))) { */ case 41:
+			/* } */ case 7:
+			response = new httpResponse.ptr(null, $ifaceNil);
+			_r$2 = $select([[poller], [sender], [s.sendNotify], [s.closeNotify]]); /* */ $s = 17; case 17: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+			_selection = _r$2;
+			/* */ if (_selection[0] === 0) { $s = 18; continue; }
+			/* */ if (_selection[0] === 1) { $s = 19; continue; }
+			/* */ if (_selection[0] === 2) { $s = 20; continue; }
+			/* */ if (_selection[0] === 3) { $s = 21; continue; }
+			/* */ $s = 22; continue;
+			/* if (_selection[0] === 0) { */ case 18:
+				$copy(response, _selection[1][0], httpResponse);
+				/* */ if (!($interfaceIsEqual(response.err, $ifaceNil))) { $s = 23; continue; }
+				/* */ $s = 24; continue;
+				/* if (!($interfaceIsEqual(response.err, $ifaceNil))) { */ case 23:
+					$r = s.log(new sliceType$1([new $String("poll error:"), response.err])); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 24:
+				poller = chanType$1.nil;
+				$r = s.connActive(); /* */ $s = 26; case 26: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$s = 22; continue;
+			/* } else if (_selection[0] === 1) { */ case 19:
+				$copy(response, _selection[1][0], httpResponse);
+				/* */ if (!($interfaceIsEqual(response.err, $ifaceNil))) { $s = 27; continue; }
+				/* */ if ((sendingId.$high > 0 || (sendingId.$high === 0 && sendingId.$low > 0))) { $s = 28; continue; }
+				/* */ $s = 29; continue;
+				/* if (!($interfaceIsEqual(response.err, $ifaceNil))) { */ case 27:
+					$r = s.log(new sliceType$1([new $String("send error:"), response.err])); /* */ $s = 30; case 30: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$s = 29; continue;
+				/* } else if ((sendingId.$high > 0 || (sendingId.$high === 0 && sendingId.$low > 0))) { */ case 28:
 					s.numSent = s.numSent + (1) >> 0;
-				/* } */ case 42:
-				sender = chanType.nil;
-				sendingId = new $Uint64(0, 0);
-				$s = 32; continue;
-			/* } else if (_selection[0] === 2) { */ case 30:
-				sending = _selection[1][0];
-				/* */ if (!sending) { $s = 45; continue; }
-				/* */ $s = 46; continue;
-				/* if (!sending) { */ case 45:
-					$r = longPollClose(s, url); /* */ $s = 47; case 47: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 29:
+				sender = chanType$1.nil;
+				sendingId = new $Int64(0, 0);
+				$s = 22; continue;
+			/* } else if (_selection[0] === 2) { */ case 20:
+				_tuple = _selection[1]; sending = _tuple[1];
+				/* */ if (!sending) { $s = 31; continue; }
+				/* */ $s = 32; continue;
+				/* if (!sending) { */ case 31:
+					$r = longPollClose(s, url); /* */ $s = 33; case 33: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					return;
-				/* } */ case 46:
+				/* } */ case 32:
 				/* continue; */ $s = 1; continue;
-				$s = 32; continue;
-			/* } else if (_selection[0] === 3) { */ case 31:
-				$r = longPollClose(s, url); /* */ $s = 48; case 48: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$s = 22; continue;
+			/* } else if (_selection[0] === 3) { */ case 21:
+				$r = longPollClose(s, url); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				return;
-			/* } */ case 32:
-			array = null;
-			/* */ if (!(response === "")) { $s = 49; continue; }
-			/* */ $s = 50; continue;
-			/* if (!(response === "")) { */ case 49:
-				err$4 = $ifaceNil;
-				_tuple$7 = ParseJSON(response); array = _tuple$7[0]; err$4 = _tuple$7[1];
-				/* */ if (!($interfaceIsEqual(err$4, $ifaceNil))) { $s = 51; continue; }
-				/* */ $s = 52; continue;
-				/* if (!($interfaceIsEqual(err$4, $ifaceNil))) { */ case 51:
-					$r = s.log(new sliceType$1([new $String("response:"), err$4])); /* */ $s = 53; case 53: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 52:
-			/* } */ case 50:
-			/* */ if (array === null) { $s = 54; continue; }
-			/* */ $s = 55; continue;
-			/* if (array === null) { */ case 54:
+			/* } */ case 22:
+			array[0] = sliceType$1.nil;
+			err$1 = response.err;
+			/* */ if ($interfaceIsEqual(err$1, $ifaceNil)) { $s = 35; continue; }
+			/* */ $s = 36; continue;
+			/* if ($interfaceIsEqual(err$1, $ifaceNil)) { */ case 35:
+				err$1 = jsonUnmarshalArray(response.data, (array.$ptr || (array.$ptr = new ptrType$1(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, array))));
+				/* */ if (!($interfaceIsEqual(err$1, $ifaceNil))) { $s = 37; continue; }
+				/* */ $s = 38; continue;
+				/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ case 37:
+					$r = s.log(new sliceType$1([new $String("response:"), err$1])); /* */ $s = 39; case 39: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 38:
+			/* } */ case 36:
+			/* */ if (!($interfaceIsEqual(err$1, $ifaceNil))) { $s = 40; continue; }
+			/* */ $s = 41; continue;
+			/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ case 40:
 				failures = failures + (1) >> 0;
 				s.numSent = 0;
 				/* continue; */ $s = 1; continue;
-			/* } */ case 55:
+			/* } */ case 41:
 			failures = 0;
 			connWorked.$set(true);
-			i = 0;
-			/* while (true) { */ case 56:
-				/* if (!(i < $parseInt(array.length))) { break; } */ if(!(i < $parseInt(array.length))) { $s = 57; continue; }
-				header$1 = array[i];
-				payload$1 = NewArray();
-				object = header$1.payload;
-				/* */ if (!(object === undefined)) { $s = 58; continue; }
-				/* */ $s = 59; continue;
-				/* if (!(object === undefined)) { */ case 58:
-					_tuple$8 = StringifyJSON(new $jsObjectPtr(object)); json = _tuple$8[0]; err$5 = _tuple$8[1];
-					/* */ if (!($interfaceIsEqual(err$5, $ifaceNil))) { $s = 60; continue; }
-					/* */ $s = 61; continue;
-					/* if (!($interfaceIsEqual(err$5, $ifaceNil))) { */ case 60:
-						$r = s.log(new sliceType$1([new $String("poll payload:"), err$5])); /* */ $s = 62; case 62: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_ref = array[0];
+			_i = 0;
+			/* while (true) { */ case 42:
+				/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 43; continue; }
+				x$4 = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+				_tuple$1 = $assertType(x$4, mapType, true); params = _tuple$1[0]; ok = _tuple$1[1];
+				/* */ if (!ok) { $s = 44; continue; }
+				/* */ $s = 45; continue;
+				/* if (!ok) { */ case 44:
+					$r = s.log(new sliceType$1([new $String("poll event is not an object")])); /* */ $s = 46; case 46: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					return;
+				/* } */ case 45:
+				event = new Event.ptr(params, sliceType$3.nil, false);
+				x$5 = (_entry = params[$String.keyFor("payload")], _entry !== undefined ? _entry.v : $ifaceNil);
+				/* */ if (!($interfaceIsEqual(x$5, $ifaceNil))) { $s = 47; continue; }
+				/* */ $s = 48; continue;
+				/* if (!($interfaceIsEqual(x$5, $ifaceNil))) { */ case 47:
+					_tuple$2 = $assertType(x$5, mapType, true); object$1 = _tuple$2[0]; ok$1 = _tuple$2[1];
+					/* */ if (!ok$1) { $s = 49; continue; }
+					/* */ $s = 50; continue;
+					/* if (!ok$1) { */ case 49:
+						$r = s.log(new sliceType$1([new $String("poll payload is not an object")])); /* */ $s = 51; case 51: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 						return;
-					/* } */ case 61:
-					payload$1.push($externalize(json, $String));
-				/* } */ case 59:
-				_r$1 = s.handleEvent(header$1, payload$1); /* */ $s = 63; case 63: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-				_tuple$9 = _r$1; ackedActionId = _tuple$9[0]; sessionLost = _tuple$9[1]; ok$1 = _tuple$9[3];
+					/* } */ case 50:
+					_tuple$3 = jsonMarshal(object$1); json = _tuple$3[0]; err$2 = _tuple$3[1];
+					/* */ if (!($interfaceIsEqual(err$2, $ifaceNil))) { $s = 52; continue; }
+					/* */ $s = 53; continue;
+					/* if (!($interfaceIsEqual(err$2, $ifaceNil))) { */ case 52:
+						$r = s.log(new sliceType$1([new $String("poll payload:"), err$2])); /* */ $s = 54; case 54: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+						return;
+					/* } */ case 53:
+					event.Payload = singleData(json);
+				/* } */ case 48:
+				_r$3 = s.handleEvent(event); /* */ $s = 55; case 55: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+				_tuple$4 = _r$3; ackedActionId = _tuple$4[0]; sessionLost = _tuple$4[1]; ok = _tuple$4[3];
 				if ((sendingId.$high > 0 || (sendingId.$high === 0 && sendingId.$low > 0)) && (sendingId.$high < ackedActionId.$high || (sendingId.$high === ackedActionId.$high && sendingId.$low <= ackedActionId.$low))) {
-					sendingId = new $Uint64(0, 0);
+					sendingId = new $Int64(0, 0);
 					s.numSent = s.numSent + (1) >> 0;
 				}
-				if (!ok$1) {
+				if (!ok) {
 					if (sessionLost) {
 						gotOnline.$set(true);
 					}
 					return;
 				}
-				/* */ if (!gotOnline.$get()) { $s = 64; continue; }
-				/* */ $s = 65; continue;
-				/* if (!gotOnline.$get()) { */ case 64:
+				/* */ if (!gotOnline.$get()) { $s = 56; continue; }
+				/* */ $s = 57; continue;
+				/* if (!gotOnline.$get()) { */ case 56:
 					gotOnline.$set(true);
-					$r = s.connState("connected"); /* */ $s = 66; case 66: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 65:
-				i = i + (1) >> 0;
-			/* } */ $s = 56; continue; case 57:
+					$r = s.connState("connected"); /* */ $s = 58; case 58: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 57:
+				_i++;
+			/* } */ $s = 42; continue; case 43:
 		/* } */ $s = 1; continue; case 2:
 		return;
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: longPollTransfer }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f._tuple$3 = _tuple$3; $f._tuple$4 = _tuple$4; $f._tuple$5 = _tuple$5; $f._tuple$6 = _tuple$6; $f._tuple$7 = _tuple$7; $f._tuple$8 = _tuple$8; $f._tuple$9 = _tuple$9; $f.ackedActionId = ackedActionId; $f.action = action; $f.array = array; $f.base64 = base64; $f.channel = channel; $f.connWorked = connWorked; $f.err = err; $f.err$1 = err$1; $f.err$2 = err$2; $f.err$3 = err$3; $f.err$4 = err$4; $f.err$5 = err$5; $f.failures = failures; $f.frame = frame; $f.gotOnline = gotOnline; $f.header = header; $f.header$1 = header$1; $f.i = i; $f.json = json; $f.object = object; $f.ok = ok; $f.ok$1 = ok$1; $f.payload = payload; $f.payload$1 = payload$1; $f.poller = poller; $f.request = request; $f.response = response; $f.s = s; $f.sender = sender; $f.sending = sending; $f.sendingId = sendingId; $f.sessionLost = sessionLost; $f.url = url; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: longPollTransfer }; } $f.$ptr = $ptr; $f._entry = _entry; $f._i = _i; $f._key = _key; $f._key$1 = _key$1; $f._key$2 = _key$2; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._ref = _ref; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f._tuple$3 = _tuple$3; $f._tuple$4 = _tuple$4; $f.ackedActionId = ackedActionId; $f.action = action; $f.action$1 = action$1; $f.array = array; $f.channel = channel; $f.connWorked = connWorked; $f.err = err; $f.err$1 = err$1; $f.err$2 = err$2; $f.event = event; $f.failures = failures; $f.gotOnline = gotOnline; $f.json = json; $f.object = object; $f.object$1 = object$1; $f.ok = ok; $f.ok$1 = ok$1; $f.params = params; $f.poller = poller; $f.response = response; $f.s = s; $f.sender = sender; $f.sending = sending; $f.sendingId = sendingId; $f.sessionLost = sessionLost; $f.timeout = timeout; $f.timeout$1 = timeout$1; $f.url = url; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.x$3 = x$3; $f.x$4 = x$4; $f.x$5 = x$5; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	longPollPing = function(s, url) {
-		var $ptr, _tuple, err, header, s, url;
-		err = $ifaceNil;
-		header = $makeMap($String.keyFor, [{ k: "action", v: new $String("ping") }, { k: "session_id", v: new $jsObjectPtr(s.sessionId) }]);
-		_tuple = XHR_JSON(url, new mapType(header), JitterDuration(new Duration(0, 7000), 0.9)); err = _tuple[1];
-		return err;
+		var $ptr, _r, action, c, s, url, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; action = $f.action; c = $f.c; s = $f.s; url = $f.url; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		action = $makeMap($String.keyFor, [{ k: "action", v: new $String("ping") }, { k: "session_id", v: s.sessionId }]);
+		_r = getJSONRequestResponseChannel(url, action, jitterDuration(new duration(0, 7000), 0.9)); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		c = _r;
+		$go(logErrorResponse, [s, c, "ping error:"]);
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: longPollPing }; } $f.$ptr = $ptr; $f._r = _r; $f.action = action; $f.c = c; $f.s = s; $f.url = url; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	longPollClose = function(s, url) {
-		var $ptr, _tuple, err, header, s, url, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _tuple = $f._tuple; err = $f.err; header = $f.header; s = $f.s; url = $f.url; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		header = $makeMap($String.keyFor, [{ k: "action", v: new $String("close_session") }, { k: "session_id", v: new $jsObjectPtr(s.sessionId) }]);
-		_tuple = XHR_JSON(url, new mapType(header), JitterDuration(new Duration(0, 7000), 0.9)); err = _tuple[1];
-		/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 1; continue; }
-		/* */ $s = 2; continue;
-		/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 1:
-			$r = s.log(new sliceType$1([new $String("send:"), err])); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* } */ case 2:
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: longPollClose }; } $f.$ptr = $ptr; $f._tuple = _tuple; $f.err = err; $f.header = header; $f.s = s; $f.url = url; $f.$s = $s; $f.$r = $r; return $f;
+		var $ptr, _r, action, c, s, url, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; action = $f.action; c = $f.c; s = $f.s; url = $f.url; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		action = $makeMap($String.keyFor, [{ k: "action", v: new $String("close_session") }, { k: "session_id", v: s.sessionId }]);
+		_r = getJSONRequestResponseChannel(url, action, jitterDuration(new duration(0, 7000), 0.9)); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		c = _r;
+		$go(logErrorResponse, [s, c, "send error:"]);
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: longPollClose }; } $f.$ptr = $ptr; $f._r = _r; $f.action = action; $f.c = c; $f.s = s; $f.url = url; $f.$s = $s; $f.$r = $r; return $f;
 	};
-	main = function() {
+	logErrorResponse = function(s, channel, prefix) {
+		var $ptr, _r, channel, prefix, resp, s, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; channel = $f.channel; prefix = $f.prefix; resp = $f.resp; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		_r = $recv(channel); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		resp = $clone(_r[0], httpResponse);
+		/* */ if (!($interfaceIsEqual(resp.err, $ifaceNil))) { $s = 2; continue; }
+		/* */ $s = 3; continue;
+		/* if (!($interfaceIsEqual(resp.err, $ifaceNil))) { */ case 2:
+			$r = s.log(new sliceType$1([new $String(prefix), resp.err])); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 3:
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: logErrorResponse }; } $f.$ptr = $ptr; $f._r = _r; $f.channel = channel; $f.prefix = prefix; $f.resp = resp; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	randFloat64 = function() {
 		var $ptr;
-		module.call = $externalize(Call, funcType$1);
-		module.newSession = $externalize(NewSession, funcType$2);
-		module.stringifyFrame = $externalize(StringifyFrame, funcType$3);
-		$global.NinchatClient = module;
+		return $parseFloat($global.Math.random());
 	};
-	Defer = function() {
-		var $ptr, d, promise;
-		d = ptrType$3.nil;
-		promise = false;
-		d = new Deferred.ptr(sliceType$2.nil, sliceType$2.nil, sliceType$2.nil);
-		promise = $makeMap($String.keyFor, [{ k: "then", v: new funcType$4($methodVal(d, "then")) }]);
-		return [d, promise];
-	};
-	$pkg.Defer = Defer;
-	Deferred.ptr.prototype.then = function(resolve, reject, notify) {
-		var $ptr, d, notify, reject, resolve;
-		d = this;
-		if (!(resolve === undefined) && !(resolve === null)) {
-			d.resolve = $append(d.resolve, resolve);
-		}
-		if (!(reject === undefined) && !(reject === null)) {
-			d.reject = $append(d.reject, reject);
-		}
-		if (!(notify === undefined) && !(notify === null)) {
-			d.notify = $append(d.notify, notify);
-		}
-	};
-	Deferred.prototype.then = function(resolve, reject, notify) { return this.$val.then(resolve, reject, notify); };
-	Deferred.ptr.prototype.Resolve = function(args) {
-		var $ptr, _i, _r, _ref, args, callback, d, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _r = $f._r; _ref = $f._ref; args = $f.args; callback = $f.callback; d = $f.d; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		d = this;
-		_ref = d.resolve;
-		_i = 0;
-		/* while (true) { */ case 1:
-			/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 2; continue; }
-			callback = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
-			_r = jsInvoke("NinchatClient promise resolve callback", callback, args); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_r;
-			_i++;
-		/* } */ $s = 1; continue; case 2:
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Deferred.ptr.prototype.Resolve }; } $f.$ptr = $ptr; $f._i = _i; $f._r = _r; $f._ref = _ref; $f.args = args; $f.callback = callback; $f.d = d; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	Deferred.prototype.Resolve = function(args) { return this.$val.Resolve(args); };
-	Deferred.ptr.prototype.Reject = function(args) {
-		var $ptr, _i, _r, _ref, args, callback, d, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _r = $f._r; _ref = $f._ref; args = $f.args; callback = $f.callback; d = $f.d; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		d = this;
-		_ref = d.reject;
-		_i = 0;
-		/* while (true) { */ case 1:
-			/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 2; continue; }
-			callback = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
-			_r = jsInvoke("NinchatClient promise reject callback", callback, args); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_r;
-			_i++;
-		/* } */ $s = 1; continue; case 2:
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Deferred.ptr.prototype.Reject }; } $f.$ptr = $ptr; $f._i = _i; $f._r = _r; $f._ref = _ref; $f.args = args; $f.callback = callback; $f.d = d; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	Deferred.prototype.Reject = function(args) { return this.$val.Reject(args); };
-	Deferred.ptr.prototype.Notify = function(args) {
-		var $ptr, _i, _r, _ref, args, callback, d, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _r = $f._r; _ref = $f._ref; args = $f.args; callback = $f.callback; d = $f.d; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		d = this;
-		_ref = d.notify;
-		_i = 0;
-		/* while (true) { */ case 1:
-			/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 2; continue; }
-			callback = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
-			_r = jsInvoke("NinchatClient promise notify callback", callback, args); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_r;
-			_i++;
-		/* } */ $s = 1; continue; case 2:
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Deferred.ptr.prototype.Notify }; } $f.$ptr = $ptr; $f._i = _i; $f._r = _r; $f._ref = _ref; $f.args = args; $f.callback = callback; $f.d = d; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	Deferred.prototype.Notify = function(args) { return this.$val.Notify(args); };
-	NewSession = function() {
-		var $ptr, s;
-		s = new Session.ptr(null, null, null, null, null, "api.ninchat.com", false, false, null, "", new Time(0, 0), new $Uint64(0, 0), chanType$1.nil, sliceType$3.nil, 0, false, new $Uint64(0, 0), new $Uint64(0, 0), chanType$1.nil, false, true);
-		return $makeMap($String.keyFor, [{ k: "onSessionEvent", v: new funcType$5($methodVal(s, "OnSessionEvent")) }, { k: "onEvent", v: new funcType$5($methodVal(s, "OnEvent")) }, { k: "onConnState", v: new funcType$5($methodVal(s, "OnConnState")) }, { k: "onConnActive", v: new funcType$5($methodVal(s, "OnConnActive")) }, { k: "onLog", v: new funcType$5($methodVal(s, "OnLog")) }, { k: "setParams", v: new funcType$6($methodVal(s, "SetParams")) }, { k: "setTransport", v: new funcType$5($methodVal(s, "SetTransport")) }, { k: "setAddress", v: new funcType$5($methodVal(s, "SetAddress")) }, { k: "open", v: new funcType($methodVal(s, "Open")) }, { k: "close", v: new funcType($methodVal(s, "Close")) }, { k: "send", v: new funcType$7($methodVal(s, "Send")) }]);
-	};
-	$pkg.NewSession = NewSession;
-	Session.ptr.prototype.OnSessionEvent = function(callback) {
-		var $ptr, callback, s;
-		s = this;
-		s.onSessionEvent = callback;
-	};
-	Session.prototype.OnSessionEvent = function(callback) { return this.$val.OnSessionEvent(callback); };
-	Session.ptr.prototype.OnEvent = function(callback) {
-		var $ptr, callback, s;
-		s = this;
-		s.onEvent = callback;
-	};
-	Session.prototype.OnEvent = function(callback) { return this.$val.OnEvent(callback); };
-	Session.ptr.prototype.OnConnState = function(callback) {
-		var $ptr, _r, callback, s, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; callback = $f.callback; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		s = this;
-		if (callback === null) {
-			callback = null;
-		}
-		s.onConnState = callback;
-		/* */ if (!(s.onConnState === null) && !(s.latestConnState === "")) { $s = 1; continue; }
-		/* */ $s = 2; continue;
-		/* if (!(s.onConnState === null) && !(s.latestConnState === "")) { */ case 1:
-			_r = jsInvoke("NinchatClient.Session onConnState callback", s.onConnState, new sliceType$1([new $String(s.latestConnState)])); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_r;
-		/* } */ case 2:
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.OnConnState }; } $f.$ptr = $ptr; $f._r = _r; $f.callback = callback; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	Session.prototype.OnConnState = function(callback) { return this.$val.OnConnState(callback); };
-	Session.ptr.prototype.OnConnActive = function(callback) {
-		var $ptr, _r, callback, s, x, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; callback = $f.callback; s = $f.s; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		s = this;
-		if (callback === null) {
-			callback = null;
-		}
-		s.onConnActive = callback;
-		/* */ if (!(s.onConnActive === null) && (x = s.latestConnActive, (x.$high > 0 || (x.$high === 0 && x.$low > 0)))) { $s = 1; continue; }
-		/* */ $s = 2; continue;
-		/* if (!(s.onConnActive === null) && (x = s.latestConnActive, (x.$high > 0 || (x.$high === 0 && x.$low > 0)))) { */ case 1:
-			_r = jsInvoke("NinchatClient.Session onConnActive callback", s.onConnActive, new sliceType$1([s.latestConnActive])); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_r;
-		/* } */ case 2:
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.OnConnActive }; } $f.$ptr = $ptr; $f._r = _r; $f.callback = callback; $f.s = s; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
-	};
-	Session.prototype.OnConnActive = function(callback) { return this.$val.OnConnActive(callback); };
-	Session.ptr.prototype.OnLog = function(callback) {
-		var $ptr, callback, s;
-		s = this;
-		if (callback === null) {
-			callback = null;
-		}
-		s.onLog = callback;
-	};
-	Session.prototype.OnLog = function(callback) { return this.$val.OnLog(callback); };
 	Session.ptr.prototype.SetParams = function(params) {
-		var $ptr, _entry, _entry$1, params, s, sessionId;
+		var $ptr, _entry, _entry$1, _tuple, found, params, s, x;
 		s = this;
-		if ((_entry = params[$String.keyFor("message_types")], _entry !== undefined ? _entry.v : null) === null) {
+		if ($interfaceIsEqual((_entry = params[$String.keyFor("message_types")], _entry !== undefined ? _entry.v : $ifaceNil), $ifaceNil)) {
 			$panic(new $String("message_types parameter not defined"));
 		}
-		sessionId = (_entry$1 = params[$String.keyFor("session_id")], _entry$1 !== undefined ? _entry$1.v : null);
-		if (!(sessionId === null)) {
-			s.sessionId = sessionId;
+		_tuple = (_entry$1 = params[$String.keyFor("session_id")], _entry$1 !== undefined ? [_entry$1.v, true] : [$ifaceNil, false]); x = _tuple[0]; found = _tuple[1];
+		if (!($interfaceIsEqual(x, $ifaceNil))) {
+			s.sessionId = x;
+		} else if (found) {
+			delete params[$String.keyFor("session_id")];
 		}
-		delete params[$String.keyFor("session_id")];
 		s.sessionParams = params;
-		if (!(s.sendNotify === chanType$1.nil) && s.stopped) {
+		if (!(s.sendNotify === chanType$2.nil) && !s.running) {
 			$go($methodVal(s, "discover"), []);
 		}
 	};
 	Session.prototype.SetParams = function(params) { return this.$val.SetParams(params); };
 	Session.ptr.prototype.SetTransport = function(name) {
-		var $ptr, _ref, name, s, string;
+		var $ptr, _ref, name, s;
 		s = this;
-		if (name === null) {
+		if (name === "") {
 			s.forceLongPoll = false;
 			return;
 		}
-		string = $internalize(name, $String);
-		_ref = string;
+		_ref = name;
 		if (_ref === "websocket") {
 			$panic(new $String("websocket transport cannot be forced"));
 		} else if (_ref === "longpoll") {
 			s.forceLongPoll = true;
 		} else {
-			$panic(new $String("unknown transport: " + string));
+			$panic(new $String("unknown transport: " + name));
 		}
 	};
 	Session.prototype.SetTransport = function(name) { return this.$val.SetTransport(name); };
-	Session.ptr.prototype.SetAddress = function(address) {
-		var $ptr, address, s;
-		s = this;
-		s.address = GetAddress(address);
-	};
-	Session.prototype.SetAddress = function(address) { return this.$val.SetAddress(address); };
 	Session.ptr.prototype.Open = function() {
 		var $ptr, s;
 		s = this;
 		if (s.closed) {
 			$panic(new $String("session already closed"));
 		}
-		if (!(s.sendNotify === chanType$1.nil)) {
+		if (!(s.sendNotify === chanType$2.nil)) {
 			$panic(new $String("session already initialized"));
 		}
-		if (s.onSessionEvent === null) {
+		if (s.OnSessionEvent === $throwNilPointerError) {
 			$panic(new $String("onSessionEvent callback not defined"));
 		}
-		if (s.onEvent === null) {
+		if (s.OnEvent === $throwNilPointerError) {
 			$panic(new $String("onEvent callback not defined"));
 		}
 		if (s.sessionParams === false) {
 			$panic(new $String("session parameters not defined"));
 		}
-		s.sendNotify = new chanType$1(1);
-		s.closeNotify = new chanType$1(1);
-		s.stopped = false;
+		s.sendNotify = new chanType$2(1);
+		s.closeNotify = new chanType$2(1);
+		s.running = true;
 		$go($methodVal(s, "discover"), []);
 	};
 	Session.prototype.Open = function() { return this.$val.Open(); };
@@ -3423,53 +3388,51 @@ $packages["ninchatclient"] = (function() {
 		/* while (true) { */ case 1:
 			/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 2; continue; }
 			action = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
-			/* */ if (!(action.Deferred === ptrType$3.nil)) { $s = 3; continue; }
+			/* */ if (!(action.OnReply === $throwNilPointerError)) { $s = 3; continue; }
 			/* */ $s = 4; continue;
-			/* if (!(action.Deferred === ptrType$3.nil)) { */ case 3:
-				$r = action.Deferred.Reject(new sliceType$1([])); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* if (!(action.OnReply === $throwNilPointerError)) { */ case 3:
+				$r = action.OnReply(ptrType.nil); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			/* } */ case 4:
 			_i++;
 		/* } */ $s = 1; continue; case 2:
-		s[0].sendBuffer = sliceType$3.nil;
+		s[0].sendBuffer = sliceType$5.nil;
 		s[0].numSent = 0;
 		s[0].closed = true;
-		s[0].stopped = true;
+		s[0].running = false;
 		$go((function(s) { return function $b() {
 			var $ptr, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			$r = $send(s[0].closeNotify, true); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = $send(s[0].closeNotify, new structType.ptr()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$close(s[0].sendNotify);
 			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
 		}; })(s), []);
 		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.Close }; } $f.$ptr = $ptr; $f._i = _i; $f._ref = _ref; $f.action = action; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	Session.prototype.Close = function() { return this.$val.Close(); };
-	Session.ptr.prototype.Send = function(header, payload) {
-		var $ptr, _tuple, action, header, payload, promise, s, x, x$1;
-		promise = $ifaceNil;
+	Session.ptr.prototype.Send = function(action) {
+		var $ptr, _entry, _key, _tuple, action, found, s, x, x$1, x$2;
 		s = this;
-		if (s.sendNotify === chanType$1.nil) {
+		if (s.sendNotify === chanType$2.nil) {
 			$panic(new $String("session not initialized"));
 		}
 		if (s.closed) {
 			$panic(new $String("session already closed"));
 		}
-		if (payload === undefined || payload === null || ($parseInt(payload.length) === 0)) {
-			payload = null;
+		if (action.Payload.$length === 0) {
+			action.Payload = sliceType$3.nil;
 		}
-		action = new Action.ptr(new $Uint64(0, 0), header, payload, ptrType$3.nil, "");
-		if (header.action_id === null) {
-			delete header[$externalize("action_id", $String)];
+		_tuple = (_entry = action.Params[$String.keyFor("action_id")], _entry !== undefined ? [_entry.v, true] : [$ifaceNil, false]); x = _tuple[0]; found = _tuple[1];
+		if (found && $interfaceIsEqual(x, $ifaceNil)) {
+			delete action.Params[$String.keyFor("action_id")];
 		} else {
-			s.lastActionId = (x = s.lastActionId, x$1 = new $Uint64(0, 1), new $Uint64(x.$high + x$1.$high, x.$low + x$1.$low));
-			action.Id = s.lastActionId;
-			header.action_id = $externalize(action.Id, $Uint64);
-			_tuple = Defer(); action.Deferred = _tuple[0]; promise = new mapType(_tuple[1]);
+			s.lastActionId = (x$1 = s.lastActionId, x$2 = new $Int64(0, 1), new $Int64(x$1.$high + x$2.$high, x$1.$low + x$2.$low));
+			action.id = s.lastActionId;
+			_key = "action_id"; (action.Params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key)] = { k: _key, v: action.id };
 		}
 		s.send(action);
-		return promise;
+		return;
 	};
-	Session.prototype.Send = function(header, payload) { return this.$val.Send(header, payload); };
+	Session.prototype.Send = function(action) { return this.$val.Send(action); };
 	Session.ptr.prototype.send = function(action) {
 		var $ptr, action, s;
 		s = this;
@@ -3477,7 +3440,7 @@ $packages["ninchatclient"] = (function() {
 		$go((function $b() {
 			var $ptr, _selection, $r;
 			/* */ var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _selection = $f._selection; $r = $f.$r; }
-			_selection = $select([[s.sendNotify, true], []]);
+			_selection = $select([[s.sendNotify, new structType.ptr()], []]);
 			if (_selection[0] === 0) {
 			} else if (_selection[0] === 1) {
 			}
@@ -3493,7 +3456,7 @@ $packages["ninchatclient"] = (function() {
 		$go((function $b() {
 			var $ptr, _selection, $r;
 			/* */ var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _selection = $f._selection; $r = $f.$r; }
-			_selection = $select([[s.sendNotify, true], []]);
+			_selection = $select([[s.sendNotify, new structType.ptr()], []]);
 			if (_selection[0] === 0) {
 			} else if (_selection[0] === 1) {
 			}
@@ -3502,85 +3465,80 @@ $packages["ninchatclient"] = (function() {
 	};
 	Session.prototype.sendAck = function() { return this.$val.sendAck(); };
 	Session.ptr.prototype.discover = function() {
-		var $ptr, _r, _r$1, _r$2, _selection, _tuple, _tuple$1, _tuple$2, backoff, channel, delay, err, err$1, hosts, ok, response, s, url, $s, $deferred, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _selection = $f._selection; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; backoff = $f.backoff; channel = $f.channel; delay = $f.delay; err = $f.err; err$1 = $f.err$1; hosts = $f.hosts; ok = $f.ok; response = $f.response; s = $f.s; url = $f.url; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-		backoff = [backoff];
+		var $ptr, _r, _r$1, _r$2, _r$3, _selection, _tuple, _tuple$1, backoff$1, delay, endpoint, err, err$1, hosts, request, response, s, url, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _selection = $f._selection; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; backoff$1 = $f.backoff$1; delay = $f.delay; endpoint = $f.endpoint; err = $f.err; err$1 = $f.err$1; hosts = $f.hosts; request = $f.request; response = $f.response; s = $f.s; url = $f.url; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		backoff$1 = [backoff$1];
 		s = this;
 		$r = s.log(new sliceType$1([new $String("opening")])); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$deferred.push([$methodVal(s, "log"), [new sliceType$1([new $String("closed")])]]);
 		$deferred.push([$methodVal(s, "connState"), ["disconnected"]]);
-		backoff[0] = new Backoff.ptr(0);
+		backoff$1[0] = new backoff.ptr(0);
 		/* while (true) { */ case 2:
-			/* if (!(!s.stopped)) { break; } */ if(!(!s.stopped)) { $s = 3; continue; }
+			/* if (!(s.running)) { break; } */ if(!(s.running)) { $s = 3; continue; }
+			endpoint = [endpoint];
 			$r = s.log(new sliceType$1([new $String("endpoint discovery")])); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$r = s.connState("connecting"); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			url = "https://" + s.address + "/v2/endpoint";
-			_tuple = XHR(url, "", JitterDuration(new Duration(0, 7000), 0.1)); channel = _tuple[0]; err = _tuple[1];
-			/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 6; continue; }
-			/* */ $s = 7; continue;
-			/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 6:
-				$r = s.log(new sliceType$1([new $String("endpoint discovery:"), err])); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$s = 8; continue;
-			/* } else { */ case 7:
-				_r = $select([[channel], [s.closeNotify]]); /* */ $s = 10; case 10: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-				_selection = _r;
-				/* */ if (_selection[0] === 0) { $s = 11; continue; }
-				/* */ if (_selection[0] === 1) { $s = 12; continue; }
-				/* */ $s = 13; continue;
-				/* if (_selection[0] === 0) { */ case 11:
-					_tuple$1 = _selection[1]; response = _tuple$1[0]; ok = _tuple$1[1];
-					/* */ if (!ok) { $s = 14; continue; }
-					/* */ if (response === "") { $s = 15; continue; }
+			url = "https://" + getAddress(s.Address) + "/v2/endpoint";
+			_tuple = newGETRequest(url); request = _tuple[0]; err = _tuple[1];
+			if (!($interfaceIsEqual(err, $ifaceNil))) {
+				$panic(err);
+			}
+			_r = getResponseChannel(request, jitterDuration(new duration(0, 7000), 0.1)); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_r$1 = $select([[_r], [s.closeNotify]]); /* */ $s = 7; case 7: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			_selection = _r$1;
+			/* */ if (_selection[0] === 0) { $s = 8; continue; }
+			/* */ if (_selection[0] === 1) { $s = 9; continue; }
+			/* */ $s = 10; continue;
+			/* if (_selection[0] === 0) { */ case 8:
+				response = $clone(_selection[1][0], httpResponse);
+				hosts = sliceType.nil;
+				err$1 = response.err;
+				if ($interfaceIsEqual(err$1, $ifaceNil)) {
+					endpoint[0] = false;
+					err$1 = jsonUnmarshalObject(response.data, (endpoint.$ptr || (endpoint.$ptr = new ptrType$2(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, endpoint))));
+					if ($interfaceIsEqual(err$1, $ifaceNil)) {
+						_tuple$1 = getEndpointHosts(endpoint[0]); hosts = _tuple$1[0]; err$1 = _tuple$1[1];
+					}
+				}
+				/* */ if ($interfaceIsEqual(err$1, $ifaceNil)) { $s = 11; continue; }
+				/* */ $s = 12; continue;
+				/* if ($interfaceIsEqual(err$1, $ifaceNil)) { */ case 11:
+					$r = s.log(new sliceType$1([new $String("endpoint discovered")])); /* */ $s = 14; case 14: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* */ if (webSocketSupported && !s.forceLongPoll) { $s = 15; continue; }
 					/* */ $s = 16; continue;
-					/* if (!ok) { */ case 14:
-						$r = s.log(new sliceType$1([new $String("endpoint discovery timeout")])); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-						$s = 17; continue;
-					/* } else if (response === "") { */ case 15:
-						$r = s.log(new sliceType$1([new $String("endpoint discovery error")])); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-						$s = 17; continue;
-					/* } else { */ case 16:
-						_tuple$2 = GetEndpointHosts(response); hosts = _tuple$2[0]; err$1 = _tuple$2[1];
-						/* */ if (!($interfaceIsEqual(err$1, $ifaceNil))) { $s = 20; continue; }
-						/* */ $s = 21; continue;
-						/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ case 20:
-							$r = s.log(new sliceType$1([new $String("endpoint discovery:"), err$1])); /* */ $s = 23; case 23: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-							$s = 22; continue;
-						/* } else { */ case 21:
-							$r = s.log(new sliceType$1([new $String("endpoint discovered")])); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-							/* */ if ($pkg.WebSocketSupported && !s.forceLongPoll) { $s = 25; continue; }
-							/* */ $s = 26; continue;
-							/* if ($pkg.WebSocketSupported && !s.forceLongPoll) { */ case 25:
-								_r$1 = s.connect(WebSocketTransport, hosts, backoff[0]); /* */ $s = 29; case 29: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-								/* */ if (_r$1) { $s = 27; continue; }
-								/* */ $s = 28; continue;
-								/* if (_r$1) { */ case 27:
-									/* continue; */ $s = 2; continue;
-								/* } */ case 28:
-							/* } */ case 26:
-							_r$2 = s.connect(LongPollTransport, hosts, backoff[0]); /* */ $s = 30; case 30: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-							_r$2;
-						/* } */ case 22:
-					/* } */ case 17:
+					/* if (webSocketSupported && !s.forceLongPoll) { */ case 15:
+						_r$2 = s.connect(webSocketTransport, hosts, backoff$1[0]); /* */ $s = 19; case 19: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+						/* */ if (_r$2) { $s = 17; continue; }
+						/* */ $s = 18; continue;
+						/* if (_r$2) { */ case 17:
+							/* continue; */ $s = 2; continue;
+						/* } */ case 18:
+					/* } */ case 16:
+					_r$3 = s.connect(longPollTransport, hosts, backoff$1[0]); /* */ $s = 20; case 20: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+					_r$3;
 					$s = 13; continue;
-				/* } else if (_selection[0] === 1) { */ case 12:
-					return;
+				/* } else { */ case 12:
+					$r = s.log(new sliceType$1([new $String("endpoint discovery:"), err$1])); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				/* } */ case 13:
-			/* } */ case 8:
-			delay = backoff[0].Failure(new Duration(0, 60000));
-			/* */ if ((delay.$high > 0 || (delay.$high === 0 && delay.$low > 0))) { $s = 31; continue; }
-			/* */ $s = 32; continue;
-			/* if ((delay.$high > 0 || (delay.$high === 0 && delay.$low > 0))) { */ case 31:
-				$r = s.log(new sliceType$1([new $String("sleeping")])); /* */ $s = 33; case 33: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$r = s.connState("disconnected"); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$r = Sleep(delay); /* */ $s = 35; case 35: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* } */ case 32:
+				$s = 10; continue;
+			/* } else if (_selection[0] === 1) { */ case 9:
+				return;
+			/* } */ case 10:
+			delay = backoff$1[0].failure(new duration(0, 60000));
+			/* */ if ((delay.$high > 0 || (delay.$high === 0 && delay.$low > 0))) { $s = 22; continue; }
+			/* */ $s = 23; continue;
+			/* if ((delay.$high > 0 || (delay.$high === 0 && delay.$low > 0))) { */ case 22:
+				$r = s.log(new sliceType$1([new $String("sleeping")])); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = s.connState("disconnected"); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = sleep(delay); /* */ $s = 26; case 26: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 23:
 		/* } */ $s = 2; continue; case 3:
-		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Session.ptr.prototype.discover }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.backoff = backoff; $f.channel = channel; $f.delay = delay; $f.err = err; $f.err$1 = err$1; $f.hosts = hosts; $f.ok = ok; $f.response = response; $f.s = s; $f.url = url; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Session.ptr.prototype.discover }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.backoff$1 = backoff$1; $f.delay = delay; $f.endpoint = endpoint; $f.err = err; $f.err$1 = err$1; $f.hosts = hosts; $f.request = request; $f.response = response; $f.s = s; $f.url = url; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	Session.prototype.discover = function() { return this.$val.discover(); };
-	Session.ptr.prototype.connect = function(transport, hosts, backoff) {
-		var $ptr, _i, _i$1, _r, _ref, _ref$1, _rune, _tuple, backoff, c, connWorked, delay, gotOnline, host, hosts, i, s, transport, transportWorked, trial, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _i$1 = $f._i$1; _r = $f._r; _ref = $f._ref; _ref$1 = $f._ref$1; _rune = $f._rune; _tuple = $f._tuple; backoff = $f.backoff; c = $f.c; connWorked = $f.connWorked; delay = $f.delay; gotOnline = $f.gotOnline; host = $f.host; hosts = $f.hosts; i = $f.i; s = $f.s; transport = $f.transport; transportWorked = $f.transportWorked; trial = $f.trial; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+	Session.ptr.prototype.connect = function(transport$1, hosts, backoff$1) {
+		var $ptr, _i, _i$1, _r, _ref, _ref$1, _rune, _tuple, backoff$1, c, connWorked, delay, gotOnline, host, hosts, i, s, transport$1, transportWorked, trial, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _i$1 = $f._i$1; _r = $f._r; _ref = $f._ref; _ref$1 = $f._ref$1; _rune = $f._rune; _tuple = $f._tuple; backoff$1 = $f.backoff$1; c = $f.c; connWorked = $f.connWorked; delay = $f.delay; gotOnline = $f.gotOnline; host = $f.host; hosts = $f.hosts; i = $f.i; s = $f.s; transport$1 = $f.transport$1; transportWorked = $f.transportWorked; trial = $f.trial; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		transportWorked = false;
 		s = this;
 		trial = 0;
@@ -3592,7 +3550,7 @@ $packages["ninchatclient"] = (function() {
 				/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 4; continue; }
 				host = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
 				$r = s.connState("connecting"); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				_ref$1 = s.address;
+				_ref$1 = s.Address;
 				_i$1 = 0;
 				while (true) {
 					if (!(_i$1 < _ref$1.length)) { break; }
@@ -3600,59 +3558,58 @@ $packages["ninchatclient"] = (function() {
 					i = _i$1;
 					c = _rune[0];
 					if (c === 47) {
-						host = host + (s.address.substring(i));
+						host = host + (s.Address.substring(i));
 						break;
 					}
 					_i$1 += _rune[1];
 				}
-				_r = transport(s, host); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+				_r = transport$1(s, host); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 				_tuple = _r; connWorked = _tuple[0]; gotOnline = _tuple[1];
 				if (connWorked) {
 					transportWorked = true;
 				}
 				if (gotOnline) {
-					backoff.Success();
+					backoff$1.success();
 					return transportWorked;
 				}
-				if (s.stopped) {
+				if (!s.running) {
 					return transportWorked;
 				}
-				delay = backoff.Failure(new Duration(0, 60000));
+				delay = backoff$1.failure(new duration(0, 60000));
 				/* */ if ((delay.$high > 0 || (delay.$high === 0 && delay.$low > 0))) { $s = 7; continue; }
 				/* */ $s = 8; continue;
 				/* if ((delay.$high > 0 || (delay.$high === 0 && delay.$low > 0))) { */ case 7:
 					$r = s.log(new sliceType$1([new $String("sleeping")])); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					$r = s.connState("disconnected"); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$r = Sleep(delay); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$r = sleep(delay); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				/* } */ case 8:
 				_i++;
 			/* } */ $s = 3; continue; case 4:
 			trial = trial + (1) >> 0;
 		/* } */ $s = 1; continue; case 2:
 		return transportWorked;
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.connect }; } $f.$ptr = $ptr; $f._i = _i; $f._i$1 = _i$1; $f._r = _r; $f._ref = _ref; $f._ref$1 = _ref$1; $f._rune = _rune; $f._tuple = _tuple; $f.backoff = backoff; $f.c = c; $f.connWorked = connWorked; $f.delay = delay; $f.gotOnline = gotOnline; $f.host = host; $f.hosts = hosts; $f.i = i; $f.s = s; $f.transport = transport; $f.transportWorked = transportWorked; $f.trial = trial; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.connect }; } $f.$ptr = $ptr; $f._i = _i; $f._i$1 = _i$1; $f._r = _r; $f._ref = _ref; $f._ref$1 = _ref$1; $f._rune = _rune; $f._tuple = _tuple; $f.backoff$1 = backoff$1; $f.c = c; $f.connWorked = connWorked; $f.delay = delay; $f.gotOnline = gotOnline; $f.host = host; $f.hosts = hosts; $f.i = i; $f.s = s; $f.transport$1 = transport$1; $f.transportWorked = transportWorked; $f.trial = trial; $f.$s = $s; $f.$r = $r; return $f;
 	};
-	Session.prototype.connect = function(transport, hosts, backoff) { return this.$val.connect(transport, hosts, backoff); };
+	Session.prototype.connect = function(transport$1, hosts, backoff$1) { return this.$val.connect(transport$1, hosts, backoff$1); };
 	Session.ptr.prototype.canLogin = function() {
 		var $ptr, _entry, _entry$1, _entry$2, _entry$3, _entry$4, _entry$5, _entry$6, s;
 		s = this;
-		if (!((_entry = s.sessionParams[$String.keyFor("access_key")], _entry !== undefined ? _entry.v : null) === null)) {
+		if (!($interfaceIsEqual((_entry = s.sessionParams[$String.keyFor("access_key")], _entry !== undefined ? _entry.v : $ifaceNil), $ifaceNil))) {
 			return true;
 		}
-		if (!((_entry$1 = s.sessionParams[$String.keyFor("user_id")], _entry$1 !== undefined ? _entry$1.v : null) === null)) {
-			return !((_entry$2 = s.sessionParams[$String.keyFor("user_auth")], _entry$2 !== undefined ? _entry$2.v : null) === null) || !((_entry$3 = s.sessionParams[$String.keyFor("master_sign")], _entry$3 !== undefined ? _entry$3.v : null) === null);
+		if (!($interfaceIsEqual((_entry$1 = s.sessionParams[$String.keyFor("user_id")], _entry$1 !== undefined ? _entry$1.v : $ifaceNil), $ifaceNil))) {
+			return !($interfaceIsEqual((_entry$2 = s.sessionParams[$String.keyFor("user_auth")], _entry$2 !== undefined ? _entry$2.v : $ifaceNil), $ifaceNil)) || !($interfaceIsEqual((_entry$3 = s.sessionParams[$String.keyFor("master_sign")], _entry$3 !== undefined ? _entry$3.v : $ifaceNil), $ifaceNil));
 		}
-		return !((_entry$4 = s.sessionParams[$String.keyFor("identity_type")], _entry$4 !== undefined ? _entry$4.v : null) === null) && !((_entry$5 = s.sessionParams[$String.keyFor("identity_name")], _entry$5 !== undefined ? _entry$5.v : null) === null) && !((_entry$6 = s.sessionParams[$String.keyFor("identity_auth")], _entry$6 !== undefined ? _entry$6.v : null) === null);
+		return !($interfaceIsEqual((_entry$4 = s.sessionParams[$String.keyFor("identity_type")], _entry$4 !== undefined ? _entry$4.v : $ifaceNil), $ifaceNil)) && !($interfaceIsEqual((_entry$5 = s.sessionParams[$String.keyFor("identity_name")], _entry$5 !== undefined ? _entry$5.v : $ifaceNil), $ifaceNil)) && !($interfaceIsEqual((_entry$6 = s.sessionParams[$String.keyFor("identity_auth")], _entry$6 !== undefined ? _entry$6.v : $ifaceNil), $ifaceNil));
 	};
 	Session.prototype.canLogin = function() { return this.$val.canLogin(); };
 	Session.ptr.prototype.makeCreateSessionAction = function() {
-		var $ptr, _entry, _entry$1, _entry$2, _entry$3, _entry$4, _entry$5, _entry$6, _entry$7, _i, _i$1, _keys, _keys$1, _ref, _ref$1, _ref$2, header, identityType, key, key$1, masterSign, s, userAuth, userId, value, value$1;
-		header = null;
+		var $ptr, _entry, _entry$1, _entry$2, _entry$3, _entry$4, _entry$5, _entry$6, _entry$7, _i, _i$1, _key, _key$1, _key$2, _key$3, _key$4, _key$5, _key$6, _key$7, _key$8, _key$9, _keys, _keys$1, _ref, _ref$1, _ref$2, identityType, key, key$1, masterSign, params, s, userAuth, userId, value, value$1;
+		params = false;
 		s = this;
-		header = NewObject();
-		header.action = $externalize("create_session", $String);
-		userId = (_entry = s.sessionParams[$String.keyFor("user_id")], _entry !== undefined ? _entry.v : null);
-		if (userId === null) {
+		params = $makeMap($String.keyFor, [{ k: "action", v: new $String("create_session") }]);
+		userId = (_entry = s.sessionParams[$String.keyFor("user_id")], _entry !== undefined ? _entry.v : $ifaceNil);
+		if ($interfaceIsEqual(userId, $ifaceNil)) {
 			_ref = s.sessionParams;
 			_i = 0;
 			_keys = $keys(_ref);
@@ -3665,27 +3622,27 @@ $packages["ninchatclient"] = (function() {
 				}
 				key = _entry$1.k;
 				value = _entry$1.v;
-				header[$externalize(key, $String)] = value;
+				_key = key; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key)] = { k: _key, v: value };
 				_i++;
 			}
 		} else {
-			userAuth = (_entry$2 = s.sessionParams[$String.keyFor("user_auth")], _entry$2 !== undefined ? _entry$2.v : null);
-			if (!(userAuth === null)) {
-				header.user_id = userId;
-				header.user_auth = userAuth;
+			userAuth = (_entry$2 = s.sessionParams[$String.keyFor("user_auth")], _entry$2 !== undefined ? _entry$2.v : $ifaceNil);
+			if (!($interfaceIsEqual(userAuth, $ifaceNil))) {
+				_key$1 = "user_id"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$1)] = { k: _key$1, v: userId };
+				_key$2 = "user_auth"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$2)] = { k: _key$2, v: userAuth };
 			} else {
-				masterSign = (_entry$3 = s.sessionParams[$String.keyFor("master_sign")], _entry$3 !== undefined ? _entry$3.v : null);
-				if (!(masterSign === null)) {
-					header.user_id = userId;
-					header.master_sign = masterSign;
+				masterSign = (_entry$3 = s.sessionParams[$String.keyFor("master_sign")], _entry$3 !== undefined ? _entry$3.v : $ifaceNil);
+				if (!($interfaceIsEqual(masterSign, $ifaceNil))) {
+					_key$3 = "user_id"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$3)] = { k: _key$3, v: userId };
+					_key$4 = "master_sign"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$4)] = { k: _key$4, v: masterSign };
 				} else {
-					identityType = (_entry$4 = s.sessionParams[$String.keyFor("identity_type")], _entry$4 !== undefined ? _entry$4.v : null);
-					if (!(identityType === null)) {
-						header.identity_type = identityType;
-						header.identity_name = (_entry$5 = s.sessionParams[$String.keyFor("identity_name")], _entry$5 !== undefined ? _entry$5.v : null);
-						header.identity_auth = (_entry$6 = s.sessionParams[$String.keyFor("identity_auth")], _entry$6 !== undefined ? _entry$6.v : null);
+					identityType = (_entry$4 = s.sessionParams[$String.keyFor("identity_type")], _entry$4 !== undefined ? _entry$4.v : $ifaceNil);
+					if (!($interfaceIsEqual(identityType, $ifaceNil))) {
+						_key$5 = "identity_type"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$5)] = { k: _key$5, v: identityType };
+						_key$6 = "identity_name"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$6)] = { k: _key$6, v: (_entry$5 = s.sessionParams[$String.keyFor("identity_name")], _entry$5 !== undefined ? _entry$5.v : $ifaceNil) };
+						_key$7 = "identity_auth"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$7)] = { k: _key$7, v: (_entry$6 = s.sessionParams[$String.keyFor("identity_auth")], _entry$6 !== undefined ? _entry$6.v : $ifaceNil) };
 					} else {
-						header.user_id = userId;
+						_key$8 = "user_id"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$8)] = { k: _key$8, v: userId };
 					}
 				}
 			}
@@ -3704,49 +3661,41 @@ $packages["ninchatclient"] = (function() {
 				_ref$2 = key$1;
 				if (_ref$2 === "user_id" || _ref$2 === "user_auth" || _ref$2 === "identity_type" || _ref$2 === "identity_name" || _ref$2 === "identity_auth" || _ref$2 === "access_key" || _ref$2 === "master_sign") {
 				} else {
-					header[$externalize(key$1, $String)] = value$1;
+					_key$9 = key$1; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$9)] = { k: _key$9, v: value$1 };
 				}
 				_i$1++;
 			}
 		}
-		return header;
+		return params;
 	};
 	Session.prototype.makeCreateSessionAction = function() { return this.$val.makeCreateSessionAction(); };
 	Session.ptr.prototype.makeResumeSessionAction = function(session) {
-		var $ptr, header, s, session;
-		header = null;
+		var $ptr, _key, params, s, session;
+		params = false;
 		s = this;
-		header = NewObject();
-		header.action = $externalize("resume_session", $String);
-		header.event_id = $externalize(s.receivedEventId, $Uint64);
+		params = $makeMap($String.keyFor, [{ k: "action", v: new $String("resume_session") }, { k: "event_id", v: s.receivedEventId }]);
 		if (session) {
-			header.session_id = s.sessionId;
+			_key = "session_id"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key)] = { k: _key, v: s.sessionId };
 		}
 		s.sendEventAck = false;
 		s.ackedEventId = s.receivedEventId;
-		return header;
+		return params;
 	};
 	Session.prototype.makeResumeSessionAction = function(session) { return this.$val.makeResumeSessionAction(session); };
-	Session.ptr.prototype.handleSessionEvent = function(header) {
-		var $ptr, _entry, _i, _key, _key$1, _key$2, _r, _ref, _tuple, err, eventId, header, newValue, ok, param, s, sessionId, userAuth, userId, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _entry = $f._entry; _i = $f._i; _key = $f._key; _key$1 = $f._key$1; _key$2 = $f._key$2; _r = $f._r; _ref = $f._ref; _tuple = $f._tuple; err = $f.err; eventId = $f.eventId; header = $f.header; newValue = $f.newValue; ok = $f.ok; param = $f.param; s = $f.s; sessionId = $f.sessionId; userAuth = $f.userAuth; userId = $f.userId; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+	Session.ptr.prototype.handleSessionEvent = function(params) {
+		var $ptr, _entry, _entry$1, _entry$2, _entry$3, _i, _key, _key$1, _key$2, _ref, _tuple, event, newValue, ok, param, params, quit, s, x, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _entry = $f._entry; _entry$1 = $f._entry$1; _entry$2 = $f._entry$2; _entry$3 = $f._entry$3; _i = $f._i; _key = $f._key; _key$1 = $f._key$1; _key$2 = $f._key$2; _ref = $f._ref; _tuple = $f._tuple; event = $f.event; newValue = $f.newValue; ok = $f.ok; param = $f.param; params = $f.params; quit = $f.quit; s = $f.s; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		ok = false;
 		s = this;
-		_tuple = GetSessionEventCredentials(header); userId = _tuple[0]; userAuth = _tuple[1]; sessionId = _tuple[2]; eventId = _tuple[3]; ok = _tuple[4]; err = _tuple[5];
-		/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 1; continue; }
-		/* */ $s = 2; continue;
-		/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 1:
-			$r = s.log(new sliceType$1([new $String("session creation:"), err])); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* } */ case 2:
-		_r = jsInvoke("NinchatClient.Session onSessionEvent callback", s.onSessionEvent, new sliceType$1([new $jsObjectPtr(header)])); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		/* */ if (!_r) { $s = 4; continue; }
-		/* */ $s = 5; continue;
-		/* if (!_r) { */ case 4:
-			ok = false;
-		/* } */ case 5:
-		if (!ok) {
-			s.sessionId = null;
-			s.stopped = true;
+		event = new Event.ptr(params, sliceType$3.nil, false);
+		quit = false;
+		if (event.String() === "error") {
+			s.sessionId = $ifaceNil;
+			s.running = false;
+			quit = true;
+		}
+		$r = s.OnSessionEvent(event); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		if (quit) {
 			return ok;
 		}
 		delete s.sessionParams[$String.keyFor("user_attrs")];
@@ -3754,278 +3703,291 @@ $packages["ninchatclient"] = (function() {
 		delete s.sessionParams[$String.keyFor("identity_attrs")];
 		delete s.sessionParams[$String.keyFor("access_key")];
 		delete s.sessionParams[$String.keyFor("master_sign")];
-		_key = "user_id"; (s.sessionParams || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key)] = { k: _key, v: userId };
-		if (!(userAuth === null)) {
-			_key$1 = "user_auth"; (s.sessionParams || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$1)] = { k: _key$1, v: userAuth };
+		_key = "user_id"; (s.sessionParams || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key)] = { k: _key, v: (_entry = event.Params[$String.keyFor("user_id")], _entry !== undefined ? _entry.v : $ifaceNil) };
+		x = (_entry$1 = event.Params[$String.keyFor("user_auth")], _entry$1 !== undefined ? _entry$1.v : $ifaceNil);
+		if (!($interfaceIsEqual(x, $ifaceNil))) {
+			_key$1 = "user_auth"; (s.sessionParams || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$1)] = { k: _key$1, v: x };
 		}
 		_ref = new sliceType(["identity_type", "identity_name", "identity_auth"]);
 		_i = 0;
 		while (true) {
 			if (!(_i < _ref.$length)) { break; }
 			param = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
-			newValue = (_entry = s.sessionParams[$String.keyFor(param + "_new")], _entry !== undefined ? _entry.v : null);
-			if (!(newValue === null)) {
+			newValue = (_entry$2 = s.sessionParams[$String.keyFor(param + "_new")], _entry$2 !== undefined ? _entry$2.v : $ifaceNil);
+			if (!($interfaceIsEqual(newValue, $ifaceNil))) {
 				delete s.sessionParams[$String.keyFor(param + "_new")];
 				_key$2 = param; (s.sessionParams || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$2)] = { k: _key$2, v: newValue };
 			}
 			_i++;
 		}
-		s.sessionId = sessionId;
+		s.sessionId = (_entry$3 = event.Params[$String.keyFor("session_id")], _entry$3 !== undefined ? _entry$3.v : $ifaceNil);
 		if (s.sendBuffer.$length === 0) {
-			s.lastActionId = new $Uint64(0, 0);
+			s.lastActionId = new $Int64(0, 0);
 		}
 		s.sendEventAck = false;
-		s.receivedEventId = eventId;
-		s.ackedEventId = new $Uint64(0, 0);
-		$r = s.log(new sliceType$1([new $String("session created")])); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		_tuple = event.Int64("event_id"); s.receivedEventId = _tuple[0];
+		s.ackedEventId = new $Int64(0, 0);
+		$r = s.log(new sliceType$1([new $String("session created")])); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		ok = true;
 		return ok;
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.handleSessionEvent }; } $f.$ptr = $ptr; $f._entry = _entry; $f._i = _i; $f._key = _key; $f._key$1 = _key$1; $f._key$2 = _key$2; $f._r = _r; $f._ref = _ref; $f._tuple = _tuple; $f.err = err; $f.eventId = eventId; $f.header = header; $f.newValue = newValue; $f.ok = ok; $f.param = param; $f.s = s; $f.sessionId = sessionId; $f.userAuth = userAuth; $f.userId = userId; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.handleSessionEvent }; } $f.$ptr = $ptr; $f._entry = _entry; $f._entry$1 = _entry$1; $f._entry$2 = _entry$2; $f._entry$3 = _entry$3; $f._i = _i; $f._key = _key; $f._key$1 = _key$1; $f._key$2 = _key$2; $f._ref = _ref; $f._tuple = _tuple; $f.event = event; $f.newValue = newValue; $f.ok = ok; $f.param = param; $f.params = params; $f.quit = quit; $f.s = s; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
 	};
-	Session.prototype.handleSessionEvent = function(header) { return this.$val.handleSessionEvent(header); };
-	Session.ptr.prototype.handleEvent = function(header, payload) {
-		var $ptr, _r, _r$1, _r$2, _tuple, _tuple$1, _tuple$2, action, actionId, err, err$1, errorReason, errorType, eventId, header, i, lastReply, needsAck, ok, payload, s, sessionLost, x, x$1, x$2, x$3, x$4, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; action = $f.action; actionId = $f.actionId; err = $f.err; err$1 = $f.err$1; errorReason = $f.errorReason; errorType = $f.errorType; eventId = $f.eventId; header = $f.header; i = $f.i; lastReply = $f.lastReply; needsAck = $f.needsAck; ok = $f.ok; payload = $f.payload; s = $f.s; sessionLost = $f.sessionLost; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; x$3 = $f.x$3; x$4 = $f.x$4; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+	Session.prototype.handleSessionEvent = function(params) { return this.$val.handleSessionEvent(params); };
+	Session.ptr.prototype.handleEvent = function(event) {
+		var $ptr, _r, _tuple, _tuple$1, _tuple$2, action, actionId, err, errorReason, errorType, event, eventId, i, needsAck, ok, s, sessionLost, x, x$1, x$2, x$3, x$4, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; action = $f.action; actionId = $f.actionId; err = $f.err; errorReason = $f.errorReason; errorType = $f.errorType; event = $f.event; eventId = $f.eventId; i = $f.i; needsAck = $f.needsAck; ok = $f.ok; s = $f.s; sessionLost = $f.sessionLost; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; x$3 = $f.x$3; x$4 = $f.x$4; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		actionId = [actionId];
 		s = [s];
-		actionId[0] = new $Uint64(0, 0);
+		actionId[0] = new $Int64(0, 0);
 		sessionLost = false;
 		needsAck = false;
 		ok = false;
 		s[0] = this;
-		_tuple = GetEventAndActionId(header); eventId = _tuple[0]; actionId[0] = _tuple[1]; err = _tuple[2];
-		/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 1; continue; }
-		/* */ $s = 2; continue;
-		/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 1:
-			$r = s[0].log(new sliceType$1([new $String("event:"), err])); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			return [actionId[0], sessionLost, needsAck, ok];
-		/* } */ case 2:
+		_tuple = event.Int64("event_id"); eventId = _tuple[0];
 		if ((eventId.$high > 0 || (eventId.$high === 0 && eventId.$low > 0))) {
 			s[0].receivedEventId = eventId;
 			if (!s[0].sendEventAck) {
-				if ((x = (x$1 = s[0].receivedEventId, x$2 = s[0].ackedEventId, new $Uint64(x$1.$high - x$2.$high, x$1.$low - x$2.$low)), (x.$high > sessionEventAckWindow.$high || (x.$high === sessionEventAckWindow.$high && x.$low >= sessionEventAckWindow.$low)))) {
+				if ((x = (x$1 = s[0].receivedEventId, x$2 = s[0].ackedEventId, new $Int64(x$1.$high - x$2.$high, x$1.$low - x$2.$low)), (x.$high > sessionEventAckWindow.$high || (x.$high === sessionEventAckWindow.$high && x.$low >= sessionEventAckWindow.$low)))) {
 					s[0].sendAck();
 				} else {
 					needsAck = true;
 				}
 			}
 		}
-		/* */ if ((actionId[0].$high > 0 || (actionId[0].$high === 0 && actionId[0].$low > 0))) { $s = 4; continue; }
-		/* */ $s = 5; continue;
-		/* if ((actionId[0].$high > 0 || (actionId[0].$high === 0 && actionId[0].$low > 0))) { */ case 4:
+		_tuple$1 = event.Int64("action_id"); actionId[0] = _tuple$1[0];
+		/* */ if ((actionId[0].$high > 0 || (actionId[0].$high === 0 && actionId[0].$low > 0))) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if ((actionId[0].$high > 0 || (actionId[0].$high === 0 && actionId[0].$low > 0))) { */ case 1:
 			_r = sort.Search(s[0].numSent, (function(actionId, s) { return function(i) {
 				var $ptr, action, i, x$3, x$4;
 				action = (x$3 = s[0].sendBuffer, ((i < 0 || i >= x$3.$length) ? $throwRuntimeError("index out of range") : x$3.$array[x$3.$offset + i]));
-				return (x$4 = action.Id, (x$4.$high > actionId[0].$high || (x$4.$high === actionId[0].$high && x$4.$low >= actionId[0].$low)));
-			}; })(actionId, s)); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+				return (x$4 = action.id, (x$4.$high > actionId[0].$high || (x$4.$high === actionId[0].$high && x$4.$low >= actionId[0].$low)));
+			}; })(actionId, s)); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 			i = _r;
-			/* */ if (i < s[0].numSent) { $s = 7; continue; }
-			/* */ $s = 8; continue;
-			/* if (i < s[0].numSent) { */ case 7:
+			/* */ if (i < s[0].numSent) { $s = 4; continue; }
+			/* */ $s = 5; continue;
+			/* if (i < s[0].numSent) { */ case 4:
 				action = (x$3 = s[0].sendBuffer, ((i < 0 || i >= x$3.$length) ? $throwRuntimeError("index out of range") : x$3.$array[x$3.$offset + i]));
-				/* */ if ((x$4 = action.Id, (x$4.$high === actionId[0].$high && x$4.$low === actionId[0].$low))) { $s = 9; continue; }
-				/* */ $s = 10; continue;
-				/* if ((x$4 = action.Id, (x$4.$high === actionId[0].$high && x$4.$low === actionId[0].$low))) { */ case 9:
-					_tuple$1 = IsEventLastReply(header, action); lastReply = _tuple$1[0]; err$1 = _tuple$1[1];
-					/* */ if (!($interfaceIsEqual(err$1, $ifaceNil))) { $s = 11; continue; }
-					/* */ $s = 12; continue;
-					/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ case 11:
-						$r = s[0].log(new sliceType$1([new $String("event:"), err$1])); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-						return [actionId[0], sessionLost, needsAck, ok];
-					/* } */ case 12:
-					/* */ if (!(action.Deferred === ptrType$3.nil)) { $s = 14; continue; }
-					/* */ $s = 15; continue;
-					/* if (!(action.Deferred === ptrType$3.nil)) { */ case 14:
-						/* */ if (lastReply) { $s = 16; continue; }
-						/* */ $s = 17; continue;
-						/* if (lastReply) { */ case 16:
-							$r = action.Deferred.Resolve(new sliceType$1([new $jsObjectPtr(header), new $jsObjectPtr(payload)])); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-							$s = 18; continue;
-						/* } else { */ case 17:
-							$r = action.Deferred.Notify(new sliceType$1([new $jsObjectPtr(header), new $jsObjectPtr(payload)])); /* */ $s = 20; case 20: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-						/* } */ case 18:
-					/* } */ case 15:
-					if (lastReply) {
+				/* */ if ((x$4 = action.id, (x$4.$high === actionId[0].$high && x$4.$low === actionId[0].$low))) { $s = 6; continue; }
+				/* */ $s = 7; continue;
+				/* if ((x$4 = action.id, (x$4.$high === actionId[0].$high && x$4.$low === actionId[0].$low))) { */ case 6:
+					event.initLastReply(action);
+					/* */ if (!(action.OnReply === $throwNilPointerError)) { $s = 8; continue; }
+					/* */ $s = 9; continue;
+					/* if (!(action.OnReply === $throwNilPointerError)) { */ case 8:
+						$r = action.OnReply(event); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* } */ case 9:
+					if (event.LastReply) {
 						s[0].sendBuffer = $appendSlice($subslice(s[0].sendBuffer, 0, i), $subslice(s[0].sendBuffer, (i + 1 >> 0)));
 						s[0].numSent = s[0].numSent - (1) >> 0;
 					}
-				/* } */ case 10:
-			/* } */ case 8:
-		/* } */ case 5:
-		_tuple$2 = GetEventError(header); errorType = _tuple$2[0]; errorReason = _tuple$2[1]; sessionLost = _tuple$2[2]; err = _tuple$2[3];
-		/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 21; continue; }
-		/* */ $s = 22; continue;
-		/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 21:
-			$r = s[0].log(new sliceType$1([new $String("event:"), err])); /* */ $s = 23; case 23: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* */ if (sessionLost) { $s = 24; continue; }
-			/* */ $s = 25; continue;
-			/* if (sessionLost) { */ case 24:
-				s[0].sessionId = null;
-				/* */ if (!s[0].canLogin()) { $s = 26; continue; }
-				/* */ $s = 27; continue;
-				/* if (!s[0].canLogin()) { */ case 26:
-					_r$1 = jsInvoke("NinchatClient.Session onSessionEvent callback", s[0].onSessionEvent, new sliceType$1([new $jsObjectPtr(header)])); /* */ $s = 28; case 28: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-					_r$1;
-					s[0].stopped = true;
-				/* } */ case 27:
-			/* } */ case 25:
+				/* } */ case 7:
+			/* } */ case 5:
+		/* } */ case 2:
+		_tuple$2 = event.getError(); errorType = _tuple$2[0]; errorReason = _tuple$2[1]; sessionLost = _tuple$2[2]; err = _tuple$2[3];
+		/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 11; continue; }
+		/* */ $s = 12; continue;
+		/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 11:
+			$r = s[0].log(new sliceType$1([new $String("event:"), err])); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ if (sessionLost) { $s = 14; continue; }
+			/* */ $s = 15; continue;
+			/* if (sessionLost) { */ case 14:
+				s[0].sessionId = $ifaceNil;
+				/* */ if (!s[0].canLogin()) { $s = 16; continue; }
+				/* */ $s = 17; continue;
+				/* if (!s[0].canLogin()) { */ case 16:
+					s[0].running = false;
+					$r = s[0].OnSessionEvent(event); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 17:
+			/* } */ case 15:
 			return [actionId[0], sessionLost, needsAck, ok];
-		/* } */ case 22:
-		/* */ if (errorType === "deprecated") { $s = 29; continue; }
-		/* */ $s = 30; continue;
-		/* if (errorType === "deprecated") { */ case 29:
-			$r = s[0].log(new sliceType$1([new $String("deprecated:"), new $String(errorReason)])); /* */ $s = 31; case 31: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* } */ case 30:
-		_r$2 = jsInvoke("NinchatClient.Session onEvent callback", s[0].onEvent, new sliceType$1([new $jsObjectPtr(header), new $jsObjectPtr(payload)])); /* */ $s = 34; case 34: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-		/* */ if (!_r$2) { $s = 32; continue; }
-		/* */ $s = 33; continue;
-		/* if (!_r$2) { */ case 32:
-			return [actionId[0], sessionLost, needsAck, ok];
-		/* } */ case 33:
+		/* } */ case 12:
+		/* */ if (errorType === "deprecated") { $s = 19; continue; }
+		/* */ $s = 20; continue;
+		/* if (errorType === "deprecated") { */ case 19:
+			$r = s[0].log(new sliceType$1([new $String("deprecated:"), new $String(errorReason)])); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 20:
+		$r = s[0].OnEvent(event); /* */ $s = 22; case 22: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		ok = true;
 		return [actionId[0], sessionLost, needsAck, ok];
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.handleEvent }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.action = action; $f.actionId = actionId; $f.err = err; $f.err$1 = err$1; $f.errorReason = errorReason; $f.errorType = errorType; $f.eventId = eventId; $f.header = header; $f.i = i; $f.lastReply = lastReply; $f.needsAck = needsAck; $f.ok = ok; $f.payload = payload; $f.s = s; $f.sessionLost = sessionLost; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.x$3 = x$3; $f.x$4 = x$4; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.handleEvent }; } $f.$ptr = $ptr; $f._r = _r; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.action = action; $f.actionId = actionId; $f.err = err; $f.errorReason = errorReason; $f.errorType = errorType; $f.event = event; $f.eventId = eventId; $f.i = i; $f.needsAck = needsAck; $f.ok = ok; $f.s = s; $f.sessionLost = sessionLost; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.x$3 = x$3; $f.x$4 = x$4; $f.$s = $s; $f.$r = $r; return $f;
 	};
-	Session.prototype.handleEvent = function(header, payload) { return this.$val.handleEvent(header, payload); };
+	Session.prototype.handleEvent = function(event) { return this.$val.handleEvent(event); };
 	Session.ptr.prototype.connState = function(state) {
-		var $ptr, _r, s, state, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; s = $f.s; state = $f.state; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var $ptr, s, state, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; s = $f.s; state = $f.state; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		s = this;
 		/* */ if (!(s.latestConnState === state)) { $s = 1; continue; }
 		/* */ $s = 2; continue;
 		/* if (!(s.latestConnState === state)) { */ case 1:
 			s.latestConnState = state;
-			/* */ if (!(s.onConnState === null)) { $s = 3; continue; }
+			/* */ if (!(s.OnConnState === $throwNilPointerError)) { $s = 3; continue; }
 			/* */ $s = 4; continue;
-			/* if (!(s.onConnState === null)) { */ case 3:
-				_r = jsInvoke("NinchatClient.Session onConnState callback", s.onConnState, new sliceType$1([new $String(s.latestConnState)])); /* */ $s = 5; case 5: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-				_r;
+			/* if (!(s.OnConnState === $throwNilPointerError)) { */ case 3:
+				$r = s.OnConnState(s.latestConnState); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			/* } */ case 4:
 		/* } */ case 2:
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.connState }; } $f.$ptr = $ptr; $f._r = _r; $f.s = s; $f.state = state; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.connState }; } $f.$ptr = $ptr; $f.s = s; $f.state = state; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	Session.prototype.connState = function(state) { return this.$val.connState(state); };
 	Session.ptr.prototype.connActive = function() {
-		var $ptr, _r, s, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var $ptr, s, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		s = this;
-		s.latestConnActive = Now();
-		/* */ if (!(s.onConnActive === null)) { $s = 1; continue; }
+		/* */ if (!(s.OnConnActive === $throwNilPointerError)) { $s = 1; continue; }
 		/* */ $s = 2; continue;
-		/* if (!(s.onConnActive === null)) { */ case 1:
-			_r = jsInvoke("NinchatClient.Session onConnActive callback", s.onConnActive, new sliceType$1([s.latestConnActive])); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_r;
+		/* if (!(s.OnConnActive === $throwNilPointerError)) { */ case 1:
+			$r = s.OnConnActive(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		/* } */ case 2:
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.connActive }; } $f.$ptr = $ptr; $f._r = _r; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.connActive }; } $f.$ptr = $ptr; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	Session.prototype.connActive = function() { return this.$val.connActive(); };
 	Session.ptr.prototype.log = function(tokens) {
 		var $ptr, s, tokens, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; s = $f.s; tokens = $f.tokens; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		s = this;
-		$r = Log("NinchatClient.Session onLog callback", s.onLog, tokens); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* */ if (!(s.OnLog === $throwNilPointerError)) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if (!(s.OnLog === $throwNilPointerError)) { */ case 1:
+			$r = s.OnLog(tokens); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 2:
 		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.log }; } $f.$ptr = $ptr; $f.s = s; $f.tokens = tokens; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	Session.prototype.log = function(tokens) { return this.$val.log(tokens); };
-	Now = function() {
-		var $ptr, x;
-		return (x = $internalize(new ($global.Date)().getTime(), $Int64), new Time(x.$high, x.$low));
-	};
-	$pkg.Now = Now;
-	NewTimer = function(timeout) {
-		var $ptr, timeout, timer;
-		timer = ptrType$5.nil;
-		timer = new Timer.ptr(new chanType$1(0), null);
+	newTimer = function(timeout) {
+		var $ptr, t, timeout;
+		t = ptrType$7.nil;
+		t = new timer.ptr(new chanType$2(0), null);
 		if ((timeout.$high > 0 || (timeout.$high === 0 && timeout.$low >= 0))) {
-			timer.Reset(timeout);
+			t.Reset(timeout);
 		}
-		return timer;
+		return t;
 	};
-	$pkg.NewTimer = NewTimer;
-	Timer.ptr.prototype.Active = function() {
-		var $ptr, timer;
-		timer = this;
-		return !(timer.id === null);
+	timer.ptr.prototype.Active = function() {
+		var $ptr, timer$1;
+		timer$1 = this;
+		return !(timer$1.id === null);
 	};
-	Timer.prototype.Active = function() { return this.$val.Active(); };
-	Timer.ptr.prototype.Reset = function(timeout) {
-		var $ptr, timeout, timer;
-		timer = this;
-		timer.Stop();
-		timer.id = SetTimeout((function() {
+	timer.prototype.Active = function() { return this.$val.Active(); };
+	timer.ptr.prototype.Reset = function(timeout) {
+		var $ptr, timeout, timer$1;
+		timer$1 = this;
+		timer$1.Stop();
+		timer$1.id = $global.setTimeout($externalize((function() {
 			var $ptr;
-			timer.id = null;
+			timer$1.id = null;
 			$go((function $b() {
 				var $ptr, $s, $r;
 				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-				$r = $send(timer.C, true); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = $send(timer$1.C, new structType.ptr()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
 			}), []);
-		}), timeout);
+		}), funcType), $externalize(timeout, duration));
 	};
-	Timer.prototype.Reset = function(timeout) { return this.$val.Reset(timeout); };
-	Timer.ptr.prototype.Stop = function() {
-		var $ptr, timer;
-		timer = this;
-		if (!(timer.id === null)) {
-			ClearTimeout(timer.id);
-			timer.id = null;
+	timer.prototype.Reset = function(timeout) { return this.$val.Reset(timeout); };
+	timer.ptr.prototype.Stop = function() {
+		var $ptr, timer$1;
+		timer$1 = this;
+		if (!(timer$1.id === null)) {
+			$global.clearTimeout(timer$1.id);
+			timer$1.id = null;
 		}
 	};
-	Timer.prototype.Stop = function() { return this.$val.Stop(); };
-	Sleep = function(delay) {
+	timer.prototype.Stop = function() { return this.$val.Stop(); };
+	sleep = function(delay) {
 		var $ptr, _r, delay, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; delay = $f.delay; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-		_r = $recv(NewTimer(delay).C); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_r = $recv(newTimer(delay).C); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		_r[0];
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Sleep }; } $f.$ptr = $ptr; $f._r = _r; $f.delay = delay; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: sleep }; } $f.$ptr = $ptr; $f._r = _r; $f.delay = delay; $f.$s = $s; $f.$r = $r; return $f;
 	};
-	$pkg.Sleep = Sleep;
-	NewWebSocket = function(url) {
-		var $ptr, url, ws;
-		ws = ptrType$6.nil;
-		ws = new WebSocket.ptr(new chanType$1(1), false, new ($global.WebSocket)($externalize(url, $String)), false, $ifaceNil, sliceType$2.nil);
+	newWebSocket = function(url, timeout) {
+		var $ptr, clearTimeout, closeNotify, notifyClosed, timeout, timeoutId, url, ws;
+		ws = ptrType$8.nil;
+		ws = new webSocket.ptr(new chanType$2(1), false, $ifaceNil, new ($global.WebSocket)($externalize(url, $String)), false, sliceType$3.nil);
 		ws.impl.binaryType = $externalize("arraybuffer", $String);
-		ws.impl.onopen = $externalize((function(param) {
-			var $ptr, param;
+		notifyClosed = false;
+		closeNotify = (function() {
+			var $ptr;
+			if (!notifyClosed) {
+				notifyClosed = true;
+				$go((function() {
+					var $ptr;
+					$close(ws.notify);
+				}), []);
+			}
+		});
+		timeoutId = $global.setTimeout($externalize((function $b() {
+			var $ptr, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			ws.err = errors.New("timeout");
+			$r = closeNotify(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
+		}), funcType), $externalize(timeout, duration));
+		clearTimeout = (function() {
+			var $ptr;
+			if (!(timeoutId === null)) {
+				$global.clearTimeout(timeoutId);
+				timeoutId = null;
+			}
+		});
+		ws.impl.onopen = $externalize((function $b(param) {
+			var $ptr, param, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; param = $f.param; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			$r = clearTimeout(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			if (!($interfaceIsEqual(ws.err, $ifaceNil))) {
+				ws.impl.close();
+				return;
+			}
 			ws.open = true;
 			$go((function $b() {
 				var $ptr, $s, $r;
 				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-				$r = $send(ws.Notify, true); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ if (!notifyClosed) { $s = 1; continue; }
+				/* */ $s = 2; continue;
+				/* if (!notifyClosed) { */ case 1:
+					$r = $send(ws.notify, new structType.ptr()); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 2:
 				/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
 			}), []);
-		}), funcType$5);
+			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.param = param; $f.$s = $s; $f.$r = $r; return $f;
+		}), funcType$1);
 		ws.impl.onmessage = $externalize((function(object) {
 			var $ptr, object;
-			ws.buffer = $append(ws.buffer, object.data);
+			ws.buf = $append(ws.buf, object.data);
 			$go((function $b() {
 				var $ptr, _selection, $r;
 				/* */ var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _selection = $f._selection; $r = $f.$r; }
-				_selection = $select([[ws.Notify, true], []]);
-				if (_selection[0] === 0) {
-				} else if (_selection[0] === 1) {
+				if (!notifyClosed) {
+					_selection = $select([[ws.notify, new structType.ptr()], []]);
+					if (_selection[0] === 0) {
+					} else if (_selection[0] === 1) {
+					}
 				}
 				/* */ if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._selection = _selection; $f.$r = $r; return $f;
 			}), []);
-		}), funcType$5);
-		ws.impl.onclose = $externalize((function(object) {
-			var $ptr, object;
-			ws.GoingAway = ($parseInt(object.code) >> 0) === 1001;
+		}), funcType$1);
+		ws.impl.onclose = $externalize((function $b(object) {
+			var $ptr, object, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; object = $f.object; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			ws.goingAway = (($parseInt(object.code) >> 0) === 1001);
 			ws.open = false;
-			$go((function() {
-				var $ptr;
-				$close(ws.Notify);
-			}), []);
-		}), funcType$5);
-		ws.impl.onerror = $externalize((function(object) {
-			var $ptr, object;
-			ws.error = errors.New("WebSocket error event");
-		}), funcType$5);
+			$r = closeNotify(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.object = object; $f.$s = $s; $f.$r = $r; return $f;
+		}), funcType$1);
+		ws.impl.onerror = $externalize((function $b(object) {
+			var $ptr, object, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; object = $f.object; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			$r = clearTimeout(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			if ($interfaceIsEqual(ws.err, $ifaceNil)) {
+				ws.err = errors.New($internalize(object.message, $String));
+			}
+			$r = closeNotify(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.object = object; $f.$s = $s; $f.$r = $r; return $f;
+		}), funcType$1);
 		return ws;
 	};
-	$pkg.NewWebSocket = NewWebSocket;
-	WebSocket.ptr.prototype.Send = function(data) {
+	webSocket.ptr.prototype.send = function(data) {
 		var $ptr, data, err, ws, $deferred;
 		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		err = $ifaceNil;
@@ -4034,61 +3996,25 @@ $packages["ninchatclient"] = (function() {
 			var $ptr;
 			err = jsError($recover());
 		}), []]);
-		err = ws.error;
-		if (!($interfaceIsEqual(err, $ifaceNil))) {
-			return err;
-		}
-		ws.impl.send($externalize(data, $emptyInterface));
+		ws.impl.send(data);
 		return err;
 		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  err; } }
 	};
-	WebSocket.prototype.Send = function(data) { return this.$val.Send(data); };
-	WebSocket.ptr.prototype.SendJSON = function(object) {
+	webSocket.prototype.send = function(data) { return this.$val.send(data); };
+	webSocket.ptr.prototype.sendJSON = function(object) {
 		var $ptr, _tuple, err, json, object, ws;
 		err = $ifaceNil;
 		ws = this;
-		_tuple = StringifyJSON(object); json = _tuple[0]; err = _tuple[1];
+		_tuple = jsonMarshal(object); json = _tuple[0]; err = _tuple[1];
 		if (!($interfaceIsEqual(err, $ifaceNil))) {
 			return err;
 		}
-		err = ws.Send(new $String(json));
+		err = ws.send(json);
 		return err;
 	};
-	WebSocket.prototype.SendJSON = function(object) { return this.$val.SendJSON(object); };
-	WebSocket.ptr.prototype.Receive = function() {
-		var $ptr, data, err, ws, x;
-		data = null;
-		err = $ifaceNil;
-		ws = this;
-		err = ws.error;
-		if (!($interfaceIsEqual(err, $ifaceNil))) {
-			return [data, err];
-		}
-		if (!ws.open) {
-			return [data, err];
-		}
-		if (ws.buffer.$length > 0) {
-			data = (x = ws.buffer, (0 >= x.$length ? $throwRuntimeError("index out of range") : x.$array[x.$offset + 0]));
-			ws.buffer = $subslice(ws.buffer, 1);
-		}
-		return [data, err];
-	};
-	WebSocket.prototype.Receive = function() { return this.$val.Receive(); };
-	WebSocket.ptr.prototype.ReceiveJSON = function() {
-		var $ptr, _tuple, _tuple$1, data, err, object, ws;
-		object = null;
-		err = $ifaceNil;
-		ws = this;
-		_tuple = ws.Receive(); data = _tuple[0]; err = _tuple[1];
-		if (!($interfaceIsEqual(err, $ifaceNil)) || data === null) {
-			return [object, err];
-		}
-		_tuple$1 = ParseJSON(StringifyFrame(data)); object = _tuple$1[0]; err = _tuple$1[1];
-		return [object, err];
-	};
-	WebSocket.prototype.ReceiveJSON = function() { return this.$val.ReceiveJSON(); };
-	WebSocket.ptr.prototype.Close = function() {
-		var $ptr, err, ws, $deferred;
+	webSocket.prototype.sendJSON = function(object) { return this.$val.sendJSON(object); };
+	webSocket.ptr.prototype.sendPayload = function(action) {
+		var $ptr, _i, _ref, action, array, base64, binaryString, data, decodeDataURI, err, i, length, ws, $deferred;
 		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		err = $ifaceNil;
 		ws = this;
@@ -4096,154 +4022,187 @@ $packages["ninchatclient"] = (function() {
 			var $ptr;
 			err = jsError($recover());
 		}), []]);
-		ws.impl.close();
-		err = ws.error;
+		decodeDataURI = action.String() === "update_user";
+		_ref = action.Payload;
+		_i = 0;
+		while (true) {
+			if (!(_i < _ref.$length)) { break; }
+			data = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+			if (decodeDataURI) {
+				base64 = data.split($externalize(",", $String))[1];
+				binaryString = $global.atob(base64);
+				length = $parseInt(binaryString.length);
+				data = new ($global.ArrayBuffer)(length);
+				array = new ($global.Uint8Array)(data);
+				i = 0;
+				while (true) {
+					if (!(i < length)) { break; }
+					array[i] = binaryString.charCodeAt(i);
+					i = i + (1) >> 0;
+				}
+			}
+			ws.impl.send(data);
+			_i++;
+		}
 		return err;
 		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  err; } }
 	};
-	WebSocket.prototype.Close = function() { return this.$val.Close(); };
-	StringifyFrame = function(data) {
-		var $ptr, _tuple, bytes, data, ok, s, view;
-		s = "";
-		_tuple = $assertType($internalize(data, $emptyInterface), $String, true); s = _tuple[0]; ok = _tuple[1];
-		if (ok) {
-			return s;
+	webSocket.prototype.sendPayload = function(action) { return this.$val.sendPayload(action); };
+	webSocket.ptr.prototype.receive = function() {
+		var $ptr, ws, x, x$1;
+		x = null;
+		ws = this;
+		if (ws.buf.$length > 0) {
+			x = (x$1 = ws.buf, (0 >= x$1.$length ? $throwRuntimeError("index out of range") : x$1.$array[x$1.$offset + 0]));
+			ws.buf = $subslice(ws.buf, 1);
 		}
-		view = NewUint8Array(data);
-		bytes = $assertType($internalize(view, $emptyInterface), sliceType$4);
-		s = $bytesToString(bytes);
-		return s;
+		return x;
 	};
-	$pkg.StringifyFrame = StringifyFrame;
-	WebSocketTransport = function(s, host) {
-		var $ptr, _r, _r$1, _selection, _tuple, connWorked, connectTimer, connected, goingAway, gotOnline, host, hostHealthy, s, ws, $s, $deferred, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; _selection = $f._selection; _tuple = $f._tuple; connWorked = $f.connWorked; connectTimer = $f.connectTimer; connected = $f.connected; goingAway = $f.goingAway; gotOnline = $f.gotOnline; host = $f.host; hostHealthy = $f.hostHealthy; s = $f.s; ws = $f.ws; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+	webSocket.prototype.receive = function() { return this.$val.receive(); };
+	webSocket.ptr.prototype.receiveJSON = function() {
+		var $ptr, err, object, object$ptr, ws, x;
+		object = false;
+		err = $ifaceNil;
+		ws = this;
+		x = ws.receive();
+		if (x === null) {
+			return [object, err];
+		}
+		err = jsonUnmarshalObject(stringData(x), (object$ptr || (object$ptr = new ptrType$2(function() { return object; }, function($v) { object = $v; }))));
+		return [object, err];
+	};
+	webSocket.prototype.receiveJSON = function() { return this.$val.receiveJSON(); };
+	webSocket.ptr.prototype.close = function() {
+		var $ptr, ws, $deferred;
+		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		ws = this;
+		$deferred.push([(function() {
+			var $ptr;
+			$recover();
+		}), []]);
+		ws.impl.close();
+		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); }
+	};
+	webSocket.prototype.close = function() { return this.$val.close(); };
+	webSocketTransport = function(s, host) {
+		var $ptr, _r, _r$1, _selection, _tuple, _tuple$1, connWorked, connected, goingAway, gotOnline, host, hostHealthy, s, ws, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; _selection = $f._selection; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; connWorked = $f.connWorked; connected = $f.connected; goingAway = $f.goingAway; gotOnline = $f.gotOnline; host = $f.host; hostHealthy = $f.hostHealthy; s = $f.s; ws = $f.ws; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		ws = [ws];
 		connWorked = false;
 		gotOnline = false;
-		ws[0] = ptrType$6.nil;
+		ws[0] = ptrType$8.nil;
 		$deferred.push([(function(ws) { return function() {
 			var $ptr;
-			if (!(ws[0] === ptrType$6.nil)) {
-				ws[0].Close();
+			if (!(ws[0] === ptrType$8.nil)) {
+				ws[0].close();
 			}
 		}; })(ws), []]);
-		connectTimer = NewTimer(new Duration(-1, 4294967295));
-		$deferred.push([$methodVal(connectTimer, "Stop"), []]);
 		/* while (true) { */ case 1:
 			gotOnline = false;
 			hostHealthy = false;
 			$r = s.log(new sliceType$1([new $String("connecting to"), new $String(host)])); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			ws[0] = NewWebSocket("wss://" + host + "/v2/socket");
-			connectTimer.Reset(JitterDuration(new Duration(0, 9000), 0.1));
-			_r = $select([[ws[0].Notify], [connectTimer.C], [s.closeNotify]]); /* */ $s = 4; case 4: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			ws[0] = newWebSocket("wss://" + host + "/v2/socket", jitterDuration(new duration(0, 9000), 0.1));
+			_r = $select([[ws[0].notify], [s.closeNotify]]); /* */ $s = 4; case 4: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 			_selection = _r;
 			/* */ if (_selection[0] === 0) { $s = 5; continue; }
 			/* */ if (_selection[0] === 1) { $s = 6; continue; }
-			/* */ if (_selection[0] === 2) { $s = 7; continue; }
-			/* */ $s = 8; continue;
+			/* */ $s = 7; continue;
 			/* if (_selection[0] === 0) { */ case 5:
-				connected = _selection[1][0];
-				connectTimer.Stop();
-				/* */ if (connected) { $s = 9; continue; }
-				/* */ $s = 10; continue;
-				/* if (connected) { */ case 9:
-					$r = s.log(new sliceType$1([new $String("connected")])); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$r = s.connState("connected"); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				_tuple = _selection[1]; connected = _tuple[1];
+				/* */ if (connected) { $s = 8; continue; }
+				/* */ $s = 9; continue;
+				/* if (connected) { */ case 8:
+					$r = s.log(new sliceType$1([new $String("connected")])); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$r = s.connState("connected"); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					connWorked = true;
-					_r$1 = webSocketHandshake(s, ws[0]); /* */ $s = 14; case 14: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-					_tuple = _r$1; gotOnline = _tuple[0]; hostHealthy = _tuple[1];
-					$s = 11; continue;
-				/* } else { */ case 10:
-					$r = s.log(new sliceType$1([new $String("connection failed")])); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 11:
-				$s = 8; continue;
+					_r$1 = webSocketHandshake(s, ws[0]); /* */ $s = 13; case 13: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+					_tuple$1 = _r$1; gotOnline = _tuple$1[0]; hostHealthy = _tuple$1[1];
+					$s = 10; continue;
+				/* } else { */ case 9:
+					$r = s.log(new sliceType$1([new $String("connection failed:"), ws[0].err])); /* */ $s = 14; case 14: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 10:
+				$s = 7; continue;
 			/* } else if (_selection[0] === 1) { */ case 6:
-				$r = s.log(new sliceType$1([new $String("connection timeout")])); /* */ $s = 16; case 16: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$s = 8; continue;
-			/* } else if (_selection[0] === 2) { */ case 7:
-				connectTimer.Stop();
-			/* } */ case 8:
-			goingAway = ws[0].GoingAway;
-			ws[0].Close();
-			ws[0] = ptrType$6.nil;
-			/* */ if (goingAway) { $s = 17; continue; }
-			/* */ $s = 18; continue;
-			/* if (goingAway) { */ case 17:
-				$r = s.log(new sliceType$1([new $String("disconnected (server is going away)")])); /* */ $s = 20; case 20: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$s = 19; continue;
-			/* } else { */ case 18:
-				$r = s.log(new sliceType$1([new $String("disconnected")])); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* } */ case 19:
-			if (!gotOnline || !hostHealthy || s.stopped || goingAway) {
+			/* } */ case 7:
+			goingAway = ws[0].goingAway;
+			ws[0].close();
+			ws[0] = ptrType$8.nil;
+			/* */ if (goingAway) { $s = 15; continue; }
+			/* */ $s = 16; continue;
+			/* if (goingAway) { */ case 15:
+				$r = s.log(new sliceType$1([new $String("disconnected (server is going away)")])); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$s = 17; continue;
+			/* } else { */ case 16:
+				$r = s.log(new sliceType$1([new $String("disconnected")])); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 17:
+			if (!gotOnline || !hostHealthy || !s.running || goingAway) {
 				return [connWorked, gotOnline];
 			}
 		/* } */ $s = 1; continue; case 2:
-		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [connWorked, gotOnline]; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: WebSocketTransport }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._selection = _selection; $f._tuple = _tuple; $f.connWorked = connWorked; $f.connectTimer = connectTimer; $f.connected = connected; $f.goingAway = goingAway; $f.gotOnline = gotOnline; $f.host = host; $f.hostHealthy = hostHealthy; $f.s = s; $f.ws = ws; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [connWorked, gotOnline]; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: webSocketTransport }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.connWorked = connWorked; $f.connected = connected; $f.goingAway = goingAway; $f.gotOnline = gotOnline; $f.host = host; $f.hostHealthy = hostHealthy; $f.s = s; $f.ws = ws; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
-	$pkg.WebSocketTransport = WebSocketTransport;
 	webSocketHandshake = function(s, ws) {
-		var $ptr, _r, _r$1, _r$2, _r$3, _selection, _tuple, _tuple$1, connected, done, err, err$1, fail, gotEvents, gotOnline, header, header$1, hostHealthy, s, timer, ws, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _selection = $f._selection; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; connected = $f.connected; done = $f.done; err = $f.err; err$1 = $f.err$1; fail = $f.fail; gotEvents = $f.gotEvents; gotOnline = $f.gotOnline; header = $f.header; header$1 = $f.header$1; hostHealthy = $f.hostHealthy; s = $f.s; timer = $f.timer; ws = $f.ws; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var $ptr, _r, _r$1, _r$2, _r$3, _selection, _tuple, _tuple$1, _tuple$2, connected, done, err, err$1, fail, gotEvents, gotOnline, hostHealthy, params, params$1, s, timer$1, ws, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _selection = $f._selection; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; connected = $f.connected; done = $f.done; err = $f.err; err$1 = $f.err$1; fail = $f.fail; gotEvents = $f.gotEvents; gotOnline = $f.gotOnline; hostHealthy = $f.hostHealthy; params = $f.params; params$1 = $f.params$1; s = $f.s; timer$1 = $f.timer$1; ws = $f.ws; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		gotOnline = false;
 		hostHealthy = false;
-		header = null;
-		/* */ if (s.sessionId === null) { $s = 1; continue; }
+		params = false;
+		/* */ if ($interfaceIsEqual(s.sessionId, $ifaceNil)) { $s = 1; continue; }
 		/* */ $s = 2; continue;
-		/* if (s.sessionId === null) { */ case 1:
+		/* if ($interfaceIsEqual(s.sessionId, $ifaceNil)) { */ case 1:
 			$r = s.log(new sliceType$1([new $String("session creation")])); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			header = s.makeCreateSessionAction();
+			params = s.makeCreateSessionAction();
 			$s = 3; continue;
 		/* } else { */ case 2:
 			$r = s.log(new sliceType$1([new $String("session resumption")])); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			header = s.makeResumeSessionAction(true);
+			params = s.makeResumeSessionAction(true);
 		/* } */ case 3:
-		err = ws.SendJSON(new $jsObjectPtr(header));
+		err = ws.sendJSON(params);
 		/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 6; continue; }
 		/* */ $s = 7; continue;
 		/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 6:
 			$r = s.log(new sliceType$1([new $String("send:"), err])); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		/* } */ case 7:
-		/* */ if (s.sessionId === null) { $s = 9; continue; }
+		/* */ if ($interfaceIsEqual(s.sessionId, $ifaceNil)) { $s = 9; continue; }
 		/* */ $s = 10; continue;
-		/* if (s.sessionId === null) { */ case 9:
-			header$1 = null;
+		/* if ($interfaceIsEqual(s.sessionId, $ifaceNil)) { */ case 9:
+			params$1 = false;
 			connected = true;
-			timer = NewTimer(JitterDuration(new Duration(0, 13000), 0.2));
+			timer$1 = newTimer(jitterDuration(new duration(0, 13000), 0.2));
 			/* while (true) { */ case 11:
 				err$1 = $ifaceNil;
-				_tuple = ws.ReceiveJSON(); header$1 = _tuple[0]; err$1 = _tuple[1];
+				_tuple = ws.receiveJSON(); params$1 = _tuple[0]; err$1 = _tuple[1];
 				/* */ if (!($interfaceIsEqual(err$1, $ifaceNil))) { $s = 13; continue; }
 				/* */ $s = 14; continue;
 				/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ case 13:
 					$r = s.log(new sliceType$1([new $String("session creation:"), err$1])); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					return [gotOnline, hostHealthy];
 				/* } */ case 14:
-				if (!(header$1 === null)) {
-					timer.Stop();
+				if (!(params$1 === false)) {
+					timer$1.Stop();
 					/* break; */ $s = 12; continue;
 				}
 				/* */ if (!connected) { $s = 16; continue; }
 				/* */ $s = 17; continue;
 				/* if (!connected) { */ case 16:
-					$r = s.log(new sliceType$1([new $String("disconnected during session creation")])); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					timer.Stop();
+					$r = s.log(new sliceType$1([new $String("disconnected during session creation:"), ws.err])); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					timer$1.Stop();
 					return [gotOnline, hostHealthy];
 				/* } */ case 17:
-				_r = $select([[ws.Notify], [timer.C]]); /* */ $s = 19; case 19: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+				_r = $select([[ws.notify], [timer$1.C]]); /* */ $s = 19; case 19: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 				_selection = _r;
 				/* */ if (_selection[0] === 0) { $s = 20; continue; }
 				/* */ if (_selection[0] === 1) { $s = 21; continue; }
 				/* */ $s = 22; continue;
 				/* if (_selection[0] === 0) { */ case 20:
-					connected = _selection[1][0];
+					_tuple$1 = _selection[1]; connected = _tuple$1[1];
 					$s = 22; continue;
 				/* } else if (_selection[0] === 1) { */ case 21:
 					$r = s.log(new sliceType$1([new $String("session creation timeout")])); /* */ $s = 23; case 23: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					return [gotOnline, hostHealthy];
 				/* } */ case 22:
 			/* } */ $s = 11; continue; case 12:
-			_r$1 = s.handleSessionEvent(header$1); /* */ $s = 26; case 26: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			_r$1 = s.handleSessionEvent(params$1); /* */ $s = 26; case 26: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 			/* */ if (!_r$1) { $s = 24; continue; }
 			/* */ $s = 25; continue;
 			/* if (!_r$1) { */ case 24:
@@ -4253,265 +4212,202 @@ $packages["ninchatclient"] = (function() {
 			hostHealthy = true;
 			$r = s.connActive(); /* */ $s = 27; case 27: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		/* } */ case 10:
-		fail = new chanType$1(1);
-		done = new chanType$1(0);
+		fail = new chanType$2(1);
+		done = new chanType$2(0);
 		$go(webSocketSend, [s, ws, fail, done]);
 		_r$2 = webSocketReceive(s, ws, fail); /* */ $s = 28; case 28: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-		_tuple$1 = _r$2; gotEvents = _tuple$1[0]; hostHealthy = _tuple$1[1];
+		_tuple$2 = _r$2; gotEvents = _tuple$2[0]; hostHealthy = _tuple$2[1];
 		if (gotEvents) {
 			gotOnline = true;
 		}
 		_r$3 = $recv(done); /* */ $s = 29; case 29: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
 		_r$3[0];
 		return [gotOnline, hostHealthy];
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: webSocketHandshake }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.connected = connected; $f.done = done; $f.err = err; $f.err$1 = err$1; $f.fail = fail; $f.gotEvents = gotEvents; $f.gotOnline = gotOnline; $f.header = header; $f.header$1 = header$1; $f.hostHealthy = hostHealthy; $f.s = s; $f.timer = timer; $f.ws = ws; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: webSocketHandshake }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.connected = connected; $f.done = done; $f.err = err; $f.err$1 = err$1; $f.fail = fail; $f.gotEvents = gotEvents; $f.gotOnline = gotOnline; $f.hostHealthy = hostHealthy; $f.params = params; $f.params$1 = params$1; $f.s = s; $f.timer$1 = timer$1; $f.ws = ws; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	webSocketSend = function(s, ws, fail, done) {
-		var $ptr, _r, _selection, _tuple, _tuple$1, _tuple$2, action, action$1, array, base64, buffer, closeSession, data, done, err, err$1, err$2, err$3, err$4, err$5, fail, frame, i, i$1, keeper, length, ok, s, sending, ws, x, x$1, x$2, x$3, x$4, x$5, x$6, $s, $deferred, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _selection = $f._selection; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; action = $f.action; action$1 = $f.action$1; array = $f.array; base64 = $f.base64; buffer = $f.buffer; closeSession = $f.closeSession; data = $f.data; done = $f.done; err = $f.err; err$1 = $f.err$1; err$2 = $f.err$2; err$3 = $f.err$3; err$4 = $f.err$4; err$5 = $f.err$5; fail = $f.fail; frame = $f.frame; i = $f.i; i$1 = $f.i$1; keeper = $f.keeper; length = $f.length; ok = $f.ok; s = $f.s; sending = $f.sending; ws = $f.ws; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; x$3 = $f.x$3; x$4 = $f.x$4; x$5 = $f.x$5; x$6 = $f.x$6; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		var $ptr, _key, _key$1, _r, _selection, _tuple, action, action$1, closeSession, done, err, err$1, err$2, err$3, err$4, fail, keeper, s, sending, ws, x, x$1, x$2, x$3, x$4, x$5, x$6, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _key = $f._key; _key$1 = $f._key$1; _r = $f._r; _selection = $f._selection; _tuple = $f._tuple; action = $f.action; action$1 = $f.action$1; closeSession = $f.closeSession; done = $f.done; err = $f.err; err$1 = $f.err$1; err$2 = $f.err$2; err$3 = $f.err$3; err$4 = $f.err$4; fail = $f.fail; keeper = $f.keeper; s = $f.s; sending = $f.sending; ws = $f.ws; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; x$3 = $f.x$3; x$4 = $f.x$4; x$5 = $f.x$5; x$6 = $f.x$6; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		done = [done];
 		$deferred.push([(function(done) { return function $b() {
 			var $ptr, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			$r = $send(done[0], true); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = $send(done[0], new structType.ptr()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
 		}; })(done), []]);
-		keeper = NewTimer(JitterDuration(new Duration(0, 56000), -0.3));
+		keeper = newTimer(jitterDuration(new duration(0, 56000), -0.3));
 		$deferred.push([$methodVal(keeper, "Stop"), []]);
 		s.numSent = 0;
 		/* while (true) { */ case 1:
 			/* while (true) { */ case 3:
 				/* if (!(s.numSent < s.sendBuffer.$length)) { break; } */ if(!(s.numSent < s.sendBuffer.$length)) { $s = 4; continue; }
 				action = (x = s.sendBuffer, x$1 = s.numSent, ((x$1 < 0 || x$1 >= x.$length) ? $throwRuntimeError("index out of range") : x.$array[x.$offset + x$1]));
-				if (!(action.Payload === null)) {
-					action.Header.frames = $parseInt(action.Payload.length);
+				if (!(action.Payload === sliceType$3.nil)) {
+					_key = "frames"; (action.Params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key)] = { k: _key, v: new $Int(action.Payload.$length) };
 				}
 				if (!((x$2 = s.receivedEventId, x$3 = s.ackedEventId, (x$2.$high === x$3.$high && x$2.$low === x$3.$low)))) {
-					action.Header.event_id = $externalize(s.receivedEventId, $Uint64);
+					_key$1 = "event_id"; (action.Params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$1)] = { k: _key$1, v: s.receivedEventId };
 					s.sendEventAck = false;
 					s.ackedEventId = s.receivedEventId;
 				}
-				err = ws.SendJSON(new $jsObjectPtr(action.Header));
-				delete action.Header[$externalize("frames", $String)];
-				delete action.Header[$externalize("event_id", $String)];
+				err = ws.sendJSON(action.Params);
+				delete action.Params[$String.keyFor("frames")];
+				delete action.Params[$String.keyFor("event_id")];
 				/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 5; continue; }
 				/* */ $s = 6; continue;
 				/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 5:
 					$r = s.log(new sliceType$1([new $String("send:"), err])); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$r = $send(fail, true); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$r = $send(fail, new structType.ptr()); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					return;
 				/* } */ case 6:
-				/* */ if (!(action.Payload === null)) { $s = 9; continue; }
+				/* */ if (!(action.Payload === sliceType$3.nil)) { $s = 9; continue; }
 				/* */ $s = 10; continue;
-				/* if (!(action.Payload === null)) { */ case 9:
-					i = 0;
-					/* while (true) { */ case 11:
-						/* if (!(i < $parseInt(action.Payload.length))) { break; } */ if(!(i < $parseInt(action.Payload.length))) { $s = 12; continue; }
-						frame = action.Payload[i];
-						/* */ if ($internalize(action.Header.action, $String) === "update_user") { $s = 13; continue; }
-						/* */ $s = 14; continue;
-						/* if ($internalize(action.Header.action, $String) === "update_user") { */ case 13:
-							_tuple = $assertType($internalize(frame, $emptyInterface), $String, true); ok = _tuple[1];
-							/* */ if (ok) { $s = 15; continue; }
-							/* */ $s = 16; continue;
-							/* if (ok) { */ case 15:
-								_tuple$1 = ParseDataURI(frame); base64 = _tuple$1[0]; err$1 = _tuple$1[1];
-								/* */ if (!($interfaceIsEqual(err$1, $ifaceNil))) { $s = 17; continue; }
-								/* */ $s = 18; continue;
-								/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ case 17:
-									$r = s.log(new sliceType$1([new $String("send:"), err$1])); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-									$r = $send(fail, true); /* */ $s = 20; case 20: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-									return;
-								/* } */ case 18:
-								_tuple$2 = Atob(base64); data = _tuple$2[0]; err$1 = _tuple$2[1];
-								/* */ if (!($interfaceIsEqual(err$1, $ifaceNil))) { $s = 21; continue; }
-								/* */ $s = 22; continue;
-								/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ case 21:
-									$r = s.log(new sliceType$1([new $String("send:"), err$1])); /* */ $s = 23; case 23: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-									$r = $send(fail, true); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-									return;
-								/* } */ case 22:
-								length = $parseInt(data.length);
-								buffer = NewArrayBuffer(length);
-								array = NewUint8Array(buffer);
-								i$1 = 0;
-								while (true) {
-									if (!(i$1 < length)) { break; }
-									array[i$1] = data.charCodeAt(i$1);
-									i$1 = i$1 + (1) >> 0;
-								}
-								frame = buffer;
-							/* } */ case 16:
-						/* } */ case 14:
-						err$2 = ws.Send(new $jsObjectPtr(frame));
-						/* */ if (!($interfaceIsEqual(err$2, $ifaceNil))) { $s = 25; continue; }
-						/* */ $s = 26; continue;
-						/* if (!($interfaceIsEqual(err$2, $ifaceNil))) { */ case 25:
-							$r = s.log(new sliceType$1([new $String("send:"), err$2])); /* */ $s = 27; case 27: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-							$r = $send(fail, true); /* */ $s = 28; case 28: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-							return;
-						/* } */ case 26:
-						i = i + (1) >> 0;
-					/* } */ $s = 11; continue; case 12:
+				/* if (!(action.Payload === sliceType$3.nil)) { */ case 9:
+					err$1 = ws.sendPayload(action);
+					/* */ if (!($interfaceIsEqual(err$1, $ifaceNil))) { $s = 11; continue; }
+					/* */ $s = 12; continue;
+					/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ case 11:
+						$r = s.log(new sliceType$1([new $String("send:"), err$1])); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+						$r = $send(fail, new structType.ptr()); /* */ $s = 14; case 14: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+						return;
+					/* } */ case 12:
 				/* } */ case 10:
-				if ((x$4 = action.Id, (x$4.$high === 0 && x$4.$low === 0))) {
+				if ((x$4 = action.id, (x$4.$high === 0 && x$4.$low === 0))) {
 					s.sendBuffer = $appendSlice($subslice(s.sendBuffer, 0, s.numSent), $subslice(s.sendBuffer, (s.numSent + 1 >> 0)));
 				} else {
 					s.numSent = s.numSent + (1) >> 0;
 				}
-				keeper.Reset(JitterDuration(new Duration(0, 56000), -0.3));
+				keeper.Reset(jitterDuration(new duration(0, 56000), -0.3));
 			/* } */ $s = 3; continue; case 4:
-			/* */ if (s.sendEventAck && !((x$5 = s.receivedEventId, x$6 = s.ackedEventId, (x$5.$high === x$6.$high && x$5.$low === x$6.$low)))) { $s = 29; continue; }
-			/* */ $s = 30; continue;
-			/* if (s.sendEventAck && !((x$5 = s.receivedEventId, x$6 = s.ackedEventId, (x$5.$high === x$6.$high && x$5.$low === x$6.$low)))) { */ case 29:
+			/* */ if (s.sendEventAck && !((x$5 = s.receivedEventId, x$6 = s.ackedEventId, (x$5.$high === x$6.$high && x$5.$low === x$6.$low)))) { $s = 15; continue; }
+			/* */ $s = 16; continue;
+			/* if (s.sendEventAck && !((x$5 = s.receivedEventId, x$6 = s.ackedEventId, (x$5.$high === x$6.$high && x$5.$low === x$6.$low)))) { */ case 15:
 				action$1 = s.makeResumeSessionAction(false);
-				err$3 = ws.SendJSON(new $jsObjectPtr(action$1));
-				/* */ if (!($interfaceIsEqual(err$3, $ifaceNil))) { $s = 31; continue; }
+				err$2 = ws.sendJSON(action$1);
+				/* */ if (!($interfaceIsEqual(err$2, $ifaceNil))) { $s = 17; continue; }
+				/* */ $s = 18; continue;
+				/* if (!($interfaceIsEqual(err$2, $ifaceNil))) { */ case 17:
+					$r = s.log(new sliceType$1([new $String("send:"), err$2])); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$r = $send(fail, new structType.ptr()); /* */ $s = 20; case 20: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					return;
+				/* } */ case 18:
+			/* } */ case 16:
+			_r = $select([[s.sendNotify], [keeper.C], [fail]]); /* */ $s = 21; case 21: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_selection = _r;
+			/* */ if (_selection[0] === 0) { $s = 22; continue; }
+			/* */ if (_selection[0] === 1) { $s = 23; continue; }
+			/* */ if (_selection[0] === 2) { $s = 24; continue; }
+			/* */ $s = 25; continue;
+			/* if (_selection[0] === 0) { */ case 22:
+				_tuple = _selection[1]; sending = _tuple[1];
+				/* */ if (!sending) { $s = 26; continue; }
+				/* */ $s = 27; continue;
+				/* if (!sending) { */ case 26:
+					closeSession = $makeMap($String.keyFor, [{ k: "action", v: new $String("close_session") }]);
+					err$3 = ws.sendJSON(closeSession);
+					/* */ if (!($interfaceIsEqual(err$3, $ifaceNil))) { $s = 28; continue; }
+					/* */ $s = 29; continue;
+					/* if (!($interfaceIsEqual(err$3, $ifaceNil))) { */ case 28:
+						$r = s.log(new sliceType$1([new $String("send:"), err$3])); /* */ $s = 30; case 30: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* } */ case 29:
+					return;
+				/* } */ case 27:
+				$s = 25; continue;
+			/* } else if (_selection[0] === 1) { */ case 23:
+				err$4 = ws.send(emptyData());
+				/* */ if (!($interfaceIsEqual(err$4, $ifaceNil))) { $s = 31; continue; }
 				/* */ $s = 32; continue;
-				/* if (!($interfaceIsEqual(err$3, $ifaceNil))) { */ case 31:
-					$r = s.log(new sliceType$1([new $String("send:"), err$3])); /* */ $s = 33; case 33: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$r = $send(fail, true); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* if (!($interfaceIsEqual(err$4, $ifaceNil))) { */ case 31:
+					$r = s.log(new sliceType$1([new $String("send:"), err$4])); /* */ $s = 33; case 33: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$r = $send(fail, new structType.ptr()); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					return;
 				/* } */ case 32:
-			/* } */ case 30:
-			_r = $select([[s.sendNotify], [keeper.C], [fail]]); /* */ $s = 35; case 35: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_selection = _r;
-			/* */ if (_selection[0] === 0) { $s = 36; continue; }
-			/* */ if (_selection[0] === 1) { $s = 37; continue; }
-			/* */ if (_selection[0] === 2) { $s = 38; continue; }
-			/* */ $s = 39; continue;
-			/* if (_selection[0] === 0) { */ case 36:
-				sending = _selection[1][0];
-				/* */ if (!sending) { $s = 40; continue; }
-				/* */ $s = 41; continue;
-				/* if (!sending) { */ case 40:
-					closeSession = $makeMap($String.keyFor, [{ k: "action", v: new $String("close_session") }]);
-					err$4 = ws.SendJSON(new mapType(closeSession));
-					/* */ if (!($interfaceIsEqual(err$4, $ifaceNil))) { $s = 42; continue; }
-					/* */ $s = 43; continue;
-					/* if (!($interfaceIsEqual(err$4, $ifaceNil))) { */ case 42:
-						$r = s.log(new sliceType$1([new $String("send:"), err$4])); /* */ $s = 44; case 44: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					/* } */ case 43:
-					return;
-				/* } */ case 41:
-				$s = 39; continue;
-			/* } else if (_selection[0] === 1) { */ case 37:
-				err$5 = ws.Send(new sliceType$4([]));
-				/* */ if (!($interfaceIsEqual(err$5, $ifaceNil))) { $s = 45; continue; }
-				/* */ $s = 46; continue;
-				/* if (!($interfaceIsEqual(err$5, $ifaceNil))) { */ case 45:
-					$r = s.log(new sliceType$1([new $String("send:"), err$5])); /* */ $s = 47; case 47: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$r = $send(fail, true); /* */ $s = 48; case 48: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					return;
-				/* } */ case 46:
-				keeper.Reset(JitterDuration(new Duration(0, 56000), -0.3));
-				$s = 39; continue;
-			/* } else if (_selection[0] === 2) { */ case 38:
+				keeper.Reset(jitterDuration(new duration(0, 56000), -0.3));
+				$s = 25; continue;
+			/* } else if (_selection[0] === 2) { */ case 24:
 				return;
-			/* } */ case 39:
+			/* } */ case 25:
 		/* } */ $s = 1; continue; case 2:
-		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: webSocketSend }; } $f.$ptr = $ptr; $f._r = _r; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.action = action; $f.action$1 = action$1; $f.array = array; $f.base64 = base64; $f.buffer = buffer; $f.closeSession = closeSession; $f.data = data; $f.done = done; $f.err = err; $f.err$1 = err$1; $f.err$2 = err$2; $f.err$3 = err$3; $f.err$4 = err$4; $f.err$5 = err$5; $f.fail = fail; $f.frame = frame; $f.i = i; $f.i$1 = i$1; $f.keeper = keeper; $f.length = length; $f.ok = ok; $f.s = s; $f.sending = sending; $f.ws = ws; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.x$3 = x$3; $f.x$4 = x$4; $f.x$5 = x$5; $f.x$6 = x$6; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: webSocketSend }; } $f.$ptr = $ptr; $f._key = _key; $f._key$1 = _key$1; $f._r = _r; $f._selection = _selection; $f._tuple = _tuple; $f.action = action; $f.action$1 = action$1; $f.closeSession = closeSession; $f.done = done; $f.err = err; $f.err$1 = err$1; $f.err$2 = err$2; $f.err$3 = err$3; $f.err$4 = err$4; $f.fail = fail; $f.keeper = keeper; $f.s = s; $f.sending = sending; $f.ws = ws; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.x$3 = x$3; $f.x$4 = x$4; $f.x$5 = x$5; $f.x$6 = x$6; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	webSocketReceive = function(s, ws, fail) {
-		var $ptr, _r, _r$1, _selection, _selection$1, _tuple, _tuple$1, _tuple$2, _tuple$3, _tuple$4, ackNeeded, acker, connected, data, data$1, err, err$1, fail, frames, gotEvents, header, hostHealthy, needsAck, ok, payload, s, sessionLost, text, watchdog, ws, x, x$1, $s, $deferred, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; _selection = $f._selection; _selection$1 = $f._selection$1; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; _tuple$3 = $f._tuple$3; _tuple$4 = $f._tuple$4; ackNeeded = $f.ackNeeded; acker = $f.acker; connected = $f.connected; data = $f.data; data$1 = $f.data$1; err = $f.err; err$1 = $f.err$1; fail = $f.fail; frames = $f.frames; gotEvents = $f.gotEvents; header = $f.header; hostHealthy = $f.hostHealthy; needsAck = $f.needsAck; ok = $f.ok; payload = $f.payload; s = $f.s; sessionLost = $f.sessionLost; text = $f.text; watchdog = $f.watchdog; ws = $f.ws; x = $f.x; x$1 = $f.x$1; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		var $ptr, _r, _r$1, _selection, _selection$1, _tuple, _tuple$1, _tuple$2, ackNeeded, acker, connected, data, data$1, err, event, fail, frames, gotEvents, hostHealthy, n, needsAck, ok, params, s, sessionLost, text, watchdog, ws, x, x$1, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; _selection = $f._selection; _selection$1 = $f._selection$1; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; ackNeeded = $f.ackNeeded; acker = $f.acker; connected = $f.connected; data = $f.data; data$1 = $f.data$1; err = $f.err; event = $f.event; fail = $f.fail; frames = $f.frames; gotEvents = $f.gotEvents; hostHealthy = $f.hostHealthy; n = $f.n; needsAck = $f.needsAck; ok = $f.ok; params = $f.params; s = $f.s; sessionLost = $f.sessionLost; text = $f.text; watchdog = $f.watchdog; ws = $f.ws; x = $f.x; x$1 = $f.x$1; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		gotEvents = false;
 		hostHealthy = false;
-		header = null;
-		payload = null;
+		event = ptrType.nil;
 		frames = 0;
-		watchdog = NewTimer(JitterDuration(new Duration(0, 64000), 0.3));
+		watchdog = newTimer(jitterDuration(new duration(0, 64000), 0.3));
 		$deferred.push([$methodVal(watchdog, "Stop"), []]);
-		acker = NewTimer(new Duration(-1, 4294967295));
+		acker = newTimer(new duration(-1, 4294967295));
 		$deferred.push([$methodVal(acker, "Stop"), []]);
 		/* while (true) { */ case 1:
 			ackNeeded = false;
 			/* while (true) { */ case 3:
-				/* */ if (header === null) { $s = 5; continue; }
+				params = [params];
+				/* */ if (event === ptrType.nil) { $s = 5; continue; }
 				/* */ $s = 6; continue;
-				/* if (header === null) { */ case 5:
-					err = $ifaceNil;
-					_tuple = ws.Receive(); data = _tuple[0]; err = _tuple[1];
-					/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 8; continue; }
-					/* */ $s = 9; continue;
-					/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 8:
-						$r = s.log(new sliceType$1([new $String("receive:"), err])); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-						hostHealthy = false;
-						$r = $send(fail, true); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-						return [gotEvents, hostHealthy];
-					/* } */ case 9:
+				/* if (event === ptrType.nil) { */ case 5:
+					data = ws.receive();
 					if (data === null) {
 						/* break; */ $s = 4; continue;
 					}
-					watchdog.Reset(JitterDuration(new Duration(0, 64000), 0.7));
-					$r = s.connActive(); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					text = StringifyFrame(data);
-					/* */ if (text.length === 0) { $s = 13; continue; }
-					/* */ $s = 14; continue;
-					/* if (text.length === 0) { */ case 13:
+					watchdog.Reset(jitterDuration(new duration(0, 64000), 0.7));
+					$r = s.connActive(); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					text = stringData(data);
+					/* */ if (dataLength(text) === 0) { $s = 9; continue; }
+					/* */ $s = 10; continue;
+					/* if (dataLength(text) === 0) { */ case 9:
 						/* continue; */ $s = 3; continue;
-					/* } */ case 14:
-					_tuple$1 = ParseJSON(text); header = _tuple$1[0]; err = _tuple$1[1];
-					/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 15; continue; }
-					/* */ $s = 16; continue;
-					/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 15:
-						$r = s.log(new sliceType$1([new $String("receive:"), err])); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* } */ case 10:
+					params[0] = false;
+					err = jsonUnmarshalObject(text, (params.$ptr || (params.$ptr = new ptrType$2(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, params))));
+					/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 11; continue; }
+					/* */ $s = 12; continue;
+					/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 11:
+						$r = s.log(new sliceType$1([new $String("receive:"), err])); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 						hostHealthy = false;
-						$r = $send(fail, true); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+						$r = $send(fail, new structType.ptr()); /* */ $s = 14; case 14: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 						return [gotEvents, hostHealthy];
-					/* } */ case 16:
-					payload = NewArray();
-					_tuple$2 = GetEventFrames(header); frames = _tuple$2[0]; err = _tuple$2[1];
-					/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 19; continue; }
-					/* */ $s = 20; continue;
-					/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 19:
-						$r = s.log(new sliceType$1([new $String("receive:"), err])); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-						hostHealthy = false;
-						$r = $send(fail, true); /* */ $s = 22; case 22: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-						return [gotEvents, hostHealthy];
-					/* } */ case 20:
+					/* } */ case 12:
+					event = new Event.ptr(params[0], sliceType$3.nil, false);
+					_tuple = event.Int("frames"); n = _tuple[0];
+					if (n > 0) {
+						frames = n;
+					}
 					$s = 7; continue;
 				/* } else { */ case 6:
-					_tuple$3 = ws.Receive(); data$1 = _tuple$3[0]; err$1 = _tuple$3[1];
-					/* */ if (!($interfaceIsEqual(err$1, $ifaceNil))) { $s = 23; continue; }
-					/* */ $s = 24; continue;
-					/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ case 23:
-						$r = s.log(new sliceType$1([new $String("receive:"), err$1])); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-						hostHealthy = false;
-						$r = $send(fail, true); /* */ $s = 26; case 26: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-						return [gotEvents, hostHealthy];
-					/* } */ case 24:
+					data$1 = ws.receive();
 					if (data$1 === null) {
 						/* break; */ $s = 4; continue;
 					}
-					payload.push(data$1);
+					event.Payload = $append(event.Payload, data$1);
 					frames = frames - (1) >> 0;
 				/* } */ case 7:
-				/* */ if (frames === 0) { $s = 27; continue; }
-				/* */ $s = 28; continue;
-				/* if (frames === 0) { */ case 27:
-					_r = s.handleEvent(header, payload); /* */ $s = 29; case 29: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-					_tuple$4 = _r; sessionLost = _tuple$4[1]; needsAck = _tuple$4[2]; ok = _tuple$4[3];
-					/* */ if (!ok) { $s = 30; continue; }
-					/* */ $s = 31; continue;
-					/* if (!ok) { */ case 30:
+				/* */ if (frames === 0) { $s = 15; continue; }
+				/* */ $s = 16; continue;
+				/* if (frames === 0) { */ case 15:
+					_r = s.handleEvent(event); /* */ $s = 17; case 17: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+					_tuple$1 = _r; sessionLost = _tuple$1[1]; needsAck = _tuple$1[2]; ok = _tuple$1[3];
+					/* */ if (!ok) { $s = 18; continue; }
+					/* */ $s = 19; continue;
+					/* if (!ok) { */ case 18:
 						if (sessionLost) {
 							gotEvents = true;
 						} else {
 							hostHealthy = false;
 						}
-						$r = $send(fail, true); /* */ $s = 32; case 32: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+						$r = $send(fail, new structType.ptr()); /* */ $s = 20; case 20: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 						return [gotEvents, hostHealthy];
-					/* } */ case 31:
+					/* } */ case 19:
 					if (needsAck) {
 						ackNeeded = true;
 					}
-					header = null;
-					payload = null;
+					event = ptrType.nil;
 					frames = 0;
 					gotEvents = true;
 					hostHealthy = true;
-				/* } */ case 28:
+				/* } */ case 16:
 				_selection = $select([[s.closeNotify], [fail], []]);
 				if (_selection[0] === 0) {
 					return [gotEvents, hostHealthy];
@@ -4521,137 +4417,64 @@ $packages["ninchatclient"] = (function() {
 				}
 			/* } */ $s = 3; continue; case 4:
 			if (ackNeeded && !acker.Active()) {
-				acker.Reset(JitterDuration(new Duration(0, 7000), -0.3));
+				acker.Reset(jitterDuration(new duration(0, 7000), -0.3));
 			}
-			_r$1 = $select([[ws.Notify], [watchdog.C], [acker.C], [s.closeNotify], [fail]]); /* */ $s = 33; case 33: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			_r$1 = $select([[ws.notify], [watchdog.C], [acker.C], [s.closeNotify], [fail]]); /* */ $s = 21; case 21: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 			_selection$1 = _r$1;
-			/* */ if (_selection$1[0] === 0) { $s = 34; continue; }
-			/* */ if (_selection$1[0] === 1) { $s = 35; continue; }
-			/* */ if (_selection$1[0] === 2) { $s = 36; continue; }
-			/* */ if (_selection$1[0] === 3) { $s = 37; continue; }
-			/* */ if (_selection$1[0] === 4) { $s = 38; continue; }
-			/* */ $s = 39; continue;
-			/* if (_selection$1[0] === 0) { */ case 34:
-				connected = _selection$1[1][0];
-				/* */ if (!connected) { $s = 40; continue; }
-				/* */ $s = 41; continue;
-				/* if (!connected) { */ case 40:
-					$r = $send(fail, true); /* */ $s = 42; case 42: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ if (_selection$1[0] === 0) { $s = 22; continue; }
+			/* */ if (_selection$1[0] === 1) { $s = 23; continue; }
+			/* */ if (_selection$1[0] === 2) { $s = 24; continue; }
+			/* */ if (_selection$1[0] === 3) { $s = 25; continue; }
+			/* */ if (_selection$1[0] === 4) { $s = 26; continue; }
+			/* */ $s = 27; continue;
+			/* if (_selection$1[0] === 0) { */ case 22:
+				_tuple$2 = _selection$1[1]; connected = _tuple$2[1];
+				/* */ if (!connected) { $s = 28; continue; }
+				/* */ $s = 29; continue;
+				/* if (!connected) { */ case 28:
+					$r = s.log(new sliceType$1([new $String("receive:"), ws.err])); /* */ $s = 30; case 30: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$r = $send(fail, new structType.ptr()); /* */ $s = 31; case 31: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					return [gotEvents, hostHealthy];
-				/* } */ case 41:
-				$s = 39; continue;
-			/* } else if (_selection$1[0] === 1) { */ case 35:
-				$r = s.log(new sliceType$1([new $String("receive timeout")])); /* */ $s = 43; case 43: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$r = $send(fail, true); /* */ $s = 44; case 44: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 29:
+				$s = 27; continue;
+			/* } else if (_selection$1[0] === 1) { */ case 23:
+				$r = s.log(new sliceType$1([new $String("receive timeout")])); /* */ $s = 32; case 32: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = $send(fail, new structType.ptr()); /* */ $s = 33; case 33: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				return [gotEvents, hostHealthy];
-				$s = 39; continue;
-			/* } else if (_selection$1[0] === 2) { */ case 36:
+				$s = 27; continue;
+			/* } else if (_selection$1[0] === 2) { */ case 24:
 				if (!s.sendEventAck && !((x = s.ackedEventId, x$1 = s.receivedEventId, (x.$high === x$1.$high && x.$low === x$1.$low)))) {
 					s.sendAck();
 				}
-				$s = 39; continue;
-			/* } else if (_selection$1[0] === 3) { */ case 37:
+				$s = 27; continue;
+			/* } else if (_selection$1[0] === 3) { */ case 25:
 				return [gotEvents, hostHealthy];
-				$s = 39; continue;
-			/* } else if (_selection$1[0] === 4) { */ case 38:
+				$s = 27; continue;
+			/* } else if (_selection$1[0] === 4) { */ case 26:
 				return [gotEvents, hostHealthy];
-			/* } */ case 39:
+			/* } */ case 27:
 		/* } */ $s = 1; continue; case 2:
-		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [gotEvents, hostHealthy]; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: webSocketReceive }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._selection = _selection; $f._selection$1 = _selection$1; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f._tuple$3 = _tuple$3; $f._tuple$4 = _tuple$4; $f.ackNeeded = ackNeeded; $f.acker = acker; $f.connected = connected; $f.data = data; $f.data$1 = data$1; $f.err = err; $f.err$1 = err$1; $f.fail = fail; $f.frames = frames; $f.gotEvents = gotEvents; $f.header = header; $f.hostHealthy = hostHealthy; $f.needsAck = needsAck; $f.ok = ok; $f.payload = payload; $f.s = s; $f.sessionLost = sessionLost; $f.text = text; $f.watchdog = watchdog; $f.ws = ws; $f.x = x; $f.x$1 = x$1; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [gotEvents, hostHealthy]; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: webSocketReceive }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._selection = _selection; $f._selection$1 = _selection$1; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.ackNeeded = ackNeeded; $f.acker = acker; $f.connected = connected; $f.data = data; $f.data$1 = data$1; $f.err = err; $f.event = event; $f.fail = fail; $f.frames = frames; $f.gotEvents = gotEvents; $f.hostHealthy = hostHealthy; $f.n = n; $f.needsAck = needsAck; $f.ok = ok; $f.params = params; $f.s = s; $f.sessionLost = sessionLost; $f.text = text; $f.watchdog = watchdog; $f.ws = ws; $f.x = x; $f.x$1 = x$1; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
-	init = function() {
-		var $ptr;
-		xhrType = $global.XDomainRequest;
-		if (xhrType === undefined) {
-			xhrType = $global.XMLHttpRequest;
-			xhrRequestHeaderSupport = true;
-		}
-	};
-	XHR = function(url, data, timeout) {
-		var $ptr, channel, data, err, method, request, timeout, url, $deferred;
-		/* */ var $err = null; try { $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-		channel = chanType$2.nil;
-		err = $ifaceNil;
-		$deferred.push([(function() {
-			var $ptr;
-			err = jsError($recover());
-		}), []]);
-		method = "";
-		if (data === "") {
-			method = "GET";
-		} else {
-			method = "POST";
-		}
-		channel = new chanType$2(1);
-		request = new (xhrType)();
-		request.onload = $externalize((function() {
-			var $ptr, obj, response;
-			response = "";
-			obj = request.responseText;
-			if (!(obj === undefined) && !(obj === null)) {
-				response = $internalize(obj, $String);
-			}
-			$go((function $b() {
-				var $ptr, $s, $r;
-				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-				$r = $send(channel, response); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
-			}), []);
-		}), funcType);
-		request.onprogress = $externalize((function() {
-			var $ptr;
-		}), funcType);
-		request.ontimeout = $externalize((function() {
-			var $ptr;
-			$go((function() {
-				var $ptr;
-				$close(channel);
-			}), []);
-		}), funcType);
-		request.onerror = $externalize((function() {
-			var $ptr;
-			$go((function $b() {
-				var $ptr, $s, $r;
-				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-				$r = $send(channel, ""); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
-			}), []);
-		}), funcType);
-		request.open($externalize(method, $String), $externalize(url, $String));
-		request.timeout = $externalize(timeout, Duration);
-		if (!(data === "") && xhrRequestHeaderSupport) {
-			request.setRequestHeader($externalize("Content-Type", $String), $externalize("application/json", $String));
-		}
-		request.send($externalize(data, $String));
-		return [channel, err];
-		/* */ } catch(err) { $err = err; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [channel, err]; } }
-	};
-	$pkg.XHR = XHR;
-	XHR_JSON = function(url, data, timeout) {
-		var $ptr, _tuple, _tuple$1, channel, data, err, json, timeout, url;
-		channel = chanType$2.nil;
-		err = $ifaceNil;
-		_tuple = StringifyJSON(data); json = _tuple[0]; err = _tuple[1];
-		if (!($interfaceIsEqual(err, $ifaceNil))) {
-			return [channel, err];
-		}
-		_tuple$1 = XHR(url, json, timeout); channel = _tuple$1[0]; err = _tuple$1[1];
-		return [channel, err];
-	};
-	$pkg.XHR_JSON = XHR_JSON;
-	ptrType$4.methods = [{prop: "Name", name: "Name", pkg: "", typ: $funcType([], [$String], false)}];
-	ptrType$7.methods = [{prop: "Success", name: "Success", pkg: "", typ: $funcType([], [], false)}, {prop: "Failure", name: "Failure", pkg: "", typ: $funcType([Duration], [Duration], false)}];
-	ptrType$3.methods = [{prop: "then", name: "then", pkg: "ninchatclient", typ: $funcType([ptrType$2, ptrType$2, ptrType$2], [], false)}, {prop: "Resolve", name: "Resolve", pkg: "", typ: $funcType([sliceType$1], [], true)}, {prop: "Reject", name: "Reject", pkg: "", typ: $funcType([sliceType$1], [], true)}, {prop: "Notify", name: "Notify", pkg: "", typ: $funcType([sliceType$1], [], true)}];
-	ptrType$8.methods = [{prop: "OnSessionEvent", name: "OnSessionEvent", pkg: "", typ: $funcType([ptrType$2], [], false)}, {prop: "OnEvent", name: "OnEvent", pkg: "", typ: $funcType([ptrType$2], [], false)}, {prop: "OnConnState", name: "OnConnState", pkg: "", typ: $funcType([ptrType$2], [], false)}, {prop: "OnConnActive", name: "OnConnActive", pkg: "", typ: $funcType([ptrType$2], [], false)}, {prop: "OnLog", name: "OnLog", pkg: "", typ: $funcType([ptrType$2], [], false)}, {prop: "SetParams", name: "SetParams", pkg: "", typ: $funcType([mapType$1], [], false)}, {prop: "SetTransport", name: "SetTransport", pkg: "", typ: $funcType([ptrType$2], [], false)}, {prop: "SetAddress", name: "SetAddress", pkg: "", typ: $funcType([ptrType$2], [], false)}, {prop: "Open", name: "Open", pkg: "", typ: $funcType([], [], false)}, {prop: "Close", name: "Close", pkg: "", typ: $funcType([], [], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([ptrType$2, ptrType$2], [$emptyInterface], false)}, {prop: "send", name: "send", pkg: "ninchatclient", typ: $funcType([ptrType$4], [], false)}, {prop: "sendAck", name: "sendAck", pkg: "ninchatclient", typ: $funcType([], [], false)}, {prop: "discover", name: "discover", pkg: "ninchatclient", typ: $funcType([], [], false)}, {prop: "connect", name: "connect", pkg: "ninchatclient", typ: $funcType([Transport, sliceType, ptrType$7], [$Bool], false)}, {prop: "canLogin", name: "canLogin", pkg: "ninchatclient", typ: $funcType([], [$Bool], false)}, {prop: "makeCreateSessionAction", name: "makeCreateSessionAction", pkg: "ninchatclient", typ: $funcType([], [ptrType$2], false)}, {prop: "makeResumeSessionAction", name: "makeResumeSessionAction", pkg: "ninchatclient", typ: $funcType([$Bool], [ptrType$2], false)}, {prop: "handleSessionEvent", name: "handleSessionEvent", pkg: "ninchatclient", typ: $funcType([ptrType$2], [$Bool], false)}, {prop: "handleEvent", name: "handleEvent", pkg: "ninchatclient", typ: $funcType([ptrType$2, ptrType$2], [$Uint64, $Bool, $Bool, $Bool], false)}, {prop: "connState", name: "connState", pkg: "ninchatclient", typ: $funcType([$String], [], false)}, {prop: "connActive", name: "connActive", pkg: "ninchatclient", typ: $funcType([], [], false)}, {prop: "log", name: "log", pkg: "ninchatclient", typ: $funcType([sliceType$1], [], true)}];
-	ptrType$5.methods = [{prop: "Active", name: "Active", pkg: "", typ: $funcType([], [$Bool], false)}, {prop: "Reset", name: "Reset", pkg: "", typ: $funcType([Duration], [], false)}, {prop: "Stop", name: "Stop", pkg: "", typ: $funcType([], [], false)}];
-	ptrType$6.methods = [{prop: "Send", name: "Send", pkg: "", typ: $funcType([$emptyInterface], [$error], false)}, {prop: "SendJSON", name: "SendJSON", pkg: "", typ: $funcType([$emptyInterface], [$error], false)}, {prop: "Receive", name: "Receive", pkg: "", typ: $funcType([], [ptrType$2, $error], false)}, {prop: "ReceiveJSON", name: "ReceiveJSON", pkg: "", typ: $funcType([], [ptrType$2, $error], false)}, {prop: "Close", name: "Close", pkg: "", typ: $funcType([], [$error], false)}];
-	Action.init([{prop: "Id", name: "Id", pkg: "", typ: $Uint64, tag: ""}, {prop: "Header", name: "Header", pkg: "", typ: ptrType$2, tag: ""}, {prop: "Payload", name: "Payload", pkg: "", typ: ptrType$2, tag: ""}, {prop: "Deferred", name: "Deferred", pkg: "", typ: ptrType$3, tag: ""}, {prop: "name", name: "name", pkg: "ninchatclient", typ: $String, tag: ""}]);
-	Backoff.init([{prop: "lastSlot", name: "lastSlot", pkg: "ninchatclient", typ: $Int, tag: ""}]);
-	Deferred.init([{prop: "resolve", name: "resolve", pkg: "ninchatclient", typ: sliceType$2, tag: ""}, {prop: "reject", name: "reject", pkg: "ninchatclient", typ: sliceType$2, tag: ""}, {prop: "notify", name: "notify", pkg: "ninchatclient", typ: sliceType$2, tag: ""}]);
-	Transport.init([ptrType$8, $String], [$Bool, $Bool], false);
-	Session.init([{prop: "onSessionEvent", name: "onSessionEvent", pkg: "ninchatclient", typ: ptrType$2, tag: ""}, {prop: "onEvent", name: "onEvent", pkg: "ninchatclient", typ: ptrType$2, tag: ""}, {prop: "onConnState", name: "onConnState", pkg: "ninchatclient", typ: ptrType$2, tag: ""}, {prop: "onConnActive", name: "onConnActive", pkg: "ninchatclient", typ: ptrType$2, tag: ""}, {prop: "onLog", name: "onLog", pkg: "ninchatclient", typ: ptrType$2, tag: ""}, {prop: "address", name: "address", pkg: "ninchatclient", typ: $String, tag: ""}, {prop: "forceLongPoll", name: "forceLongPoll", pkg: "ninchatclient", typ: $Bool, tag: ""}, {prop: "sessionParams", name: "sessionParams", pkg: "ninchatclient", typ: mapType$1, tag: ""}, {prop: "sessionId", name: "sessionId", pkg: "ninchatclient", typ: ptrType$2, tag: ""}, {prop: "latestConnState", name: "latestConnState", pkg: "ninchatclient", typ: $String, tag: ""}, {prop: "latestConnActive", name: "latestConnActive", pkg: "ninchatclient", typ: Time, tag: ""}, {prop: "lastActionId", name: "lastActionId", pkg: "ninchatclient", typ: $Uint64, tag: ""}, {prop: "sendNotify", name: "sendNotify", pkg: "ninchatclient", typ: chanType$1, tag: ""}, {prop: "sendBuffer", name: "sendBuffer", pkg: "ninchatclient", typ: sliceType$3, tag: ""}, {prop: "numSent", name: "numSent", pkg: "ninchatclient", typ: $Int, tag: ""}, {prop: "sendEventAck", name: "sendEventAck", pkg: "ninchatclient", typ: $Bool, tag: ""}, {prop: "receivedEventId", name: "receivedEventId", pkg: "ninchatclient", typ: $Uint64, tag: ""}, {prop: "ackedEventId", name: "ackedEventId", pkg: "ninchatclient", typ: $Uint64, tag: ""}, {prop: "closeNotify", name: "closeNotify", pkg: "ninchatclient", typ: chanType$1, tag: ""}, {prop: "closed", name: "closed", pkg: "ninchatclient", typ: $Bool, tag: ""}, {prop: "stopped", name: "stopped", pkg: "ninchatclient", typ: $Bool, tag: ""}]);
-	Timer.init([{prop: "C", name: "C", pkg: "", typ: chanType$1, tag: ""}, {prop: "id", name: "id", pkg: "ninchatclient", typ: ptrType$2, tag: ""}]);
-	WebSocket.init([{prop: "Notify", name: "Notify", pkg: "", typ: chanType$1, tag: ""}, {prop: "GoingAway", name: "GoingAway", pkg: "", typ: $Bool, tag: ""}, {prop: "impl", name: "impl", pkg: "ninchatclient", typ: ptrType$2, tag: ""}, {prop: "open", name: "open", pkg: "ninchatclient", typ: $Bool, tag: ""}, {prop: "error", name: "error", pkg: "ninchatclient", typ: $error, tag: ""}, {prop: "buffer", name: "buffer", pkg: "ninchatclient", typ: sliceType$2, tag: ""}]);
+	ptrType$6.methods = [{prop: "String", name: "String", pkg: "", typ: $funcType([], [$String], false)}];
+	ptrType.methods = [{prop: "Bool", name: "Bool", pkg: "", typ: $funcType([$String], [$Bool], false)}, {prop: "Int", name: "Int", pkg: "", typ: $funcType([$String], [$Int, $Bool], false)}, {prop: "Int64", name: "Int64", pkg: "", typ: $funcType([$String], [$Int64, $Bool], false)}, {prop: "Float64", name: "Float64", pkg: "", typ: $funcType([$String], [$Float64, $Bool], false)}, {prop: "Str", name: "Str", pkg: "", typ: $funcType([$String], [$String, $Bool], false)}, {prop: "Array", name: "Array", pkg: "", typ: $funcType([$String], [sliceType$1, $Bool], false)}, {prop: "Map", name: "Map", pkg: "", typ: $funcType([$String], [mapType, $Bool], false)}, {prop: "String", name: "String", pkg: "", typ: $funcType([], [$String], false)}, {prop: "initLastReply", name: "initLastReply", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6], [], false)}, {prop: "getError", name: "getError", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [$String, $String, $Bool, $error], false)}];
+	ptrType$9.methods = [{prop: "success", name: "success", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "failure", name: "failure", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([duration], [duration], false)}];
+	ptrType$10.methods = [{prop: "Call", name: "Call", pkg: "", typ: $funcType([ptrType$6], [sliceType$2, $error], false)}];
+	httpHeader.methods = [{prop: "Set", name: "Set", pkg: "", typ: $funcType([$String, $String], [], false)}];
+	ptrType$11.methods = [{prop: "SetParams", name: "SetParams", pkg: "", typ: $funcType([mapType], [], false)}, {prop: "SetTransport", name: "SetTransport", pkg: "", typ: $funcType([$String], [], false)}, {prop: "Open", name: "Open", pkg: "", typ: $funcType([], [], false)}, {prop: "Close", name: "Close", pkg: "", typ: $funcType([], [], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([ptrType$6], [], false)}, {prop: "send", name: "send", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6], [], false)}, {prop: "sendAck", name: "sendAck", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "discover", name: "discover", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "connect", name: "connect", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([transport, sliceType, ptrType$9], [$Bool], false)}, {prop: "canLogin", name: "canLogin", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [$Bool], false)}, {prop: "makeCreateSessionAction", name: "makeCreateSessionAction", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [mapType], false)}, {prop: "makeResumeSessionAction", name: "makeResumeSessionAction", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([$Bool], [mapType], false)}, {prop: "handleSessionEvent", name: "handleSessionEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([mapType], [$Bool], false)}, {prop: "handleEvent", name: "handleEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [$Int64, $Bool, $Bool, $Bool], false)}, {prop: "connState", name: "connState", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([$String], [], false)}, {prop: "connActive", name: "connActive", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "log", name: "log", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([sliceType$1], [], true)}];
+	ptrType$7.methods = [{prop: "Active", name: "Active", pkg: "", typ: $funcType([], [$Bool], false)}, {prop: "Reset", name: "Reset", pkg: "", typ: $funcType([duration], [], false)}, {prop: "Stop", name: "Stop", pkg: "", typ: $funcType([], [], false)}];
+	ptrType$8.methods = [{prop: "send", name: "send", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$3], [$error], false)}, {prop: "sendJSON", name: "sendJSON", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([mapType], [$error], false)}, {prop: "sendPayload", name: "sendPayload", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6], [$error], false)}, {prop: "receive", name: "receive", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [ptrType$3], false)}, {prop: "receiveJSON", name: "receiveJSON", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [mapType, $error], false)}, {prop: "close", name: "close", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}];
+	Action.init([{prop: "Params", name: "Params", pkg: "", typ: mapType, tag: ""}, {prop: "Payload", name: "Payload", pkg: "", typ: sliceType$3, tag: ""}, {prop: "OnReply", name: "OnReply", pkg: "", typ: funcType$2, tag: ""}, {prop: "id", name: "id", pkg: "github.com/ninchat/ninchat-go", typ: $Int64, tag: ""}]);
+	Event.init([{prop: "Params", name: "Params", pkg: "", typ: mapType, tag: ""}, {prop: "Payload", name: "Payload", pkg: "", typ: sliceType$3, tag: ""}, {prop: "LastReply", name: "LastReply", pkg: "", typ: $Bool, tag: ""}]);
+	backoff.init([{prop: "lastSlot", name: "lastSlot", pkg: "github.com/ninchat/ninchat-go", typ: $Int, tag: ""}]);
+	Caller.init([{prop: "Address", name: "Address", pkg: "", typ: $String, tag: ""}]);
+	httpHeader.init($String, $String);
+	httpRequest.init([{prop: "Method", name: "Method", pkg: "", typ: $String, tag: ""}, {prop: "URL", name: "URL", pkg: "", typ: $String, tag: ""}, {prop: "Header", name: "Header", pkg: "", typ: httpHeader, tag: ""}, {prop: "data", name: "data", pkg: "github.com/ninchat/ninchat-go", typ: ptrType$3, tag: ""}]);
+	httpResponse.init([{prop: "data", name: "data", pkg: "github.com/ninchat/ninchat-go", typ: ptrType$3, tag: ""}, {prop: "err", name: "err", pkg: "github.com/ninchat/ninchat-go", typ: $error, tag: ""}]);
+	Session.init([{prop: "OnSessionEvent", name: "OnSessionEvent", pkg: "", typ: funcType$2, tag: ""}, {prop: "OnEvent", name: "OnEvent", pkg: "", typ: funcType$2, tag: ""}, {prop: "OnConnState", name: "OnConnState", pkg: "", typ: funcType$3, tag: ""}, {prop: "OnConnActive", name: "OnConnActive", pkg: "", typ: funcType, tag: ""}, {prop: "OnLog", name: "OnLog", pkg: "", typ: funcType$4, tag: ""}, {prop: "Address", name: "Address", pkg: "", typ: $String, tag: ""}, {prop: "forceLongPoll", name: "forceLongPoll", pkg: "github.com/ninchat/ninchat-go", typ: $Bool, tag: ""}, {prop: "sessionParams", name: "sessionParams", pkg: "github.com/ninchat/ninchat-go", typ: mapType, tag: ""}, {prop: "sessionId", name: "sessionId", pkg: "github.com/ninchat/ninchat-go", typ: $emptyInterface, tag: ""}, {prop: "latestConnState", name: "latestConnState", pkg: "github.com/ninchat/ninchat-go", typ: $String, tag: ""}, {prop: "lastActionId", name: "lastActionId", pkg: "github.com/ninchat/ninchat-go", typ: $Int64, tag: ""}, {prop: "sendNotify", name: "sendNotify", pkg: "github.com/ninchat/ninchat-go", typ: chanType$2, tag: ""}, {prop: "sendBuffer", name: "sendBuffer", pkg: "github.com/ninchat/ninchat-go", typ: sliceType$5, tag: ""}, {prop: "numSent", name: "numSent", pkg: "github.com/ninchat/ninchat-go", typ: $Int, tag: ""}, {prop: "sendEventAck", name: "sendEventAck", pkg: "github.com/ninchat/ninchat-go", typ: $Bool, tag: ""}, {prop: "receivedEventId", name: "receivedEventId", pkg: "github.com/ninchat/ninchat-go", typ: $Int64, tag: ""}, {prop: "ackedEventId", name: "ackedEventId", pkg: "github.com/ninchat/ninchat-go", typ: $Int64, tag: ""}, {prop: "closeNotify", name: "closeNotify", pkg: "github.com/ninchat/ninchat-go", typ: chanType$2, tag: ""}, {prop: "closed", name: "closed", pkg: "github.com/ninchat/ninchat-go", typ: $Bool, tag: ""}, {prop: "running", name: "running", pkg: "github.com/ninchat/ninchat-go", typ: $Bool, tag: ""}]);
+	transport.init([ptrType$11, $String], [$Bool, $Bool], false);
+	timer.init([{prop: "C", name: "C", pkg: "", typ: chanType$2, tag: ""}, {prop: "id", name: "id", pkg: "github.com/ninchat/ninchat-go", typ: ptrType$3, tag: ""}]);
+	webSocket.init([{prop: "notify", name: "notify", pkg: "github.com/ninchat/ninchat-go", typ: chanType$2, tag: ""}, {prop: "goingAway", name: "goingAway", pkg: "github.com/ninchat/ninchat-go", typ: $Bool, tag: ""}, {prop: "err", name: "err", pkg: "github.com/ninchat/ninchat-go", typ: $error, tag: ""}, {prop: "impl", name: "impl", pkg: "github.com/ninchat/ninchat-go", typ: ptrType$3, tag: ""}, {prop: "open", name: "open", pkg: "github.com/ninchat/ninchat-go", typ: $Bool, tag: ""}, {prop: "buf", name: "buf", pkg: "github.com/ninchat/ninchat-go", typ: sliceType$3, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -4660,10 +4483,375 @@ $packages["ninchatclient"] = (function() {
 		$r = sort.$init(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		xhrType = null;
 		xhrRequestHeaderSupport = false;
-		module = NewObject();
-		sessionEventAckWindow = JitterUint64(new $Uint64(0, 4096), -0.25);
-		$pkg.WebSocketSupported = !($global.WebSocket === undefined);
+		sessionEventAckWindow = jitterInt64(new $Int64(0, 4096), -0.25);
+		webSocketSupported = !($global.WebSocket === undefined);
 		init();
+		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.$init = $init;
+	return $pkg;
+})();
+$packages["ninchatclient"] = (function() {
+	var $pkg = {}, $init, js, ninchat, callback1, callback2, promise, sliceType, sliceType$1, ptrType, sliceType$2, mapType, funcType, funcType$1, funcType$2, funcType$3, ptrType$1, structType, chanType, ptrType$2, sliceType$3, sliceType$4, funcType$4, funcType$5, funcType$6, funcType$7, funcType$8, ptrType$3, funcType$9, call, main, newSession;
+	js = $packages["github.com/gopherjs/gopherjs/js"];
+	ninchat = $packages["github.com/ninchat/ninchat-go"];
+	callback1 = $pkg.callback1 = $newType(4, $kindFunc, "main.callback1", "callback1", "ninchatclient", null);
+	callback2 = $pkg.callback2 = $newType(4, $kindFunc, "main.callback2", "callback2", "ninchatclient", null);
+	promise = $pkg.promise = $newType(0, $kindStruct, "main.promise", "promise", "ninchatclient", function(resolvers_, rejecters_, notifiers_, onPanic_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.resolvers = sliceType.nil;
+			this.rejecters = sliceType$1.nil;
+			this.notifiers = sliceType.nil;
+			this.onPanic = $throwNilPointerError;
+			return;
+		}
+		this.resolvers = resolvers_;
+		this.rejecters = rejecters_;
+		this.notifiers = notifiers_;
+		this.onPanic = onPanic_;
+	});
+	sliceType = $sliceType(callback2);
+	sliceType$1 = $sliceType(callback1);
+	ptrType = $ptrType(js.Object);
+	sliceType$2 = $sliceType(ptrType);
+	mapType = $mapType($String, $emptyInterface);
+	funcType = $funcType([mapType, $String, ptrType], [mapType], false);
+	funcType$1 = $funcType([], [mapType], false);
+	funcType$2 = $funcType([ptrType], [ptrType], false);
+	funcType$3 = $funcType([callback2, callback1, callback2], [], false);
+	ptrType$1 = $ptrType(ninchat.Event);
+	structType = $structType([]);
+	chanType = $chanType(structType, false, false);
+	ptrType$2 = $ptrType(ninchat.Action);
+	sliceType$3 = $sliceType(ptrType$2);
+	sliceType$4 = $sliceType($emptyInterface);
+	funcType$4 = $funcType([ptrType], [], false);
+	funcType$5 = $funcType([mapType], [], false);
+	funcType$6 = $funcType([$String], [], false);
+	funcType$7 = $funcType([], [], false);
+	funcType$8 = $funcType([mapType, ptrType], [mapType], false);
+	ptrType$3 = $ptrType(promise);
+	funcType$9 = $funcType([$String, $emptyInterface], [], false);
+	call = function(params, address, onLog) {
+		var $ptr, address, onLog, p, params;
+		p = new promise.ptr(sliceType.nil, sliceType$1.nil, sliceType.nil, (function $b(prefix, x) {
+			var $ptr, _r, _ref, msg, prefix, t, t$1, t$2, x, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _ref = $f._ref; msg = $f.msg; prefix = $f.prefix; t = $f.t; t$1 = $f.t$1; t$2 = $f.t$2; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			/* */ if (!($interfaceIsEqual(x, $ifaceNil)) && !(onLog === null)) { $s = 1; continue; }
+			/* */ $s = 2; continue;
+			/* if (!($interfaceIsEqual(x, $ifaceNil)) && !(onLog === null)) { */ case 1:
+				msg = "";
+				_ref = x;
+				/* */ if ($assertType(_ref, $String, true)[1]) { $s = 3; continue; }
+				/* */ if ($assertType(_ref, $error, true)[1]) { $s = 4; continue; }
+				/* */ $s = 5; continue;
+				/* if ($assertType(_ref, $String, true)[1]) { */ case 3:
+					t = _ref.$val;
+					msg = t;
+					$s = 6; continue;
+				/* } else if ($assertType(_ref, $error, true)[1]) { */ case 4:
+					t$1 = _ref;
+					_r = t$1.Error(); /* */ $s = 7; case 7: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+					msg = _r;
+					$s = 6; continue;
+				/* } else { */ case 5:
+					t$2 = _ref;
+					msg = "?";
+				/* } */ case 6:
+				onLog($externalize(prefix + " " + msg, $String));
+			/* } */ case 2:
+			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._r = _r; $f._ref = _ref; $f.msg = msg; $f.prefix = prefix; $f.t = t; $f.t$1 = t$1; $f.t$2 = t$2; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
+		}));
+		$go((function $b() {
+			var $ptr, _r, _r$1, _tuple, action, caller, err, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; _tuple = $f._tuple; action = $f.action; caller = $f.caller; err = $f.err; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			caller = new ninchat.Caller.ptr(address);
+			action = new ninchat.Action.ptr(params, sliceType$2.nil, $methodVal(p, "onReply"), new $Int64(0, 0));
+			_r = caller.Call(action); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_tuple = _r; err = _tuple[1];
+			/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 2; continue; }
+			/* */ $s = 3; continue;
+			/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 2:
+				_r$1 = err.Error(); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+				onLog($externalize(_r$1, $String));
+			/* } */ case 3:
+			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._tuple = _tuple; $f.action = action; $f.caller = caller; $f.err = err; $f.$s = $s; $f.$r = $r; return $f;
+		}), []);
+		return p.object();
+	};
+	main = function() {
+		var $ptr, module;
+		module = new ($global.Object)();
+		module.call = $externalize(call, funcType);
+		module.newSession = $externalize(newSession, funcType$1);
+		module.stringifyFrame = $externalize(ninchat.StringifyFrame, funcType$2);
+		$global.NinchatClient = module;
+	};
+	promise.ptr.prototype.object = function() {
+		var $ptr, p;
+		p = this;
+		return $makeMap($String.keyFor, [{ k: "then", v: new funcType$3((function(resolve, reject, notify) {
+			var $ptr, notify, reject, resolve;
+			if (!(resolve === $throwNilPointerError)) {
+				p.resolvers = $append(p.resolvers, resolve);
+			}
+			if (!(reject === $throwNilPointerError)) {
+				p.rejecters = $append(p.rejecters, reject);
+			}
+			if (!(notify === $throwNilPointerError)) {
+				p.notifiers = $append(p.notifiers, notify);
+			}
+		})) }]);
+	};
+	promise.prototype.object = function() { return this.$val.object(); };
+	promise.ptr.prototype.onReply = function(e) {
+		var $ptr, _i, _i$1, _i$2, _ref, _ref$1, _ref$2, e, f, f$1, f$2, p, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _i$1 = $f._i$1; _i$2 = $f._i$2; _ref = $f._ref; _ref$1 = $f._ref$1; _ref$2 = $f._ref$2; e = $f.e; f = $f.f; f$1 = $f.f$1; f$2 = $f.f$2; p = $f.p; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		p = this;
+		/* */ if (!(e === ptrType$1.nil)) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if (!(e === ptrType$1.nil)) { */ case 1:
+			/* */ if (e.String() === "error") { $s = 3; continue; }
+			/* */ if (e.LastReply) { $s = 4; continue; }
+			/* */ $s = 5; continue;
+			/* if (e.String() === "error") { */ case 3:
+				_ref = p.rejecters;
+				_i = 0;
+				/* while (true) { */ case 7:
+					/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 8; continue; }
+					f = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+					$r = p.invoke1(f, e, "Promise reject callback:"); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					_i++;
+				/* } */ $s = 7; continue; case 8:
+				$s = 6; continue;
+			/* } else if (e.LastReply) { */ case 4:
+				_ref$1 = p.resolvers;
+				_i$1 = 0;
+				/* while (true) { */ case 10:
+					/* if (!(_i$1 < _ref$1.$length)) { break; } */ if(!(_i$1 < _ref$1.$length)) { $s = 11; continue; }
+					f$1 = ((_i$1 < 0 || _i$1 >= _ref$1.$length) ? $throwRuntimeError("index out of range") : _ref$1.$array[_ref$1.$offset + _i$1]);
+					$r = p.invoke2(f$1, e, "Promise resolve callback:"); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					_i$1++;
+				/* } */ $s = 10; continue; case 11:
+				$s = 6; continue;
+			/* } else { */ case 5:
+				_ref$2 = p.notifiers;
+				_i$2 = 0;
+				/* while (true) { */ case 13:
+					/* if (!(_i$2 < _ref$2.$length)) { break; } */ if(!(_i$2 < _ref$2.$length)) { $s = 14; continue; }
+					f$2 = ((_i$2 < 0 || _i$2 >= _ref$2.$length) ? $throwRuntimeError("index out of range") : _ref$2.$array[_ref$2.$offset + _i$2]);
+					$r = p.invoke2(f$2, e, "Promise notify callback:"); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					_i$2++;
+				/* } */ $s = 13; continue; case 14:
+			/* } */ case 6:
+		/* } */ case 2:
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: promise.ptr.prototype.onReply }; } $f.$ptr = $ptr; $f._i = _i; $f._i$1 = _i$1; $f._i$2 = _i$2; $f._ref = _ref; $f._ref$1 = _ref$1; $f._ref$2 = _ref$2; $f.e = e; $f.f = f; $f.f$1 = f$1; $f.f$2 = f$2; $f.p = p; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	promise.prototype.onReply = function(e) { return this.$val.onReply(e); };
+	promise.ptr.prototype.invoke1 = function(f, e, logPrefix) {
+		var $ptr, e, f, logPrefix, p, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; e = $f.e; f = $f.f; logPrefix = $f.logPrefix; p = $f.p; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		logPrefix = [logPrefix];
+		p = [p];
+		p[0] = this;
+		$deferred.push([(function(logPrefix, p) { return function $b() {
+			var $ptr, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			$r = p[0].onPanic(logPrefix[0], $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
+		}; })(logPrefix, p), []]);
+		$r = f(e.Params); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: promise.ptr.prototype.invoke1 }; } $f.$ptr = $ptr; $f.e = e; $f.f = f; $f.logPrefix = logPrefix; $f.p = p; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+	};
+	promise.prototype.invoke1 = function(f, e, logPrefix) { return this.$val.invoke1(f, e, logPrefix); };
+	promise.ptr.prototype.invoke2 = function(f, e, logPrefix) {
+		var $ptr, e, f, logPrefix, p, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; e = $f.e; f = $f.f; logPrefix = $f.logPrefix; p = $f.p; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		logPrefix = [logPrefix];
+		p = [p];
+		p[0] = this;
+		$deferred.push([(function(logPrefix, p) { return function $b() {
+			var $ptr, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			$r = p[0].onPanic(logPrefix[0], $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
+		}; })(logPrefix, p), []]);
+		$r = f(e.Params, e.Payload); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: promise.ptr.prototype.invoke2 }; } $f.$ptr = $ptr; $f.e = e; $f.f = f; $f.logPrefix = logPrefix; $f.p = p; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+	};
+	promise.prototype.invoke2 = function(f, e, logPrefix) { return this.$val.invoke2(f, e, logPrefix); };
+	newSession = function() {
+		var $ptr, onPanic, s;
+		s = new ninchat.Session.ptr($throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, "", false, false, $ifaceNil, "", new $Int64(0, 0), chanType.nil, sliceType$3.nil, 0, false, new $Int64(0, 0), new $Int64(0, 0), chanType.nil, false, false);
+		onPanic = (function $b(prefix, x) {
+			var $ptr, _r, _ref, msg, prefix, t, t$1, t$2, x, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _ref = $f._ref; msg = $f.msg; prefix = $f.prefix; t = $f.t; t$1 = $f.t$1; t$2 = $f.t$2; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			/* */ if (!($interfaceIsEqual(x, $ifaceNil)) && !(s.OnLog === $throwNilPointerError)) { $s = 1; continue; }
+			/* */ $s = 2; continue;
+			/* if (!($interfaceIsEqual(x, $ifaceNil)) && !(s.OnLog === $throwNilPointerError)) { */ case 1:
+				msg = "";
+				_ref = x;
+				/* */ if ($assertType(_ref, $String, true)[1]) { $s = 3; continue; }
+				/* */ if ($assertType(_ref, $error, true)[1]) { $s = 4; continue; }
+				/* */ $s = 5; continue;
+				/* if ($assertType(_ref, $String, true)[1]) { */ case 3:
+					t = _ref.$val;
+					msg = t;
+					$s = 6; continue;
+				/* } else if ($assertType(_ref, $error, true)[1]) { */ case 4:
+					t$1 = _ref;
+					_r = t$1.Error(); /* */ $s = 7; case 7: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+					msg = _r;
+					$s = 6; continue;
+				/* } else { */ case 5:
+					t$2 = _ref;
+					msg = "?";
+				/* } */ case 6:
+				$r = s.OnLog(new sliceType$4([new $String(prefix), new $String(msg)])); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 2:
+			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._r = _r; $f._ref = _ref; $f.msg = msg; $f.prefix = prefix; $f.t = t; $f.t$1 = t$1; $f.t$2 = t$2; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
+		});
+		return $makeMap($String.keyFor, [{ k: "onSessionEvent", v: new funcType$4((function(onSessionEvent) {
+			var $ptr, onSessionEvent;
+			s.OnSessionEvent = (function $b(e) {
+				var $ptr, e, $s, $deferred, $r;
+				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; e = $f.e; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+				$deferred.push([(function $b() {
+					var $ptr, $s, $r;
+					/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+					$r = onPanic("Session onSessionEvent callback:", $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
+				}), []]);
+				onSessionEvent($externalize(e.Params, mapType));
+				/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.e = e; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+			});
+		})) }, { k: "onEvent", v: new funcType$4((function(onEvent) {
+			var $ptr, onEvent;
+			s.OnEvent = (function $b(e) {
+				var $ptr, e, $s, $deferred, $r;
+				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; e = $f.e; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+				$deferred.push([(function $b() {
+					var $ptr, $s, $r;
+					/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+					$r = onPanic("Session onEvent callback:", $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
+				}), []]);
+				onEvent($externalize(e.Params, mapType), $externalize(e.Payload, sliceType$2));
+				/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.e = e; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+			});
+		})) }, { k: "onConnState", v: new funcType$4((function(onConnState) {
+			var $ptr, onConnState;
+			if (onConnState === null) {
+				s.OnConnState = $throwNilPointerError;
+				return;
+			}
+			s.OnConnState = (function $b(state) {
+				var $ptr, state, $s, $deferred, $r;
+				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; state = $f.state; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+				$deferred.push([(function $b() {
+					var $ptr, $s, $r;
+					/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+					$r = onPanic("Session onConnState callback:", $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
+				}), []]);
+				onConnState($externalize(state, $String));
+				/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.state = state; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+			});
+		})) }, { k: "onConnActive", v: new funcType$4((function(onConnActive) {
+			var $ptr, onConnActive;
+			if (onConnActive === null) {
+				s.OnConnActive = $throwNilPointerError;
+				return;
+			}
+			s.OnConnActive = (function $b() {
+				var $ptr, $s, $deferred, $r;
+				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+				$deferred.push([(function $b() {
+					var $ptr, $s, $r;
+					/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+					$r = onPanic("Session onConnActive callback:", $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
+				}), []]);
+				onConnActive(new ($global.Date)().getTime());
+				/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+			});
+		})) }, { k: "onLog", v: new funcType$4((function(onLog) {
+			var $ptr, onLog;
+			if (onLog === null) {
+				s.OnLog = $throwNilPointerError;
+				return;
+			}
+			s.OnLog = (function $b(tokens) {
+				var $ptr, _i, _r, _ref, _tuple, _tuple$1, message, ok, ok$1, str, tokens, x, y, y$1, $s, $deferred, $r;
+				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _r = $f._r; _ref = $f._ref; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; message = $f.message; ok = $f.ok; ok$1 = $f.ok$1; str = $f.str; tokens = $f.tokens; x = $f.x; y = $f.y; y$1 = $f.y$1; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+				$deferred.push([(function() {
+					var $ptr;
+					$recover();
+				}), []]);
+				message = "";
+				_ref = tokens;
+				_i = 0;
+				/* while (true) { */ case 1:
+					/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 2; continue; }
+					x = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+					str = "?";
+					_tuple = $assertType(x, $String, true); y = _tuple[0]; ok = _tuple[1];
+					/* */ if (ok) { $s = 3; continue; }
+					/* */ $s = 4; continue;
+					/* if (ok) { */ case 3:
+						str = y;
+						$s = 5; continue;
+					/* } else { */ case 4:
+						_tuple$1 = $assertType(x, $error, true); y$1 = _tuple$1[0]; ok$1 = _tuple$1[1];
+						/* */ if (ok$1) { $s = 6; continue; }
+						/* */ $s = 7; continue;
+						/* if (ok$1) { */ case 6:
+							_r = y$1.Error(); /* */ $s = 8; case 8: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+							str = _r;
+						/* } */ case 7:
+					/* } */ case 5:
+					if (message.length > 0) {
+						message = message + (" ");
+					}
+					message = message + (str);
+					_i++;
+				/* } */ $s = 1; continue; case 2:
+				while (true) {
+					if (!(message.length > 0 && (message.charCodeAt((message.length - 1 >> 0)) === 32))) { break; }
+					message = message.substring(0, (message.length - 1 >> 0));
+				}
+				onLog($externalize(message, $String));
+				/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._i = _i; $f._r = _r; $f._ref = _ref; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.message = message; $f.ok = ok; $f.ok$1 = ok$1; $f.str = str; $f.tokens = tokens; $f.x = x; $f.y = y; $f.y$1 = y$1; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+			});
+		})) }, { k: "setParams", v: new funcType$5($methodVal(s, "SetParams")) }, { k: "setTransport", v: new funcType$6($methodVal(s, "SetTransport")) }, { k: "setAddress", v: new funcType$6((function(value) {
+			var $ptr, value;
+			s.Address = value;
+		})) }, { k: "open", v: new funcType$7($methodVal(s, "Open")) }, { k: "close", v: new funcType$7($methodVal(s, "Close")) }, { k: "send", v: new funcType$8((function(params, payload) {
+			var $ptr, action, i, p, params, payload;
+			p = new promise.ptr(sliceType.nil, sliceType$1.nil, sliceType.nil, onPanic);
+			action = new ninchat.Action.ptr(params, sliceType$2.nil, $methodVal(p, "onReply"), new $Int64(0, 0));
+			if (!(payload === null) && !(payload === undefined)) {
+				i = 0;
+				while (true) {
+					if (!(i < $parseInt(payload.length))) { break; }
+					action.Payload = $append(action.Payload, payload[i]);
+					i = i + (1) >> 0;
+				}
+			}
+			s.Send(action);
+			return p.object();
+		})) }]);
+	};
+	ptrType$3.methods = [{prop: "object", name: "object", pkg: "ninchatclient", typ: $funcType([], [mapType], false)}, {prop: "onReply", name: "onReply", pkg: "ninchatclient", typ: $funcType([ptrType$1], [], false)}, {prop: "invoke1", name: "invoke1", pkg: "ninchatclient", typ: $funcType([callback1, ptrType$1, $String], [], false)}, {prop: "invoke2", name: "invoke2", pkg: "ninchatclient", typ: $funcType([callback2, ptrType$1, $String], [], false)}];
+	callback1.init([mapType], [], false);
+	callback2.init([mapType, sliceType$2], [], false);
+	promise.init([{prop: "resolvers", name: "resolvers", pkg: "ninchatclient", typ: sliceType, tag: ""}, {prop: "rejecters", name: "rejecters", pkg: "ninchatclient", typ: sliceType$1, tag: ""}, {prop: "notifiers", name: "notifiers", pkg: "ninchatclient", typ: sliceType, tag: ""}, {prop: "onPanic", name: "onPanic", pkg: "ninchatclient", typ: funcType$9, tag: ""}]);
+	$init = function() {
+		$pkg.$init = function() {};
+		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		$r = js.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = ninchat.$init(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		if ($pkg === $mainPkg) {
 			main();
 		}

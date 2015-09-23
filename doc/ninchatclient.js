@@ -7,9 +7,9 @@
  */
 
 /**
- * Call the sessionless API.  Implemented using the GET method.  The
- * returned promise will be resolved with an event header array as a
- * parameter to the callback functions, or rejected without a parameter.
+ * Call the sessionless API.  The returned promise will be resolved with an
+ * event header array as a parameter to the callback functions, or rejected
+ * without a parameter.
  *
  * @see https://ninchat.com/api/v2#sessionless-http-calling
  *

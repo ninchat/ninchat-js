@@ -4,3 +4,6 @@
 [submodule "src/github.com/gopherjs/gopherjs"]
 	path = src/github.com/gopherjs/gopherjs
 	url = https://github.com/gopherjs/gopherjs.git
+[submodule "src/github.com/ninchat/ninchat-go"]
+	path = src/github.com/ninchat/ninchat-go
+	url = https://github.com/ninchat/ninchat-go.git
