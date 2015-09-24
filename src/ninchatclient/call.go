@@ -5,7 +5,7 @@ import (
 	"github.com/ninchat/ninchat-go"
 )
 
-func call(params map[string]interface{}, address string, onLog *js.Object) map[string]interface{} {
+func call(params map[string]interface{}, onLog *js.Object, address string) map[string]interface{} {
 	p := &promise{
 		onPanic: func(prefix string, x interface{}) {
 			if x != nil && onLog != nil {

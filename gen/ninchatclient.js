@@ -4516,7 +4516,7 @@ $packages["ninchatclient"] = (function() {
 	ptrType = $ptrType(js.Object);
 	sliceType$2 = $sliceType(ptrType);
 	mapType = $mapType($String, $emptyInterface);
-	funcType = $funcType([mapType, $String, ptrType], [mapType], false);
+	funcType = $funcType([mapType, ptrType, $String], [mapType], false);
 	funcType$1 = $funcType([], [mapType], false);
 	funcType$2 = $funcType([ptrType], [ptrType], false);
 	funcType$3 = $funcType([callback2, callback1, callback2], [], false);
@@ -4533,7 +4533,7 @@ $packages["ninchatclient"] = (function() {
 	funcType$8 = $funcType([mapType, ptrType], [mapType], false);
 	ptrType$3 = $ptrType(promise);
 	funcType$9 = $funcType([$String, $emptyInterface], [], false);
-	call = function(params, address, onLog) {
+	call = function(params, onLog, address) {
 		var $ptr, address, onLog, p, params;
 		p = new promise.ptr(sliceType.nil, sliceType$1.nil, sliceType.nil, (function $b(prefix, x) {
 			var $ptr, _r, _ref, msg, prefix, t, t$1, t$2, x, $s, $r;
