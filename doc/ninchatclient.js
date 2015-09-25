@@ -8,8 +8,10 @@
 
 /**
  * Call the sessionless API.  The returned promise will be resolved with an
- * event header array as a parameter to the callback functions, or rejected
- * without a parameter.
+ * event header array as a parameter to the callback functions, or rejected on
+ * connection error.  Note that "error" events are delivered via the Promise's
+ * resolve callback, not via the reject callback like when using a Session.
+ * The notify callback is not used.
  *
  * @see https://ninchat.com/api/v2#sessionless-http-calling
  *
