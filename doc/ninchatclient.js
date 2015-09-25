@@ -6,11 +6,11 @@
 NinchatClient = {
 
 	/**
-	 * Call the sessionless API.  The returned promise will be resolved with an
-	 * event header array as a parameter to the callback functions, or rejected on
-	 * connection error.  Note that `error` events are delivered via the Promise's
-	 * resolve callback, not via the reject callback like when using a Session.
-	 * The notify callback is not used.
+	 * Call the sessionless API.  The returned [Promise](#promise) will be
+	 * resolved with an event header array as a parameter to the callback
+	 * functions, or rejected on connection error.  Note that `error` events
+	 * are delivered via the promise's resolve callback, not via the reject
+	 * callback like when using a Session.  The notify callback is not used.
 	 *
 	 * @see https://ninchat.com/api/v2#sessionless-http-calling
 	 *
@@ -25,7 +25,7 @@ NinchatClient = {
 	call: function(header, onLog, address) {},
 
 	/**
-	 * Create an uninitialized Session object.
+	 * Create an uninitialized [Session](#session) object.
 	 *
 	 * @return {Session}
 	 *
@@ -172,9 +172,9 @@ function Session() {
 	 * To send an action without an `action_id` parameter, specify it as
 	 * null.  Otherwise an `action_id` is generated automatically.
 	 *
-	 * If an `action_id` is used, a promise is returned.  It may be used to
-	 * wait for a reply from the server; the promise will be resolved with
-	 * an event header and a payload array parameter.  If the Session
+	 * If an `action_id` is used, a [Promise](#promise) is returned.  It may be
+	 * used to wait for a reply from the server; the promise will be resolved
+	 * with an event header and a payload array parameter.  If the Session
 	 * object is closed before a reply is received, the promise will be
 	 * rejected without a parameter.
 	 *
