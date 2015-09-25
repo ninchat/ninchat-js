@@ -8,7 +8,7 @@ NinchatClient = {
 	/**
 	 * Call the sessionless API.  The returned promise will be resolved with an
 	 * event header array as a parameter to the callback functions, or rejected on
-	 * connection error.  Note that "error" events are delivered via the Promise's
+	 * connection error.  Note that `error` events are delivered via the Promise's
 	 * resolve callback, not via the reject callback like when using a Session.
 	 * The notify callback is not used.
 	 *
@@ -61,12 +61,12 @@ function Session() {
 
 	/**
 	 * Set the session creation handler.  It will be invoked with a
-	 * "session_created" or an "error" event header as a parameter.
+	 * `session_created` or an `error` event header as a parameter.
 	 *
-	 * If another "session_created" event is received, it means that the
+	 * If another `session_created` event is received, it means that the
 	 * previous session was lost, and a new one was established automatically.
 	 *
-	 * If an "error" event is received, it means that a new session can't be
+	 * If an `error` event is received, it means that a new session can't be
 	 * established without intervention.  The client code must call setParams()
 	 * to supply new credentials, unless it decides to close().
 	 *
@@ -80,7 +80,7 @@ function Session() {
 	 * Set the handler for in-session events. It will be invoked with an
 	 * event header and a payload array parameter.
 	 *
-	 * "error" events received via this callback are not fatal.
+	 * `error` events received via this callback are not fatal.
 	 *
 	 * @param {Function}  callback
 	 *
@@ -92,9 +92,9 @@ function Session() {
 	 * Set an optional connection state change monitor.  It will be called with
 	 * one of the following strings:
 	 *
-	 * - "connecting"
-	 * - "connected"
-	 * - "disconnected"
+	 * - `connecting`
+	 * - `connected`
+	 * - `disconnected`
 	 *
 	 * @param {Function}  callback
 	 *
@@ -124,7 +124,7 @@ function Session() {
 	this.onLog = function(callback) {}
 
 	/**
-	 * Set "create_session" action parameters.  If open() has already been
+	 * Set `create_session` action parameters.  If open() has already been
 	 * called, this takes effect when a session is lost.
 	 *
 	 * @param {Object}  params
@@ -135,7 +135,7 @@ function Session() {
 
 	/**
 	 * Force a specific network transport implementation to be used.
-	 * Currently only "longpoll" may be specified.
+	 * Currently only `longpoll` may be specified.
 	 *
 	 * @param {String}  name
 	 *
@@ -169,10 +169,10 @@ function Session() {
 	/**
 	 * Send an action.
 	 *
-	 * To send an action without an "action_id" parameter, specify it as
-	 * null.  Otherwise an "action_id" is generated automatically.
+	 * To send an action without an `action_id` parameter, specify it as
+	 * null.  Otherwise an `action_id` is generated automatically.
 	 *
-	 * If an "action_id" is used, a promise is returned.  It may be used to
+	 * If an `action_id` is used, a promise is returned.  It may be used to
 	 * wait for a reply from the server; the promise will be resolved with
 	 * an event header and a payload array parameter.  If the Session
 	 * object is closed before a reply is received, the promise will be
@@ -182,8 +182,8 @@ function Session() {
 	 * callback will be called for each event until the final event which
 	 * resolves the promise.
 	 *
-	 * @param {object}  header     Action parameters to send.
-	 * @param {array}   [payload]  Consists of (already encoded) data
+	 * @param {Object}  header     Action parameters to send.
+	 * @param {Array}   [payload]  Consists of (already encoded) data
 	 *                             frames.
 	 *
 	 * @return {Promise}
@@ -204,8 +204,6 @@ function Promise() {
 	/**
 	 * Add callback(s) to be called when the promise is resolved, updated
 	 * (notify) or rejected.
-	 *
-	 * Promise objects may not be instantiated directly.
 	 *
 	 * @param {Function}  [resolve]
 	 * @param {Function}  [reject]
