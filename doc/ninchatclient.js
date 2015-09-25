@@ -57,7 +57,7 @@ NinchatClient = {
  *
  * @class
  */
-function Session() {
+function Session() { return {
 
 	/**
 	 * Set the session creation handler.  It will be invoked with a
@@ -74,7 +74,7 @@ function Session() {
 	 *
 	 * @name Session.onSessionEvent
 	 */
-	this.onSessionEvent = function(callback) {}
+	onSessionEvent: function(callback) {},
 
 	/**
 	 * Set the handler for in-session events. It will be invoked with an
@@ -86,7 +86,7 @@ function Session() {
 	 *
 	 * @name Session.onEvent
 	 */
-	this.onEvent = function(callback) {}
+	onEvent: function(callback) {},
 
 	/**
 	 * Set an optional connection state change monitor.  It will be called with
@@ -100,7 +100,7 @@ function Session() {
 	 *
 	 * @name Session.onConnState
 	 */
-	this.onConnState = function(callback) {}
+	onConnState: function(callback) {},
 
 	/**
 	 * Set an optional connection activity monitor.  It will be called with a
@@ -111,7 +111,7 @@ function Session() {
 	 *
 	 * @name Session.onConnActive
 	 */
-	this.onConnActive = function(callback) {}
+	onConnActive: function(callback) {},
 
 	/**
 	 * Set an optional message logger.  It will be called with a single string
@@ -121,7 +121,7 @@ function Session() {
 	 *
 	 * @name Session.onLog
 	 */
-	this.onLog = function(callback) {}
+	onLog: function(callback) {},
 
 	/**
 	 * Set `create_session` action parameters.  If open() has already been
@@ -131,7 +131,7 @@ function Session() {
 	 *
 	 * @name Session.setParams
 	 */
-	this.setParams = function(params) {}
+	setParams: function(params) {},
 
 	/**
 	 * Force a specific network transport implementation to be used.
@@ -141,7 +141,7 @@ function Session() {
 	 *
 	 * @name Session.setTransport
 	 */
-	this.setTransport = function(name) {}
+	setTransport: function(name) {},
 
 	/**
 	 * Use an alternative API endpoint.
@@ -150,21 +150,21 @@ function Session() {
 	 *
 	 * @name Session.setAddress
 	 */
-	this.setAddress = function(address) {}
+	setAddress: function(address) {},
 
 	/**
 	 * Create a session on the server.
 	 *
 	 * @name Session.open
 	 */
-	this.open = function() {}
+	open: function() {},
 
 	/**
 	 * Close the session on the server.
 	 *
 	 * @name Session.close
 	 */
-	this.close = function() {}
+	close: function() {},
 
 	/**
 	 * Send an action.
@@ -190,16 +190,16 @@ function Session() {
 	 *
 	 * @name Session.send
 	 */
-	this.send = function(header, payload) {}
+	send: function(header, payload) {}
 
-};
+} };
 
 /**
  * Promise objects may not be instantiated directly.
  *
  * @class
  */
-function Promise() {
+function Promise() { return {
 
 	/**
 	 * Add callback(s) to be called when the promise is resolved, updated
@@ -211,6 +211,6 @@ function Promise() {
 	 *
 	 * @name Promise.then
 	 */
-	this.then = function(resolve, reject, notify) {};
+	then: function(resolve, reject, notify) {}
 
-};
+} };
