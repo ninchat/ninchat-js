@@ -6,7 +6,7 @@ import (
 )
 
 type callback1 func(params map[string]interface{})
-type callback2 func(params map[string]interface{}, payload []*js.Object)
+type callback2 func(paramsOrArrayOfParams interface{}, payload []*js.Object)
 
 type promise struct {
 	resolvers []callback2
@@ -51,6 +51,12 @@ func (p *promise) onReply(e *ninchat.Event) {
 	}
 }
 
+func (p *promise) resolveCall(paramsArray []map[string]interface{}) {
+	for _, f := range p.resolvers {
+		p.invokeCall(f, paramsArray, "Promise resolve callback:")
+	}
+}
+
 func (p *promise) invoke1(f callback1, e *ninchat.Event, logPrefix string) {
 	defer func() {
 		p.onPanic(logPrefix, recover())
@@ -65,4 +71,12 @@ func (p *promise) invoke2(f callback2, e *ninchat.Event, logPrefix string) {
 	}()
 
 	f(e.Params, e.Payload)
+}
+
+func (p *promise) invokeCall(f callback2, paramsArray []map[string]interface{}, logPrefix string) {
+	defer func() {
+		p.onPanic(logPrefix, recover())
+	}()
+
+	f(paramsArray, nil)
 }

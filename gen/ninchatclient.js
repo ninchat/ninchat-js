@@ -4492,7 +4492,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	return $pkg;
 })();
 $packages["ninchatclient"] = (function() {
-	var $pkg = {}, $init, js, ninchat, callback1, callback2, promise, sliceType, sliceType$1, ptrType, sliceType$2, mapType, funcType, funcType$1, funcType$2, funcType$3, ptrType$1, structType, chanType, ptrType$2, sliceType$3, sliceType$4, funcType$4, funcType$5, funcType$6, funcType$7, funcType$8, ptrType$3, funcType$9, call, main, newSession;
+	var $pkg = {}, $init, js, ninchat, callback1, callback2, promise, sliceType, sliceType$1, ptrType, sliceType$2, mapType, sliceType$3, funcType, funcType$1, funcType$2, funcType$3, ptrType$1, structType, chanType, ptrType$2, sliceType$4, sliceType$5, funcType$4, funcType$5, funcType$6, funcType$7, funcType$8, ptrType$3, funcType$9, call, main, newSession;
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	ninchat = $packages["github.com/ninchat/ninchat-go"];
 	callback1 = $pkg.callback1 = $newType(4, $kindFunc, "main.callback1", "callback1", "ninchatclient", null);
@@ -4516,6 +4516,7 @@ $packages["ninchatclient"] = (function() {
 	ptrType = $ptrType(js.Object);
 	sliceType$2 = $sliceType(ptrType);
 	mapType = $mapType($String, $emptyInterface);
+	sliceType$3 = $sliceType(mapType);
 	funcType = $funcType([mapType, ptrType, $String], [mapType], false);
 	funcType$1 = $funcType([], [mapType], false);
 	funcType$2 = $funcType([ptrType], [ptrType], false);
@@ -4524,8 +4525,8 @@ $packages["ninchatclient"] = (function() {
 	structType = $structType([]);
 	chanType = $chanType(structType, false, false);
 	ptrType$2 = $ptrType(ninchat.Action);
-	sliceType$3 = $sliceType(ptrType$2);
-	sliceType$4 = $sliceType($emptyInterface);
+	sliceType$4 = $sliceType(ptrType$2);
+	sliceType$5 = $sliceType($emptyInterface);
 	funcType$4 = $funcType([ptrType], [], false);
 	funcType$5 = $funcType([mapType], [], false);
 	funcType$6 = $funcType([$String], [], false);
@@ -4564,19 +4565,32 @@ $packages["ninchatclient"] = (function() {
 			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._r = _r; $f._ref = _ref; $f.msg = msg; $f.prefix = prefix; $f.t = t; $f.t$1 = t$1; $f.t$2 = t$2; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
 		}));
 		$go((function $b() {
-			var $ptr, _r, _r$1, _tuple, action, caller, err, $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _r$1 = $f._r$1; _tuple = $f._tuple; action = $f.action; caller = $f.caller; err = $f.err; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			var $ptr, _i, _r, _r$1, _ref, _tuple, action, caller, e, err, events, paramsArray, reason, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _r = $f._r; _r$1 = $f._r$1; _ref = $f._ref; _tuple = $f._tuple; action = $f.action; caller = $f.caller; e = $f.e; err = $f.err; events = $f.events; paramsArray = $f.paramsArray; reason = $f.reason; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 			caller = new ninchat.Caller.ptr(address);
-			action = new ninchat.Action.ptr(params, sliceType$2.nil, $methodVal(p, "onReply"), new $Int64(0, 0));
+			action = new ninchat.Action.ptr(params, sliceType$2.nil, $throwNilPointerError, new $Int64(0, 0));
 			_r = caller.Call(action); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_tuple = _r; err = _tuple[1];
+			_tuple = _r; events = _tuple[0]; err = _tuple[1];
 			/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 2; continue; }
 			/* */ $s = 3; continue;
 			/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 2:
 				_r$1 = err.Error(); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-				onLog($externalize(_r$1, $String));
+				reason = _r$1;
+				onLog($externalize(reason, $String));
+				$r = p.onReply(new ninchat.Event.ptr($makeMap($String.keyFor, [{ k: "event", v: new $String("error") }, { k: "error_type", v: new $String("internal") }, { k: "error_reason", v: new $String(reason) }]), sliceType$2.nil, false)); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				return;
 			/* } */ case 3:
-			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._tuple = _tuple; $f.action = action; $f.caller = caller; $f.err = err; $f.$s = $s; $f.$r = $r; return $f;
+			paramsArray = sliceType$3.nil;
+			_ref = events;
+			_i = 0;
+			while (true) {
+				if (!(_i < _ref.$length)) { break; }
+				e = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+				paramsArray = $append(paramsArray, e.Params);
+				_i++;
+			}
+			$r = p.resolveCall(paramsArray); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._i = _i; $f._r = _r; $f._r$1 = _r$1; $f._ref = _ref; $f._tuple = _tuple; $f.action = action; $f.caller = caller; $f.e = e; $f.err = err; $f.events = events; $f.paramsArray = paramsArray; $f.reason = reason; $f.$s = $s; $f.$r = $r; return $f;
 		}), []);
 		return p.object();
 	};
@@ -4649,6 +4663,21 @@ $packages["ninchatclient"] = (function() {
 		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: promise.ptr.prototype.onReply }; } $f.$ptr = $ptr; $f._i = _i; $f._i$1 = _i$1; $f._i$2 = _i$2; $f._ref = _ref; $f._ref$1 = _ref$1; $f._ref$2 = _ref$2; $f.e = e; $f.f = f; $f.f$1 = f$1; $f.f$2 = f$2; $f.p = p; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	promise.prototype.onReply = function(e) { return this.$val.onReply(e); };
+	promise.ptr.prototype.resolveCall = function(paramsArray) {
+		var $ptr, _i, _ref, f, p, paramsArray, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _ref = $f._ref; f = $f.f; p = $f.p; paramsArray = $f.paramsArray; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		p = this;
+		_ref = p.resolvers;
+		_i = 0;
+		/* while (true) { */ case 1:
+			/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 2; continue; }
+			f = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+			$r = p.invokeCall(f, paramsArray, "Promise resolve callback:"); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_i++;
+		/* } */ $s = 1; continue; case 2:
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: promise.ptr.prototype.resolveCall }; } $f.$ptr = $ptr; $f._i = _i; $f._ref = _ref; $f.f = f; $f.p = p; $f.paramsArray = paramsArray; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	promise.prototype.resolveCall = function(paramsArray) { return this.$val.resolveCall(paramsArray); };
 	promise.ptr.prototype.invoke1 = function(f, e, logPrefix) {
 		var $ptr, e, f, logPrefix, p, $s, $deferred, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; e = $f.e; f = $f.f; logPrefix = $f.logPrefix; p = $f.p; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
@@ -4677,13 +4706,29 @@ $packages["ninchatclient"] = (function() {
 			$r = p[0].onPanic(logPrefix[0], $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
 		}; })(logPrefix, p), []]);
-		$r = f(e.Params, e.Payload); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = f(new mapType(e.Params), e.Payload); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: promise.ptr.prototype.invoke2 }; } $f.$ptr = $ptr; $f.e = e; $f.f = f; $f.logPrefix = logPrefix; $f.p = p; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	promise.prototype.invoke2 = function(f, e, logPrefix) { return this.$val.invoke2(f, e, logPrefix); };
+	promise.ptr.prototype.invokeCall = function(f, paramsArray, logPrefix) {
+		var $ptr, f, logPrefix, p, paramsArray, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; f = $f.f; logPrefix = $f.logPrefix; p = $f.p; paramsArray = $f.paramsArray; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		logPrefix = [logPrefix];
+		p = [p];
+		p[0] = this;
+		$deferred.push([(function(logPrefix, p) { return function $b() {
+			var $ptr, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			$r = p[0].onPanic(logPrefix[0], $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
+		}; })(logPrefix, p), []]);
+		$r = f(paramsArray, sliceType$2.nil); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: promise.ptr.prototype.invokeCall }; } $f.$ptr = $ptr; $f.f = f; $f.logPrefix = logPrefix; $f.p = p; $f.paramsArray = paramsArray; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+	};
+	promise.prototype.invokeCall = function(f, paramsArray, logPrefix) { return this.$val.invokeCall(f, paramsArray, logPrefix); };
 	newSession = function() {
 		var $ptr, onPanic, s;
-		s = new ninchat.Session.ptr($throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, "", false, false, $ifaceNil, "", new $Int64(0, 0), chanType.nil, sliceType$3.nil, 0, false, new $Int64(0, 0), new $Int64(0, 0), chanType.nil, false, false);
+		s = new ninchat.Session.ptr($throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, "", false, false, $ifaceNil, "", new $Int64(0, 0), chanType.nil, sliceType$4.nil, 0, false, new $Int64(0, 0), new $Int64(0, 0), chanType.nil, false, false);
 		onPanic = (function $b(prefix, x) {
 			var $ptr, _r, _ref, msg, prefix, t, t$1, t$2, x, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; _ref = $f._ref; msg = $f.msg; prefix = $f.prefix; t = $f.t; t$1 = $f.t$1; t$2 = $f.t$2; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -4708,7 +4753,7 @@ $packages["ninchatclient"] = (function() {
 					t$2 = _ref;
 					msg = "?";
 				/* } */ case 6:
-				$r = s.OnLog(new sliceType$4([new $String(prefix), new $String(msg)])); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = s.OnLog(new sliceType$5([new $String(prefix), new $String(msg)])); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			/* } */ case 2:
 			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._r = _r; $f._ref = _ref; $f.msg = msg; $f.prefix = prefix; $f.t = t; $f.t$1 = t$1; $f.t$2 = t$2; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
 		});
@@ -4843,9 +4888,9 @@ $packages["ninchatclient"] = (function() {
 			return p.object();
 		})) }]);
 	};
-	ptrType$3.methods = [{prop: "object", name: "object", pkg: "ninchatclient", typ: $funcType([], [mapType], false)}, {prop: "onReply", name: "onReply", pkg: "ninchatclient", typ: $funcType([ptrType$1], [], false)}, {prop: "invoke1", name: "invoke1", pkg: "ninchatclient", typ: $funcType([callback1, ptrType$1, $String], [], false)}, {prop: "invoke2", name: "invoke2", pkg: "ninchatclient", typ: $funcType([callback2, ptrType$1, $String], [], false)}];
+	ptrType$3.methods = [{prop: "object", name: "object", pkg: "ninchatclient", typ: $funcType([], [mapType], false)}, {prop: "onReply", name: "onReply", pkg: "ninchatclient", typ: $funcType([ptrType$1], [], false)}, {prop: "resolveCall", name: "resolveCall", pkg: "ninchatclient", typ: $funcType([sliceType$3], [], false)}, {prop: "invoke1", name: "invoke1", pkg: "ninchatclient", typ: $funcType([callback1, ptrType$1, $String], [], false)}, {prop: "invoke2", name: "invoke2", pkg: "ninchatclient", typ: $funcType([callback2, ptrType$1, $String], [], false)}, {prop: "invokeCall", name: "invokeCall", pkg: "ninchatclient", typ: $funcType([callback2, sliceType$3, $String], [], false)}];
 	callback1.init([mapType], [], false);
-	callback2.init([mapType, sliceType$2], [], false);
+	callback2.init([$emptyInterface, sliceType$2], [], false);
 	promise.init([{prop: "resolvers", name: "resolvers", pkg: "ninchatclient", typ: sliceType, tag: ""}, {prop: "rejecters", name: "rejecters", pkg: "ninchatclient", typ: sliceType$1, tag: ""}, {prop: "notifiers", name: "notifiers", pkg: "ninchatclient", typ: sliceType, tag: ""}, {prop: "onPanic", name: "onPanic", pkg: "ninchatclient", typ: funcType$9, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};
