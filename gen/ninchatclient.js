@@ -4873,9 +4873,15 @@ $packages["ninchatclient"] = (function() {
 			var $ptr, value;
 			s.Address = value;
 		})) }, { k: "open", v: new funcType$7($methodVal(s, "Open")) }, { k: "close", v: new funcType$7($methodVal(s, "Close")) }, { k: "send", v: new funcType$8((function(params, payload) {
-			var $ptr, action, i, p, params, payload;
-			p = new promise.ptr(sliceType.nil, sliceType$1.nil, sliceType.nil, onPanic);
-			action = new ninchat.Action.ptr(params, sliceType$2.nil, $methodVal(p, "onReply"), new $Int64(0, 0));
+			var $ptr, _entry, _tuple, action, disabled, i, p, params, payload, result;
+			result = false;
+			action = new ninchat.Action.ptr(params, sliceType$2.nil, $throwNilPointerError, new $Int64(0, 0));
+			_tuple = (_entry = params[$String.keyFor("action_id")], _entry !== undefined ? [_entry.v, true] : [$ifaceNil, false]); disabled = _tuple[1];
+			if (!disabled) {
+				p = new promise.ptr(sliceType.nil, sliceType$1.nil, sliceType.nil, onPanic);
+				action.OnReply = $methodVal(p, "onReply");
+				result = p.object();
+			}
 			if (!(payload === null) && !(payload === undefined)) {
 				i = 0;
 				while (true) {
@@ -4885,7 +4891,7 @@ $packages["ninchatclient"] = (function() {
 				}
 			}
 			s.Send(action);
-			return p.object();
+			return result;
 		})) }]);
 	};
 	ptrType$3.methods = [{prop: "object", name: "object", pkg: "ninchatclient", typ: $funcType([], [mapType], false)}, {prop: "onReply", name: "onReply", pkg: "ninchatclient", typ: $funcType([ptrType$1], [], false)}, {prop: "resolveCall", name: "resolveCall", pkg: "ninchatclient", typ: $funcType([sliceType$3], [], false)}, {prop: "invoke1", name: "invoke1", pkg: "ninchatclient", typ: $funcType([callback1, ptrType$1, $String], [], false)}, {prop: "invoke2", name: "invoke2", pkg: "ninchatclient", typ: $funcType([callback2, ptrType$1, $String], [], false)}, {prop: "invokeCall", name: "invokeCall", pkg: "ninchatclient", typ: $funcType([callback2, sliceType$3, $String], [], false)}];

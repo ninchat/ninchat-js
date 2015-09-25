@@ -127,14 +127,18 @@ func newSession() map[string]interface{} {
 
 		"close": s.Close,
 
-		"send": func(params map[string]interface{}, payload *js.Object) map[string]interface{} {
-			p := &promise{
-				onPanic: onPanic,
+		"send": func(params map[string]interface{}, payload *js.Object) (result map[string]interface{}) {
+			action := &ninchat.Action{
+				Params: params,
 			}
 
-			action := &ninchat.Action{
-				Params:  params,
-				OnReply: p.onReply,
+			if _, disabled := params["action_id"]; !disabled {
+				p := &promise{
+					onPanic: onPanic,
+				}
+
+				action.OnReply = p.onReply
+				result = p.object()
 			}
 
 			if payload != nil && payload != js.Undefined {
@@ -144,8 +148,7 @@ func newSession() map[string]interface{} {
 			}
 
 			s.Send(action)
-
-			return p.object()
+			return
 		},
 	}
 }

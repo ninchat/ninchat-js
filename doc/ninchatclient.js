@@ -186,7 +186,7 @@ function Session() {
 	 * @param {Array}   [payload]  Consists of (already encoded) data
 	 *                             frames.
 	 *
-	 * @return {Promise}
+	 * @return {Promise|Null}
 	 *
 	 * @name Session.send
 	 */

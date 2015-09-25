@@ -173,7 +173,7 @@ resolves the promise.
 
 ### Return:
 
-* **Promise** 
+* **Promise|Null** 
 
 ## Promise
 
