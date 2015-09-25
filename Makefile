@@ -2,6 +2,7 @@ GO		:= go
 GOFMT		:= gofmt
 GOPATH		:= $(PWD)
 GOPHERJS	:= bin/gopherjs
+MARKDOX		:= markdox
 
 DOCKER		:= docker
 DOCKER_TAG	:= ninchat-js
@@ -9,7 +10,7 @@ DOCKER_BROWSER	:= chromium-browser --disable-setuid-sandbox
 
 export GOPATH
 
-build: gen/ninchatclient.js gen/ninchatclient.min.js
+build: gen/ninchatclient.js gen/ninchatclient.min.js doc/ninchatclient.md
 
 gen/ninchatclient.js gen/ninchatclient.min.js: $(wildcard src/ninchatclient/*.go) $(wildcard src/github.com/ninchat/ninchat-go/*.go) $(GOPHERJS)
 	@ mkdir -p gen
@@ -26,6 +27,9 @@ $(GOPHERJS):
 	$(GO) get golang.org/x/tools/go/exact
 	$(GO) get gopkg.in/fsnotify.v1
 	$(GO) build -o $@ github.com/gopherjs/gopherjs
+
+doc/ninchatclient.md: doc/ninchatclient.js
+	$(MARKDOX) -o $@ doc/ninchatclient.js
 
 clean:
 	rm -rf bin
