@@ -24,7 +24,7 @@ See: https://ninchat.com/api/v2#sessionless-http-calling
 
 ### Return:
 
-* **NinchatClient.Promise** 
+* **Promise** 
 
 ## NinchatClient.newSession()
 
@@ -32,7 +32,7 @@ Create an uninitialized Session object.
 
 ### Return:
 
-* **NinchatClient.Session** 
+* **Session** 
 
 ## NinchatClient.stringifyFrame(data)
 
@@ -46,7 +46,7 @@ Convert an event's payload part to a string.
 
 * **String** 
 
-## NinchatClient.Session
+## Session
 
 Session hides the details of API connection management.  It needs to be
 initialized by calling at least the onSessionEvent, onEvent and
@@ -56,7 +56,7 @@ the server.
 
 Session objects may be instantiated only via the newSession function.
 
-## onSessionEvent(callback)
+## Session.onSessionEvent(callback)
 
 Set the session creation handler.  It will be invoked with a
 "session_created" or an "error" event header as a parameter.
@@ -72,7 +72,7 @@ to supply new credentials, unless it decides to close().
 
 * **Function** *callback* 
 
-## onEvent(callback)
+## Session.onEvent(callback)
 
 Set the handler for in-session events. It will be invoked with an
 event header and a payload array parameter.
@@ -83,7 +83,7 @@ event header and a payload array parameter.
 
 * **Function** *callback* 
 
-## onConnState(callback)
+## Session.onConnState(callback)
 
 Set an optional connection state change monitor.  It will be called with
 one of the following strings:
@@ -96,7 +96,7 @@ one of the following strings:
 
 * **Function** *callback* 
 
-## onConnActive(callback)
+## Session.onConnActive(callback)
 
 Set an optional connection activity monitor.  It will be called with a
 timestamp (in milliseconds) indicating the latest time when data was
@@ -106,7 +106,7 @@ received on the connection.
 
 * **Function** *callback* 
 
-## onLog(callback)
+## Session.onLog(callback)
 
 Set an optional message logger.  It will be called with a single string
 argument.
@@ -115,7 +115,7 @@ argument.
 
 * **Function** *callback* 
 
-## setParams(params)
+## Session.setParams(params)
 
 Set "create_session" action parameters.  If open() has already been
 called, this takes effect when a session is lost.
@@ -124,7 +124,7 @@ called, this takes effect when a session is lost.
 
 * **Object** *params* 
 
-## setTransport(name)
+## Session.setTransport(name)
 
 Force a specific network transport implementation to be used.
 Currently only "longpoll" may be specified.
@@ -133,7 +133,7 @@ Currently only "longpoll" may be specified.
 
 * **String** *name* 
 
-## setAddress(address)
+## Session.setAddress(address)
 
 Use an alternative API endpoint.
 
@@ -141,15 +141,15 @@ Use an alternative API endpoint.
 
 * **String** *address* 
 
-## open()
+## Session.open()
 
 Create a session on the server.
 
-## close()
+## Session.close()
 
 Close the session on the server.
 
-## send(header, [payload])
+## Session.send(header, [payload])
 
 Send an action.
 
@@ -173,13 +173,13 @@ resolves the promise.
 
 ### Return:
 
-* **NinchatClient.Promise** 
+* **Promise** 
 
-## NinchatClient.Promise
+## Promise
 
 Promise objects may not be instantiated directly.
 
-## then([resolve], [reject], [notify])
+## Promise.then([resolve], [reject], [notify])
 
 Add callback(s) to be called when the promise is resolved, updated
 (notify) or rejected.
