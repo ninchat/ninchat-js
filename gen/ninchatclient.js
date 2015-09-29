@@ -4517,7 +4517,7 @@ $packages["ninchatclient"] = (function() {
 	sliceType$2 = $sliceType(ptrType);
 	mapType = $mapType($String, $emptyInterface);
 	sliceType$3 = $sliceType(mapType);
-	funcType = $funcType([mapType, ptrType, $String], [mapType], false);
+	funcType = $funcType([mapType, ptrType, $String], [ptrType], false);
 	funcType$1 = $funcType([], [mapType], false);
 	funcType$2 = $funcType([ptrType], [ptrType], false);
 	funcType$3 = $funcType([callback2, callback1, callback2], [], false);
@@ -4531,7 +4531,7 @@ $packages["ninchatclient"] = (function() {
 	funcType$5 = $funcType([mapType], [], false);
 	funcType$6 = $funcType([$String], [], false);
 	funcType$7 = $funcType([], [], false);
-	funcType$8 = $funcType([mapType, ptrType], [mapType], false);
+	funcType$8 = $funcType([mapType, ptrType], [ptrType], false);
 	ptrType$3 = $ptrType(promise);
 	funcType$9 = $funcType([$String, $emptyInterface], [], false);
 	call = function(params, onLog, address) {
@@ -4603,9 +4603,11 @@ $packages["ninchatclient"] = (function() {
 		$global.NinchatClient = module;
 	};
 	promise.ptr.prototype.object = function() {
-		var $ptr, p;
+		var $ptr, p, result;
+		result = null;
 		p = this;
-		return $makeMap($String.keyFor, [{ k: "then", v: new funcType$3((function(resolve, reject, notify) {
+		result = new ($global.Object)();
+		result.then = $externalize((function(resolve, reject, notify) {
 			var $ptr, notify, reject, resolve;
 			if (!(resolve === $throwNilPointerError)) {
 				p.resolvers = $append(p.resolvers, resolve);
@@ -4616,7 +4618,8 @@ $packages["ninchatclient"] = (function() {
 			if (!(notify === $throwNilPointerError)) {
 				p.notifiers = $append(p.notifiers, notify);
 			}
-		})) }]);
+		}), funcType$3);
+		return result;
 	};
 	promise.prototype.object = function() { return this.$val.object(); };
 	promise.ptr.prototype.onReply = function(e) {
@@ -4876,7 +4879,7 @@ $packages["ninchatclient"] = (function() {
 			s.Address = value;
 		})) }, { k: "open", v: new funcType$7($methodVal(s, "Open")) }, { k: "close", v: new funcType$7($methodVal(s, "Close")) }, { k: "send", v: new funcType$8((function(params, payload) {
 			var $ptr, _entry, _tuple, action, disabled, i, p, params, payload, result;
-			result = false;
+			result = null;
 			action = new ninchat.Action.ptr(params, sliceType$2.nil, $throwNilPointerError, new $Int64(0, 0));
 			_tuple = (_entry = params[$String.keyFor("action_id")], _entry !== undefined ? [_entry.v, true] : [$ifaceNil, false]); disabled = _tuple[1];
 			if (!disabled) {
@@ -4896,7 +4899,7 @@ $packages["ninchatclient"] = (function() {
 			return result;
 		})) }]);
 	};
-	ptrType$3.methods = [{prop: "object", name: "object", pkg: "ninchatclient", typ: $funcType([], [mapType], false)}, {prop: "onReply", name: "onReply", pkg: "ninchatclient", typ: $funcType([ptrType$1], [], false)}, {prop: "resolveCall", name: "resolveCall", pkg: "ninchatclient", typ: $funcType([sliceType$3], [], false)}, {prop: "invoke1", name: "invoke1", pkg: "ninchatclient", typ: $funcType([callback1, ptrType$1, $String], [], false)}, {prop: "invoke2", name: "invoke2", pkg: "ninchatclient", typ: $funcType([callback2, ptrType$1, $String], [], false)}, {prop: "invokeCall", name: "invokeCall", pkg: "ninchatclient", typ: $funcType([callback2, sliceType$3, $String], [], false)}];
+	ptrType$3.methods = [{prop: "object", name: "object", pkg: "ninchatclient", typ: $funcType([], [ptrType], false)}, {prop: "onReply", name: "onReply", pkg: "ninchatclient", typ: $funcType([ptrType$1], [], false)}, {prop: "resolveCall", name: "resolveCall", pkg: "ninchatclient", typ: $funcType([sliceType$3], [], false)}, {prop: "invoke1", name: "invoke1", pkg: "ninchatclient", typ: $funcType([callback1, ptrType$1, $String], [], false)}, {prop: "invoke2", name: "invoke2", pkg: "ninchatclient", typ: $funcType([callback2, ptrType$1, $String], [], false)}, {prop: "invokeCall", name: "invokeCall", pkg: "ninchatclient", typ: $funcType([callback2, sliceType$3, $String], [], false)}];
 	callback1.init([mapType], [], false);
 	callback2.init([$emptyInterface, sliceType$2], [], false);
 	promise.init([{prop: "resolvers", name: "resolvers", pkg: "ninchatclient", typ: sliceType, tag: ""}, {prop: "rejecters", name: "rejecters", pkg: "ninchatclient", typ: sliceType$1, tag: ""}, {prop: "notifiers", name: "notifiers", pkg: "ninchatclient", typ: sliceType, tag: ""}, {prop: "onPanic", name: "onPanic", pkg: "ninchatclient", typ: funcType$9, tag: ""}]);

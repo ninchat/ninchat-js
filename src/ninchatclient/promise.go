@@ -15,22 +15,22 @@ type promise struct {
 	onPanic   func(string, interface{})
 }
 
-func (p *promise) object() map[string]interface{} {
-	return map[string]interface{}{
-		"then": func(resolve callback2, reject callback1, notify callback2) {
-			if resolve != nil {
-				p.resolvers = append(p.resolvers, resolve)
-			}
+func (p *promise) object() (result *js.Object) {
+	result = js.Global.Get("Object").New()
+	result.Set("then", func(resolve callback2, reject callback1, notify callback2) {
+		if resolve != nil {
+			p.resolvers = append(p.resolvers, resolve)
+		}
 
-			if reject != nil {
-				p.rejecters = append(p.rejecters, reject)
-			}
+		if reject != nil {
+			p.rejecters = append(p.rejecters, reject)
+		}
 
-			if notify != nil {
-				p.notifiers = append(p.notifiers, notify)
-			}
-		},
-	}
+		if notify != nil {
+			p.notifiers = append(p.notifiers, notify)
+		}
+	})
+	return
 }
 
 func (p *promise) onReply(e *ninchat.Event) {

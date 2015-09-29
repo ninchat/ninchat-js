@@ -132,7 +132,7 @@ func newSession() map[string]interface{} {
 
 		"close": s.Close,
 
-		"send": func(params map[string]interface{}, payload *js.Object) (result map[string]interface{}) {
+		"send": func(params map[string]interface{}, payload *js.Object) (result *js.Object) {
 			action := &ninchat.Action{
 				Params: params,
 			}
