@@ -20,7 +20,7 @@ func newSession() map[string]interface{} {
 				msg = t.Error()
 
 			default:
-				msg = "?"
+				msg = js.Global.Get("JSON").Call("stringify", t).String()
 			}
 
 			s.OnLog(prefix, msg)
@@ -92,12 +92,17 @@ func newSession() map[string]interface{} {
 				message := ""
 
 				for _, x := range tokens {
-					str := "?"
+					var str string
 
-					if y, ok := x.(string); ok {
-						str = y
-					} else if y, ok := x.(error); ok {
-						str = y.Error()
+					switch t := x.(type) {
+					case string:
+						str = t
+
+					case error:
+						str = t.Error()
+
+					default:
+						str = js.Global.Get("JSON").Call("stringify", t).String()
 					}
 
 					if len(message) > 0 {

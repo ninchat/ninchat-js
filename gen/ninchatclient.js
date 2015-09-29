@@ -4751,7 +4751,7 @@ $packages["ninchatclient"] = (function() {
 					$s = 6; continue;
 				/* } else { */ case 5:
 					t$2 = _ref;
-					msg = "?";
+					msg = $internalize($global.JSON.stringify($externalize(t$2, $emptyInterface)), $String);
 				/* } */ case 6:
 				$r = s.OnLog(new sliceType$5([new $String(prefix), new $String(msg)])); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			/* } */ case 2:
@@ -4828,8 +4828,8 @@ $packages["ninchatclient"] = (function() {
 				return;
 			}
 			s.OnLog = (function $b(tokens) {
-				var $ptr, _i, _r, _ref, _tuple, _tuple$1, message, ok, ok$1, str, tokens, x, y, y$1, $s, $deferred, $r;
-				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _r = $f._r; _ref = $f._ref; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; message = $f.message; ok = $f.ok; ok$1 = $f.ok$1; str = $f.str; tokens = $f.tokens; x = $f.x; y = $f.y; y$1 = $f.y$1; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+				var $ptr, _i, _r, _ref, _ref$1, message, str, t, t$1, t$2, tokens, x, $s, $deferred, $r;
+				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _r = $f._r; _ref = $f._ref; _ref$1 = $f._ref$1; message = $f.message; str = $f.str; t = $f.t; t$1 = $f.t$1; t$2 = $f.t$2; tokens = $f.tokens; x = $f.x; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 				$deferred.push([(function() {
 					var $ptr;
 					$recover();
@@ -4840,22 +4840,24 @@ $packages["ninchatclient"] = (function() {
 				/* while (true) { */ case 1:
 					/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 2; continue; }
 					x = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
-					str = "?";
-					_tuple = $assertType(x, $String, true); y = _tuple[0]; ok = _tuple[1];
-					/* */ if (ok) { $s = 3; continue; }
-					/* */ $s = 4; continue;
-					/* if (ok) { */ case 3:
-						str = y;
-						$s = 5; continue;
-					/* } else { */ case 4:
-						_tuple$1 = $assertType(x, $error, true); y$1 = _tuple$1[0]; ok$1 = _tuple$1[1];
-						/* */ if (ok$1) { $s = 6; continue; }
-						/* */ $s = 7; continue;
-						/* if (ok$1) { */ case 6:
-							_r = y$1.Error(); /* */ $s = 8; case 8: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-							str = _r;
-						/* } */ case 7:
-					/* } */ case 5:
+					str = "";
+					_ref$1 = x;
+					/* */ if ($assertType(_ref$1, $String, true)[1]) { $s = 3; continue; }
+					/* */ if ($assertType(_ref$1, $error, true)[1]) { $s = 4; continue; }
+					/* */ $s = 5; continue;
+					/* if ($assertType(_ref$1, $String, true)[1]) { */ case 3:
+						t = _ref$1.$val;
+						str = t;
+						$s = 6; continue;
+					/* } else if ($assertType(_ref$1, $error, true)[1]) { */ case 4:
+						t$1 = _ref$1;
+						_r = t$1.Error(); /* */ $s = 7; case 7: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+						str = _r;
+						$s = 6; continue;
+					/* } else { */ case 5:
+						t$2 = _ref$1;
+						str = $internalize($global.JSON.stringify($externalize(t$2, $emptyInterface)), $String);
+					/* } */ case 6:
 					if (message.length > 0) {
 						message = message + (" ");
 					}
@@ -4867,7 +4869,7 @@ $packages["ninchatclient"] = (function() {
 					message = message.substring(0, (message.length - 1 >> 0));
 				}
 				onLog($externalize(message, $String));
-				/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._i = _i; $f._r = _r; $f._ref = _ref; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.message = message; $f.ok = ok; $f.ok$1 = ok$1; $f.str = str; $f.tokens = tokens; $f.x = x; $f.y = y; $f.y$1 = y$1; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+				/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._i = _i; $f._r = _r; $f._ref = _ref; $f._ref$1 = _ref$1; $f.message = message; $f.str = str; $f.t = t; $f.t$1 = t$1; $f.t$2 = t$2; $f.tokens = tokens; $f.x = x; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 			});
 		})) }, { k: "setParams", v: new funcType$5($methodVal(s, "SetParams")) }, { k: "setTransport", v: new funcType$6($methodVal(s, "SetTransport")) }, { k: "setAddress", v: new funcType$6((function(value) {
 			var $ptr, value;
