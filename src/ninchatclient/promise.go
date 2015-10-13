@@ -70,7 +70,7 @@ func (p *promise) invoke2(f callback2, e *ninchat.Event, logPrefix string) {
 		p.onPanic(logPrefix, recover())
 	}()
 
-	f(e.Params, e.Payload)
+	f(e.Params, unwrapPayload(e.Payload))
 }
 
 func (p *promise) invokeCall(f callback2, paramsArray []map[string]interface{}, logPrefix string) {

@@ -1,3 +1,7 @@
+function myTypeOf(x) {
+	return typeof x;
+}
+
 function print(text) {
 	var date = (new Date()).toString();
 
@@ -10,7 +14,7 @@ function print(text) {
 	row.scrollIntoView();
 }
 
-function test() {
+function testClient() {
 	var session = NinchatClient.newSession();
 
 	session.onSessionEvent(function(sessionHeader) {

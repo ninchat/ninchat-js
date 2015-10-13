@@ -44,7 +44,7 @@ func newSession() map[string]interface{} {
 					onPanic("Session onEvent callback:", recover())
 				}()
 
-				onEvent.Invoke(e.Params, e.Payload)
+				onEvent.Invoke(e.Params, unwrapPayload(e.Payload))
 			}
 		},
 
@@ -134,7 +134,8 @@ func newSession() map[string]interface{} {
 
 		"send": func(params map[string]interface{}, payload *js.Object) (result *js.Object) {
 			action := &ninchat.Action{
-				Params: params,
+				Params:  params,
+				Payload: wrapPayload(payload),
 			}
 
 			if _, disabled := params["action_id"]; !disabled {
@@ -144,12 +145,6 @@ func newSession() map[string]interface{} {
 
 				action.OnReply = p.onReply
 				result = p.object()
-			}
-
-			if payload != nil && payload != js.Undefined {
-				for i := 0; i < payload.Length(); i++ {
-					action.Payload = append(action.Payload, payload.Index(i))
-				}
 			}
 
 			s.Send(action)

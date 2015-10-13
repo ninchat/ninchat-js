@@ -10,7 +10,9 @@ DOCKER_BROWSER	:= chromium-browser --disable-setuid-sandbox
 
 export GOPATH
 
-build: gen/ninchatclient.js gen/ninchatclient.min.js doc/ninchatclient.md
+build: ninchatclient
+
+ninchatclient: gen/ninchatclient.js gen/ninchatclient.min.js doc/ninchatclient.md
 
 gen/ninchatclient.js gen/ninchatclient.min.js: $(wildcard src/ninchatclient/*.go) $(wildcard src/github.com/ninchat/ninchat-go/*.go) $(GOPHERJS)
 	@ mkdir -p gen
@@ -18,6 +20,9 @@ gen/ninchatclient.js gen/ninchatclient.min.js: $(wildcard src/ninchatclient/*.go
 	$(GOPHERJS) build -m -o gen/ninchatclient.min.js ninchatclient
 	$(GOFMT) -d -s src/ninchatclient
 	$(GO) vet ninchatclient
+
+doc/ninchatclient.md: doc/ninchatclient.js
+	$(MARKDOX) -o $@ doc/ninchatclient.js
 
 $(GOPHERJS):
 	$(GO) get github.com/kardianos/osext
@@ -27,9 +32,6 @@ $(GOPHERJS):
 	$(GO) get golang.org/x/tools/go/exact
 	$(GO) get gopkg.in/fsnotify.v1
 	$(GO) build -o $@ github.com/gopherjs/gopherjs
-
-doc/ninchatclient.md: doc/ninchatclient.js
-	$(MARKDOX) -o $@ doc/ninchatclient.js
 
 clean:
 	rm -rf bin
@@ -52,4 +54,4 @@ container-for-testing:
 test-in-container:
 	$(DOCKER) run -e DISPLAY=$(DISPLAY) -i --rm -t -v /tmp:/tmp -v $(PWD):/work $(DOCKER_TAG) $(DOCKER_BROWSER) file:///work/example/test.html
 
-.PHONY: build clean container-for-testing test-in-container
+.PHONY: build ninchatclient clean container-for-testing test-in-container
