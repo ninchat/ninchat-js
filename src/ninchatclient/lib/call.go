@@ -1,4 +1,4 @@
-package main
+package clientlib
 
 import (
 	"github.com/gopherjs/gopherjs/js"
@@ -7,24 +7,11 @@ import (
 
 func call(params map[string]interface{}, onLog *js.Object, address string) *js.Object {
 	p := &promise{
-		onPanic: func(prefix string, x interface{}) {
-			if x != nil && onLog != nil {
-				var msg string
-
-				switch t := x.(type) {
-				case string:
-					msg = t
-
-				case error:
-					msg = t.Error()
-
-				default:
-					msg = "?"
-				}
-
-				onLog.Invoke(prefix + " " + msg)
+		onPanic: panicer(func() func(string) {
+			return func(msg string) {
+				onLog.Invoke(msg)
 			}
-		},
+		}),
 	}
 
 	go func() {
