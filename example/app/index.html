@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>NinchatModel example app</title>
+		<script src="https://fb.me/react-0.14.8.js"></script>
+		<script src="https://fb.me/react-dom-0.14.8.js"></script>
+		<script src="../../gen/ninchatmodel.js"></script>
+		<script src="util.js"></script>
+		<style>
+			body { background-color: #555; color: #ddd; white-space: nowrap }
+			table { width: 100%; border-spacing: 0 } 
+			.value table { border-left: 1px solid #444; border-top: 1px solid #444 }
+			td { vertical-align: top; padding: 0 }
+			.value { padding: 0 0 0 8px; width: 100% }
+			.scalar div { width: 100%; background-color: #666; color: #eee }
+		</style>
+	</head>
+	<body>
+		<table>
+			<tbody>
+				<tr>
+					<td class="key">Conn state:</td>
+					<td id="conn-state" class="value scalar"></td>
+				</tr>
+				<tr>
+					<td class="key">Conn active:</td>
+					<td id="conn-active" class="value scalar"></td>
+				</tr>
+				<tr>
+					<td class="key">Settings:</td>
+					<td id="settings" class="value"></td>
+				</tr>
+				<tr>
+					<td class="key">Self:</td>
+					<td id="self" class="value"></td>
+				</tr>
+				<tr>
+					<td class="key">Users:</td>
+					<td id="users" class="value"></td>
+				</tr>
+				<tr>
+					<td class="key">Dialogues:</td>
+					<td id="dialogues" class="value"></td>
+				</tr>
+			</tbody>
+		</table>
+		<script src="init.js"></script>
+	</body>
+</html>

@@ -1,4 +1,5 @@
 /bin/
+/doc/ninchatmodel.js
 /pkg/
 /src/github.com/fsnotify/fsnotify/
 /src/github.com/kardianos/osext/
