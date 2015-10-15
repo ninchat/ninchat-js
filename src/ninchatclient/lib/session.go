@@ -41,6 +41,16 @@ func (adapter *SessionAdapter) OnEvent(callback *js.Object) {
 	}
 }
 
+func (adapter *SessionAdapter) OnClose(callback *js.Object) {
+	adapter.Session.OnClose = func() {
+		defer func() {
+			adapter.OnPanic("Session onClose callback:", recover())
+		}()
+
+		callback.Invoke()
+	}
+}
+
 func (adapter *SessionAdapter) OnConnState(callback *js.Object) {
 	if callback == nil {
 		adapter.Session.OnConnState = nil
@@ -143,6 +153,7 @@ func newSession() map[string]interface{} {
 	return map[string]interface{}{
 		"onSessionEvent": adapter.OnSessionEvent,
 		"onEvent":        adapter.OnEvent,
+		"onClose":        adapter.OnClose,
 		"onConnState":    adapter.OnConnState,
 		"onConnActive":   adapter.OnConnActive,
 		"onLog":          adapter.OnLog,

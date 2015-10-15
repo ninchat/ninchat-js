@@ -77,8 +77,8 @@ function Session() { return {
 	onSessionEvent: function(callback) {},
 
 	/**
-	 * Set the handler for in-session events. It will be invoked with an
-	 * event header and a payload array parameter.
+	 * Set the handler for in-session events.  It will be invoked with an event
+	 * header and a payload array parameter.
 	 *
 	 * `error` events received via this callback are not fatal.
 	 *
@@ -87,6 +87,20 @@ function Session() { return {
 	 * @name Session.onEvent
 	 */
 	onEvent: function(callback) {},
+
+	/**
+	 * Set an optional session closure handler.  It doesn't take any
+	 * parameters.
+	 *
+	 * It will be invoked after a close() call has been fully processed.  It
+	 * won't be invoked if an `error` event is received via onSessionEvent
+	 * (unless setParams is called again).
+	 *
+	 * @param {Function}  callback
+	 *
+	 * @name Session.onClose
+	 */
+	onClose: function(callback) {},
 
 	/**
 	 * Set an optional connection state change monitor.  It will be called with
