@@ -4,7 +4,7 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 )
 
-func panicer(getLogger func() func(string)) func(string, interface{}) {
+func Panicer(getLogger func() func(string)) func(string, interface{}) {
 	return func(prefix string, x interface{}) {
 		if x != nil {
 			if logFunc := getLogger(); logFunc != nil {

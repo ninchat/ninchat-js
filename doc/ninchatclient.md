@@ -192,16 +192,32 @@ resolves the promise.
 
 Promise objects may not be instantiated directly.
 
-## Promise.then([resolve], [reject], [notify])
+## Promise.then([onFulfilled], [onRejected], [onNotified])
 
-Add callback(s) to be called when the promise is resolved, updated
-(notify) or rejected.
+Add callback to be called when the promise is resolved, rejected and/or
+updated.
 
 ### Params:
 
-* **Function** *[resolve]* 
-* **Function** *[reject]* 
-* **Function** *[notify]* 
+* **Function** *[onFulfilled]* 
+* **Function** *[onRejected]* 
+* **Function** *[onNotified]* 
+
+### Return:
+
+* **Promise** 
+
+## Promise.catch(onRejected)
+
+Add callback to be called when the promise is rejected.
+
+### Params:
+
+* **Function** *onRejected* 
+
+### Return:
+
+* **Promise** 
 
 <!-- End doc/ninchatclient.js -->
 

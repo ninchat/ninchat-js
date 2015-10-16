@@ -6,8 +6,8 @@ import (
 )
 
 func call(params map[string]interface{}, onLog *js.Object, address string) *js.Object {
-	p := &promise{
-		onPanic: panicer(func() func(string) {
+	p := &Promise{
+		OnPanic: Panicer(func() func(string) {
 			return func(msg string) {
 				onLog.Invoke(msg)
 			}
@@ -27,7 +27,7 @@ func call(params map[string]interface{}, onLog *js.Object, address string) *js.O
 		if err != nil {
 			reason := err.Error()
 			onLog.Invoke(reason)
-			p.onReply(&ninchat.Event{
+			p.OnReply(&ninchat.Event{
 				Params: map[string]interface{}{
 					"event":        "error",
 					"error_type":   "internal",
@@ -43,8 +43,8 @@ func call(params map[string]interface{}, onLog *js.Object, address string) *js.O
 			paramsArray = append(paramsArray, e.Params)
 		}
 
-		p.resolveCall(paramsArray)
+		p.Resolve(paramsArray)
 	}()
 
-	return p.object()
+	return p.Object()
 }

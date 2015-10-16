@@ -216,15 +216,28 @@ function Session() { return {
 function Promise() { return {
 
 	/**
-	 * Add callback(s) to be called when the promise is resolved, updated
-	 * (notify) or rejected.
+	 * Add callback to be called when the promise is resolved, rejected and/or
+	 * updated.
 	 *
-	 * @param {Function}  [resolve]
-	 * @param {Function}  [reject]
-	 * @param {Function}  [notify]
+	 * @param {Function} [onFulfilled]
+	 * @param {Function} [onRejected]
+	 * @param {Function} [onNotified]
+	 *
+	 * @return {Promise}
 	 *
 	 * @name Promise.then
 	 */
-	then: function(resolve, reject, notify) {}
+	then: function(onFulfilled, onRejected, onNotified) {},
+
+	/**
+	 * Add callback to be called when the promise is rejected.
+	 *
+	 * @param {Function} onRejected
+	 *
+	 * @return {Promise}
+	 *
+	 * @name Promise.catch
+	 */
+	catch: function(onRejected) {}
 
 } };

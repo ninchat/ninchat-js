@@ -5,78 +5,76 @@ import (
 	"github.com/ninchat/ninchat-go"
 )
 
-type callback1 func(params map[string]interface{})
-type callback2 func(paramsOrArrayOfParams interface{}, payload []*js.Object)
+type Promise struct {
+	OnPanic func(string, interface{})
 
-type promise struct {
-	resolvers []callback2
-	rejecters []callback1
-	notifiers []callback2
-	onPanic   func(string, interface{})
+	fulfillers []*js.Object
+	rejecters  []*js.Object
+	notifiers  []*js.Object
 }
 
-func (p *promise) object() (result *js.Object) {
-	result = js.Global.Get("Object").New()
-	result.Set("then", func(resolve callback2, reject callback1, notify callback2) {
-		if resolve != nil {
-			p.resolvers = append(p.resolvers, resolve)
+func (p *Promise) Object() (o *js.Object) {
+	o = js.Global.Get("Object").New()
+
+	o.Set("then", func(onFulfilled, onRejected, onNotified *js.Object) *js.Object {
+		if onFulfilled != nil && onFulfilled != js.Undefined {
+			p.fulfillers = append(p.fulfillers, onFulfilled)
 		}
 
-		if reject != nil {
-			p.rejecters = append(p.rejecters, reject)
+		if onRejected != nil && onRejected != js.Undefined {
+			p.rejecters = append(p.rejecters, onRejected)
 		}
 
-		if notify != nil {
-			p.notifiers = append(p.notifiers, notify)
+		if onNotified != nil && onNotified != js.Undefined {
+			p.notifiers = append(p.notifiers, onNotified)
 		}
+
+		return o
 	})
+
+	o.Set("catch", func(onRejected *js.Object) *js.Object {
+		p.rejecters = append(p.rejecters, onRejected)
+
+		return o
+	})
+
 	return
 }
 
-func (p *promise) onReply(e *ninchat.Event) {
+func (p *Promise) OnReply(e *ninchat.Event) {
 	if e != nil {
 		if e.String() == "error" {
-			for _, f := range p.rejecters {
-				p.invoke1(f, e, "Promise reject callback:")
-			}
+			p.Reject(e.Params)
 		} else if e.LastReply {
-			for _, f := range p.resolvers {
-				p.invoke2(f, e, "Promise resolve callback:")
-			}
+			p.Resolve(e.Params, UnwrapPayload(e.Payload))
 		} else {
-			for _, f := range p.notifiers {
-				p.invoke2(f, e, "Promise notify callback:")
-			}
+			p.Notify(e.Params, UnwrapPayload(e.Payload))
 		}
 	}
 }
 
-func (p *promise) resolveCall(paramsArray []map[string]interface{}) {
-	for _, f := range p.resolvers {
-		p.invokeCall(f, paramsArray, "Promise resolve callback:")
+func (p *Promise) Resolve(args ...interface{}) {
+	for _, callback := range p.fulfillers {
+		p.invoke("Promise onFulfilled callback:", callback, args...)
 	}
 }
 
-func (p *promise) invoke1(f callback1, e *ninchat.Event, logPrefix string) {
-	defer func() {
-		p.onPanic(logPrefix, recover())
-	}()
-
-	f(e.Params)
+func (p *Promise) Reject(args ...interface{}) {
+	for _, callback := range p.rejecters {
+		p.invoke("Promise onRejected callback:", callback, args...)
+	}
 }
 
-func (p *promise) invoke2(f callback2, e *ninchat.Event, logPrefix string) {
-	defer func() {
-		p.onPanic(logPrefix, recover())
-	}()
-
-	f(e.Params, unwrapPayload(e.Payload))
+func (p *Promise) Notify(args ...interface{}) {
+	for _, callback := range p.notifiers {
+		p.invoke("Promise onNotified callback:", callback, args...)
+	}
 }
 
-func (p *promise) invokeCall(f callback2, paramsArray []map[string]interface{}, logPrefix string) {
+func (p *Promise) invoke(logPrefix string, callback *js.Object, args ...interface{}) {
 	defer func() {
-		p.onPanic(logPrefix, recover())
+		p.OnPanic(logPrefix, recover())
 	}()
 
-	f(paramsArray, nil)
+	callback.Invoke(args...)
 }

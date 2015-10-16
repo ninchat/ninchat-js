@@ -4521,24 +4521,22 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	return $pkg;
 })();
 $packages["ninchatclient/lib"] = (function() {
-	var $pkg = {}, $init, js, ninchat, callback1, callback2, promise, SessionAdapter, sliceType, sliceType$1, sliceType$2, mapType, sliceType$3, ptrType, funcType, funcType$1, funcType$2, sliceType$4, funcType$3, ptrType$1, ptrType$2, sliceType$5, structType, chanType, ptrType$3, sliceType$6, funcType$4, funcType$5, funcType$6, funcType$7, funcType$8, ptrType$4, funcType$9, ptrType$5, call, Init, panicer, wrapPayload, unwrapPayload, NewSessionAdapter, newSession;
+	var $pkg = {}, $init, js, ninchat, Promise, SessionAdapter, ptrType, sliceType, sliceType$1, mapType, sliceType$2, sliceType$3, funcType, funcType$1, funcType$2, funcType$3, ptrType$1, ptrType$2, structType, chanType, ptrType$3, sliceType$4, funcType$4, funcType$5, funcType$6, funcType$7, funcType$8, ptrType$4, funcType$9, ptrType$5, call, Init, Panicer, WrapPayload, UnwrapPayload, NewSessionAdapter, newSession;
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	ninchat = $packages["github.com/ninchat/ninchat-go"];
-	callback1 = $pkg.callback1 = $newType(4, $kindFunc, "clientlib.callback1", "callback1", "ninchatclient/lib", null);
-	callback2 = $pkg.callback2 = $newType(4, $kindFunc, "clientlib.callback2", "callback2", "ninchatclient/lib", null);
-	promise = $pkg.promise = $newType(0, $kindStruct, "clientlib.promise", "promise", "ninchatclient/lib", function(resolvers_, rejecters_, notifiers_, onPanic_) {
+	Promise = $pkg.Promise = $newType(0, $kindStruct, "clientlib.Promise", "Promise", "ninchatclient/lib", function(OnPanic_, fulfillers_, rejecters_, notifiers_) {
 		this.$val = this;
 		if (arguments.length === 0) {
-			this.resolvers = sliceType.nil;
-			this.rejecters = sliceType$1.nil;
+			this.OnPanic = $throwNilPointerError;
+			this.fulfillers = sliceType.nil;
+			this.rejecters = sliceType.nil;
 			this.notifiers = sliceType.nil;
-			this.onPanic = $throwNilPointerError;
 			return;
 		}
-		this.resolvers = resolvers_;
+		this.OnPanic = OnPanic_;
+		this.fulfillers = fulfillers_;
 		this.rejecters = rejecters_;
 		this.notifiers = notifiers_;
-		this.onPanic = onPanic_;
 	});
 	SessionAdapter = $pkg.SessionAdapter = $newType(0, $kindStruct, "clientlib.SessionAdapter", "SessionAdapter", "ninchatclient/lib", function(Session_, OnPanic_) {
 		this.$val = this;
@@ -4550,46 +4548,44 @@ $packages["ninchatclient/lib"] = (function() {
 		this.Session = Session_;
 		this.OnPanic = OnPanic_;
 	});
-	sliceType = $sliceType(callback2);
-	sliceType$1 = $sliceType(callback1);
-	sliceType$2 = $sliceType(ninchat.Frame);
-	mapType = $mapType($String, $emptyInterface);
-	sliceType$3 = $sliceType(mapType);
 	ptrType = $ptrType(js.Object);
+	sliceType = $sliceType(ptrType);
+	sliceType$1 = $sliceType(ninchat.Frame);
+	mapType = $mapType($String, $emptyInterface);
+	sliceType$2 = $sliceType(mapType);
+	sliceType$3 = $sliceType($emptyInterface);
 	funcType = $funcType([mapType, ptrType, $String], [ptrType], false);
 	funcType$1 = $funcType([], [mapType], false);
 	funcType$2 = $funcType([ptrType], [ptrType], false);
-	sliceType$4 = $sliceType(ptrType);
-	funcType$3 = $funcType([callback2, callback1, callback2], [], false);
+	funcType$3 = $funcType([ptrType, ptrType, ptrType], [ptrType], false);
 	ptrType$1 = $ptrType(ninchat.Event);
 	ptrType$2 = $ptrType(ninchat.Session);
-	sliceType$5 = $sliceType($emptyInterface);
 	structType = $structType([]);
 	chanType = $chanType(structType, false, false);
 	ptrType$3 = $ptrType(ninchat.Action);
-	sliceType$6 = $sliceType(ptrType$3);
+	sliceType$4 = $sliceType(ptrType$3);
 	funcType$4 = $funcType([ptrType], [], false);
 	funcType$5 = $funcType([mapType], [], false);
 	funcType$6 = $funcType([$String], [], false);
 	funcType$7 = $funcType([], [], false);
 	funcType$8 = $funcType([mapType, ptrType], [ptrType], false);
-	ptrType$4 = $ptrType(promise);
+	ptrType$4 = $ptrType(Promise);
 	funcType$9 = $funcType([$String, $emptyInterface], [], false);
 	ptrType$5 = $ptrType(SessionAdapter);
 	call = function(params, onLog, address) {
 		var $ptr, address, onLog, p, params;
-		p = new promise.ptr(sliceType.nil, sliceType$1.nil, sliceType.nil, panicer((function() {
+		p = new Promise.ptr(Panicer((function() {
 			var $ptr;
 			return (function(msg) {
 				var $ptr, msg;
 				onLog($externalize(msg, $String));
 			});
-		})));
+		})), sliceType.nil, sliceType.nil, sliceType.nil);
 		$go((function $b() {
 			var $ptr, _i, _r, _r$1, _ref, _tuple, action, caller, e, err, events, paramsArray, reason, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _r = $f._r; _r$1 = $f._r$1; _ref = $f._ref; _tuple = $f._tuple; action = $f.action; caller = $f.caller; e = $f.e; err = $f.err; events = $f.events; paramsArray = $f.paramsArray; reason = $f.reason; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 			caller = new ninchat.Caller.ptr(address);
-			action = new ninchat.Action.ptr(params, sliceType$2.nil, $throwNilPointerError, new $Int64(0, 0));
+			action = new ninchat.Action.ptr(params, sliceType$1.nil, $throwNilPointerError, new $Int64(0, 0));
 			_r = caller.Call(action); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 			_tuple = _r; events = _tuple[0]; err = _tuple[1];
 			/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 2; continue; }
@@ -4598,10 +4594,10 @@ $packages["ninchatclient/lib"] = (function() {
 				_r$1 = err.Error(); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 				reason = _r$1;
 				onLog($externalize(reason, $String));
-				$r = p.onReply(new ninchat.Event.ptr($makeMap($String.keyFor, [{ k: "event", v: new $String("error") }, { k: "error_type", v: new $String("internal") }, { k: "error_reason", v: new $String(reason) }]), sliceType$2.nil, false)); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = p.OnReply(new ninchat.Event.ptr($makeMap($String.keyFor, [{ k: "event", v: new $String("error") }, { k: "error_type", v: new $String("internal") }, { k: "error_reason", v: new $String(reason) }]), sliceType$1.nil, false)); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				return;
 			/* } */ case 3:
-			paramsArray = sliceType$3.nil;
+			paramsArray = sliceType$2.nil;
 			_ref = events;
 			_i = 0;
 			while (true) {
@@ -4610,10 +4606,10 @@ $packages["ninchatclient/lib"] = (function() {
 				paramsArray = $append(paramsArray, e.Params);
 				_i++;
 			}
-			$r = p.resolveCall(paramsArray); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = p.Resolve(new sliceType$3([paramsArray])); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._i = _i; $f._r = _r; $f._r$1 = _r$1; $f._ref = _ref; $f._tuple = _tuple; $f.action = action; $f.caller = caller; $f.e = e; $f.err = err; $f.events = events; $f.paramsArray = paramsArray; $f.reason = reason; $f.$s = $s; $f.$r = $r; return $f;
 		}), []);
-		return p.object();
+		return p.Object();
 	};
 	Init = function(module) {
 		var $ptr, module;
@@ -4622,7 +4618,7 @@ $packages["ninchatclient/lib"] = (function() {
 		module.stringifyFrame = $externalize(ninchat.StringifyFrame, funcType$2);
 	};
 	$pkg.Init = Init;
-	panicer = function(getLogger) {
+	Panicer = function(getLogger) {
 		var $ptr, getLogger;
 		return (function $b(prefix, x) {
 			var $ptr, _r, _r$1, _ref, logFunc, msg, prefix, t, t$1, t$2, x, $s, $r;
@@ -4659,9 +4655,10 @@ $packages["ninchatclient/lib"] = (function() {
 			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f._ref = _ref; $f.logFunc = logFunc; $f.msg = msg; $f.prefix = prefix; $f.t = t; $f.t$1 = t$1; $f.t$2 = t$2; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
 		});
 	};
-	wrapPayload = function(input) {
+	$pkg.Panicer = Panicer;
+	WrapPayload = function(input) {
 		var $ptr, i, input, output;
-		output = sliceType$2.nil;
+		output = sliceType$1.nil;
 		if (!(input === null) && !(input === undefined)) {
 			i = 0;
 			while (true) {
@@ -4672,9 +4669,10 @@ $packages["ninchatclient/lib"] = (function() {
 		}
 		return output;
 	};
-	unwrapPayload = function(input) {
+	$pkg.WrapPayload = WrapPayload;
+	UnwrapPayload = function(input) {
 		var $ptr, _i, _ref, frame, input, output;
-		output = sliceType$4.nil;
+		output = sliceType.nil;
 		_ref = input;
 		_i = 0;
 		while (true) {
@@ -4685,29 +4683,36 @@ $packages["ninchatclient/lib"] = (function() {
 		}
 		return output;
 	};
-	promise.ptr.prototype.object = function() {
-		var $ptr, p, result;
-		result = null;
+	$pkg.UnwrapPayload = UnwrapPayload;
+	Promise.ptr.prototype.Object = function() {
+		var $ptr, o, p;
+		o = null;
 		p = this;
-		result = new ($global.Object)();
-		result.then = $externalize((function(resolve, reject, notify) {
-			var $ptr, notify, reject, resolve;
-			if (!(resolve === $throwNilPointerError)) {
-				p.resolvers = $append(p.resolvers, resolve);
+		o = new ($global.Object)();
+		o.then = $externalize((function(onFulfilled, onRejected, onNotified) {
+			var $ptr, onFulfilled, onNotified, onRejected;
+			if (!(onFulfilled === null) && !(onFulfilled === undefined)) {
+				p.fulfillers = $append(p.fulfillers, onFulfilled);
 			}
-			if (!(reject === $throwNilPointerError)) {
-				p.rejecters = $append(p.rejecters, reject);
+			if (!(onRejected === null) && !(onRejected === undefined)) {
+				p.rejecters = $append(p.rejecters, onRejected);
 			}
-			if (!(notify === $throwNilPointerError)) {
-				p.notifiers = $append(p.notifiers, notify);
+			if (!(onNotified === null) && !(onNotified === undefined)) {
+				p.notifiers = $append(p.notifiers, onNotified);
 			}
+			return o;
 		}), funcType$3);
-		return result;
+		o.catch = $externalize((function(onRejected) {
+			var $ptr, onRejected;
+			p.rejecters = $append(p.rejecters, onRejected);
+			return o;
+		}), funcType$2);
+		return o;
 	};
-	promise.prototype.object = function() { return this.$val.object(); };
-	promise.ptr.prototype.onReply = function(e) {
-		var $ptr, _i, _i$1, _i$2, _ref, _ref$1, _ref$2, e, f, f$1, f$2, p, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _i$1 = $f._i$1; _i$2 = $f._i$2; _ref = $f._ref; _ref$1 = $f._ref$1; _ref$2 = $f._ref$2; e = $f.e; f = $f.f; f$1 = $f.f$1; f$2 = $f.f$2; p = $f.p; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+	Promise.prototype.Object = function() { return this.$val.Object(); };
+	Promise.ptr.prototype.OnReply = function(e) {
+		var $ptr, e, p, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; e = $f.e; p = $f.p; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		p = this;
 		/* */ if (!(e === ptrType$1.nil)) { $s = 1; continue; }
 		/* */ $s = 2; continue;
@@ -4716,146 +4721,143 @@ $packages["ninchatclient/lib"] = (function() {
 			/* */ if (e.LastReply) { $s = 4; continue; }
 			/* */ $s = 5; continue;
 			/* if (e.String() === "error") { */ case 3:
-				_ref = p.rejecters;
-				_i = 0;
-				/* while (true) { */ case 7:
-					/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 8; continue; }
-					f = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
-					$r = p.invoke1(f, e, "Promise reject callback:"); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					_i++;
-				/* } */ $s = 7; continue; case 8:
+				$r = p.Reject(new sliceType$3([new mapType(e.Params)])); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = 6; continue;
 			/* } else if (e.LastReply) { */ case 4:
-				_ref$1 = p.resolvers;
-				_i$1 = 0;
-				/* while (true) { */ case 10:
-					/* if (!(_i$1 < _ref$1.$length)) { break; } */ if(!(_i$1 < _ref$1.$length)) { $s = 11; continue; }
-					f$1 = ((_i$1 < 0 || _i$1 >= _ref$1.$length) ? $throwRuntimeError("index out of range") : _ref$1.$array[_ref$1.$offset + _i$1]);
-					$r = p.invoke2(f$1, e, "Promise resolve callback:"); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					_i$1++;
-				/* } */ $s = 10; continue; case 11:
+				$r = p.Resolve(new sliceType$3([new mapType(e.Params), UnwrapPayload(e.Payload)])); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = 6; continue;
 			/* } else { */ case 5:
-				_ref$2 = p.notifiers;
-				_i$2 = 0;
-				/* while (true) { */ case 13:
-					/* if (!(_i$2 < _ref$2.$length)) { break; } */ if(!(_i$2 < _ref$2.$length)) { $s = 14; continue; }
-					f$2 = ((_i$2 < 0 || _i$2 >= _ref$2.$length) ? $throwRuntimeError("index out of range") : _ref$2.$array[_ref$2.$offset + _i$2]);
-					$r = p.invoke2(f$2, e, "Promise notify callback:"); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					_i$2++;
-				/* } */ $s = 13; continue; case 14:
+				$r = p.Notify(new sliceType$3([new mapType(e.Params), UnwrapPayload(e.Payload)])); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			/* } */ case 6:
 		/* } */ case 2:
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: promise.ptr.prototype.onReply }; } $f.$ptr = $ptr; $f._i = _i; $f._i$1 = _i$1; $f._i$2 = _i$2; $f._ref = _ref; $f._ref$1 = _ref$1; $f._ref$2 = _ref$2; $f.e = e; $f.f = f; $f.f$1 = f$1; $f.f$2 = f$2; $f.p = p; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Promise.ptr.prototype.OnReply }; } $f.$ptr = $ptr; $f.e = e; $f.p = p; $f.$s = $s; $f.$r = $r; return $f;
 	};
-	promise.prototype.onReply = function(e) { return this.$val.onReply(e); };
-	promise.ptr.prototype.resolveCall = function(paramsArray) {
-		var $ptr, _i, _ref, f, p, paramsArray, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _ref = $f._ref; f = $f.f; p = $f.p; paramsArray = $f.paramsArray; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+	Promise.prototype.OnReply = function(e) { return this.$val.OnReply(e); };
+	Promise.ptr.prototype.Resolve = function(args) {
+		var $ptr, _i, _ref, args, callback, p, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _ref = $f._ref; args = $f.args; callback = $f.callback; p = $f.p; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		p = this;
-		_ref = p.resolvers;
+		_ref = p.fulfillers;
 		_i = 0;
 		/* while (true) { */ case 1:
 			/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 2; continue; }
-			f = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
-			$r = p.invokeCall(f, paramsArray, "Promise resolve callback:"); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			callback = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+			$r = p.invoke("Promise onFulfilled callback:", callback, args); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			_i++;
 		/* } */ $s = 1; continue; case 2:
-		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: promise.ptr.prototype.resolveCall }; } $f.$ptr = $ptr; $f._i = _i; $f._ref = _ref; $f.f = f; $f.p = p; $f.paramsArray = paramsArray; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Promise.ptr.prototype.Resolve }; } $f.$ptr = $ptr; $f._i = _i; $f._ref = _ref; $f.args = args; $f.callback = callback; $f.p = p; $f.$s = $s; $f.$r = $r; return $f;
 	};
-	promise.prototype.resolveCall = function(paramsArray) { return this.$val.resolveCall(paramsArray); };
-	promise.ptr.prototype.invoke1 = function(f, e, logPrefix) {
-		var $ptr, e, f, logPrefix, p, $s, $deferred, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; e = $f.e; f = $f.f; logPrefix = $f.logPrefix; p = $f.p; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+	Promise.prototype.Resolve = function(args) { return this.$val.Resolve(args); };
+	Promise.ptr.prototype.Reject = function(args) {
+		var $ptr, _i, _ref, args, callback, p, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _ref = $f._ref; args = $f.args; callback = $f.callback; p = $f.p; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		p = this;
+		_ref = p.rejecters;
+		_i = 0;
+		/* while (true) { */ case 1:
+			/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 2; continue; }
+			callback = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+			$r = p.invoke("Promise onRejected callback:", callback, args); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_i++;
+		/* } */ $s = 1; continue; case 2:
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Promise.ptr.prototype.Reject }; } $f.$ptr = $ptr; $f._i = _i; $f._ref = _ref; $f.args = args; $f.callback = callback; $f.p = p; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Promise.prototype.Reject = function(args) { return this.$val.Reject(args); };
+	Promise.ptr.prototype.Notify = function(args) {
+		var $ptr, _i, _ref, args, callback, p, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _ref = $f._ref; args = $f.args; callback = $f.callback; p = $f.p; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		p = this;
+		_ref = p.notifiers;
+		_i = 0;
+		/* while (true) { */ case 1:
+			/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 2; continue; }
+			callback = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+			$r = p.invoke("Promise onNotified callback:", callback, args); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_i++;
+		/* } */ $s = 1; continue; case 2:
+		/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: Promise.ptr.prototype.Notify }; } $f.$ptr = $ptr; $f._i = _i; $f._ref = _ref; $f.args = args; $f.callback = callback; $f.p = p; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Promise.prototype.Notify = function(args) { return this.$val.Notify(args); };
+	Promise.ptr.prototype.invoke = function(logPrefix, callback, args) {
+		var $ptr, args, callback, logPrefix, p, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; args = $f.args; callback = $f.callback; logPrefix = $f.logPrefix; p = $f.p; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		logPrefix = [logPrefix];
 		p = [p];
 		p[0] = this;
 		$deferred.push([(function(logPrefix, p) { return function $b() {
 			var $ptr, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			$r = p[0].onPanic(logPrefix[0], $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = p[0].OnPanic(logPrefix[0], $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
 		}; })(logPrefix, p), []]);
-		$r = f(e.Params); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: promise.ptr.prototype.invoke1 }; } $f.$ptr = $ptr; $f.e = e; $f.f = f; $f.logPrefix = logPrefix; $f.p = p; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+		callback.apply(undefined, $externalize(args, sliceType$3));
+		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Promise.ptr.prototype.invoke }; } $f.$ptr = $ptr; $f.args = args; $f.callback = callback; $f.logPrefix = logPrefix; $f.p = p; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
-	promise.prototype.invoke1 = function(f, e, logPrefix) { return this.$val.invoke1(f, e, logPrefix); };
-	promise.ptr.prototype.invoke2 = function(f, e, logPrefix) {
-		var $ptr, e, f, logPrefix, p, $s, $deferred, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; e = $f.e; f = $f.f; logPrefix = $f.logPrefix; p = $f.p; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-		logPrefix = [logPrefix];
-		p = [p];
-		p[0] = this;
-		$deferred.push([(function(logPrefix, p) { return function $b() {
-			var $ptr, $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			$r = p[0].onPanic(logPrefix[0], $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
-		}; })(logPrefix, p), []]);
-		$r = f(new mapType(e.Params), unwrapPayload(e.Payload)); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: promise.ptr.prototype.invoke2 }; } $f.$ptr = $ptr; $f.e = e; $f.f = f; $f.logPrefix = logPrefix; $f.p = p; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
-	};
-	promise.prototype.invoke2 = function(f, e, logPrefix) { return this.$val.invoke2(f, e, logPrefix); };
-	promise.ptr.prototype.invokeCall = function(f, paramsArray, logPrefix) {
-		var $ptr, f, logPrefix, p, paramsArray, $s, $deferred, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; f = $f.f; logPrefix = $f.logPrefix; p = $f.p; paramsArray = $f.paramsArray; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-		logPrefix = [logPrefix];
-		p = [p];
-		p[0] = this;
-		$deferred.push([(function(logPrefix, p) { return function $b() {
-			var $ptr, $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			$r = p[0].onPanic(logPrefix[0], $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
-		}; })(logPrefix, p), []]);
-		$r = f(paramsArray, sliceType$4.nil); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: promise.ptr.prototype.invokeCall }; } $f.$ptr = $ptr; $f.f = f; $f.logPrefix = logPrefix; $f.p = p; $f.paramsArray = paramsArray; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
-	};
-	promise.prototype.invokeCall = function(f, paramsArray, logPrefix) { return this.$val.invokeCall(f, paramsArray, logPrefix); };
+	Promise.prototype.invoke = function(logPrefix, callback, args) { return this.$val.invoke(logPrefix, callback, args); };
 	NewSessionAdapter = function(session) {
 		var $ptr, session;
-		return new SessionAdapter.ptr(session, panicer((function() {
+		return new SessionAdapter.ptr(session, Panicer((function() {
 			var $ptr;
 			return (function $b(msg) {
 				var $ptr, msg, $s, $r;
 				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; msg = $f.msg; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-				$r = session.OnLog(new sliceType$5([new $String(msg)])); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = session.OnLog(new sliceType$3([new $String(msg)])); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.msg = msg; $f.$s = $s; $f.$r = $r; return $f;
 			});
 		})));
 	};
 	$pkg.NewSessionAdapter = NewSessionAdapter;
+	SessionAdapter.ptr.prototype.InvokeOnSessionEvent = function(logPrefix, callback, e) {
+		var $ptr, adapter, callback, e, logPrefix, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; adapter = $f.adapter; callback = $f.callback; e = $f.e; logPrefix = $f.logPrefix; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		adapter = [adapter];
+		logPrefix = [logPrefix];
+		adapter[0] = this;
+		$deferred.push([(function(adapter, logPrefix) { return function $b() {
+			var $ptr, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			$r = adapter[0].OnPanic(logPrefix[0], $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
+		}; })(adapter, logPrefix), []]);
+		callback($externalize(e.Params, mapType));
+		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: SessionAdapter.ptr.prototype.InvokeOnSessionEvent }; } $f.$ptr = $ptr; $f.adapter = adapter; $f.callback = callback; $f.e = e; $f.logPrefix = logPrefix; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+	};
+	SessionAdapter.prototype.InvokeOnSessionEvent = function(logPrefix, callback, e) { return this.$val.InvokeOnSessionEvent(logPrefix, callback, e); };
 	SessionAdapter.ptr.prototype.OnSessionEvent = function(callback) {
 		var $ptr, adapter, callback;
 		adapter = this;
 		adapter.Session.OnSessionEvent = (function $b(e) {
-			var $ptr, e, $s, $deferred, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; e = $f.e; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-			$deferred.push([(function $b() {
-				var $ptr, $s, $r;
-				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-				$r = adapter.OnPanic("Session onSessionEvent callback:", $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
-			}), []]);
-			callback($externalize(e.Params, mapType));
-			/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.e = e; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+			var $ptr, e, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; e = $f.e; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			$r = adapter.InvokeOnSessionEvent("Session.onSessionEvent callback:", callback, e); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.e = e; $f.$s = $s; $f.$r = $r; return $f;
 		});
 	};
 	SessionAdapter.prototype.OnSessionEvent = function(callback) { return this.$val.OnSessionEvent(callback); };
+	SessionAdapter.ptr.prototype.InvokeOnEvent = function(logPrefix, callback, e) {
+		var $ptr, adapter, callback, e, logPrefix, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; adapter = $f.adapter; callback = $f.callback; e = $f.e; logPrefix = $f.logPrefix; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		adapter = [adapter];
+		logPrefix = [logPrefix];
+		adapter[0] = this;
+		$deferred.push([(function(adapter, logPrefix) { return function $b() {
+			var $ptr, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			$r = adapter[0].OnPanic(logPrefix[0], $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
+		}; })(adapter, logPrefix), []]);
+		callback($externalize(e.Params, mapType), $externalize(UnwrapPayload(e.Payload), sliceType));
+		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: SessionAdapter.ptr.prototype.InvokeOnEvent }; } $f.$ptr = $ptr; $f.adapter = adapter; $f.callback = callback; $f.e = e; $f.logPrefix = logPrefix; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+	};
+	SessionAdapter.prototype.InvokeOnEvent = function(logPrefix, callback, e) { return this.$val.InvokeOnEvent(logPrefix, callback, e); };
 	SessionAdapter.ptr.prototype.OnEvent = function(callback) {
 		var $ptr, adapter, callback;
 		adapter = this;
 		adapter.Session.OnEvent = (function $b(e) {
-			var $ptr, e, $s, $deferred, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; e = $f.e; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-			$deferred.push([(function $b() {
-				var $ptr, $s, $r;
-				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-				$r = adapter.OnPanic("Session onEvent callback:", $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
-			}), []]);
-			callback($externalize(e.Params, mapType), $externalize(unwrapPayload(e.Payload), sliceType$4));
-			/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.e = e; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+			var $ptr, e, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; e = $f.e; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			$r = adapter.InvokeOnEvent("Session.onEvent callback:", callback, e); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.e = e; $f.$s = $s; $f.$r = $r; return $f;
 		});
 	};
 	SessionAdapter.prototype.OnEvent = function(callback) { return this.$val.OnEvent(callback); };
@@ -4868,7 +4870,7 @@ $packages["ninchatclient/lib"] = (function() {
 			$deferred.push([(function $b() {
 				var $ptr, $s, $r;
 				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-				$r = adapter.OnPanic("Session onClose callback:", $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = adapter.OnPanic("Session.onClose callback:", $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
 			}), []]);
 			callback();
@@ -4889,7 +4891,7 @@ $packages["ninchatclient/lib"] = (function() {
 			$deferred.push([(function $b() {
 				var $ptr, $s, $r;
 				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-				$r = adapter.OnPanic("Session onConnState callback:", $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = adapter.OnPanic("Session.onConnState callback:", $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
 			}), []]);
 			callback($externalize(state, $String));
@@ -4910,7 +4912,7 @@ $packages["ninchatclient/lib"] = (function() {
 			$deferred.push([(function $b() {
 				var $ptr, $s, $r;
 				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-				$r = adapter.OnPanic("Session onConnActive callback:", $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = adapter.OnPanic("Session.onConnActive callback:", $recover()); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
 			}), []]);
 			callback(new ($global.Date)().getTime());
@@ -4981,12 +4983,12 @@ $packages["ninchatclient/lib"] = (function() {
 		var $ptr, _entry, _tuple, action, adapter, disabled, p, params, payload, result;
 		result = null;
 		adapter = this;
-		action = new ninchat.Action.ptr(params, wrapPayload(payload), $throwNilPointerError, new $Int64(0, 0));
+		action = new ninchat.Action.ptr(params, WrapPayload(payload), $throwNilPointerError, new $Int64(0, 0));
 		_tuple = (_entry = params[$String.keyFor("action_id")], _entry !== undefined ? [_entry.v, true] : [$ifaceNil, false]); disabled = _tuple[1];
 		if (!disabled) {
-			p = new promise.ptr(sliceType.nil, sliceType$1.nil, sliceType.nil, adapter.OnPanic);
-			action.OnReply = $methodVal(p, "onReply");
-			result = p.object();
+			p = new Promise.ptr(adapter.OnPanic, sliceType.nil, sliceType.nil, sliceType.nil);
+			action.OnReply = $methodVal(p, "OnReply");
+			result = p.Object();
 		}
 		adapter.Session.Send(action);
 		return result;
@@ -4994,15 +4996,13 @@ $packages["ninchatclient/lib"] = (function() {
 	SessionAdapter.prototype.Send = function(params, payload) { return this.$val.Send(params, payload); };
 	newSession = function() {
 		var $ptr, adapter, session;
-		session = new ninchat.Session.ptr($throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, "", false, false, $ifaceNil, "", new $Int64(0, 0), chanType.nil, sliceType$6.nil, 0, false, new $Int64(0, 0), new $Int64(0, 0), chanType.nil, false, false);
+		session = new ninchat.Session.ptr($throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, "", false, false, $ifaceNil, "", new $Int64(0, 0), chanType.nil, sliceType$4.nil, 0, false, new $Int64(0, 0), new $Int64(0, 0), chanType.nil, false, false);
 		adapter = NewSessionAdapter(session);
 		return $makeMap($String.keyFor, [{ k: "onSessionEvent", v: new funcType$4($methodVal(adapter, "OnSessionEvent")) }, { k: "onEvent", v: new funcType$4($methodVal(adapter, "OnEvent")) }, { k: "onClose", v: new funcType$4($methodVal(adapter, "OnClose")) }, { k: "onConnState", v: new funcType$4($methodVal(adapter, "OnConnState")) }, { k: "onConnActive", v: new funcType$4($methodVal(adapter, "OnConnActive")) }, { k: "onLog", v: new funcType$4($methodVal(adapter, "OnLog")) }, { k: "setParams", v: new funcType$5($methodVal(session, "SetParams")) }, { k: "setTransport", v: new funcType$6($methodVal(session, "SetTransport")) }, { k: "setAddress", v: new funcType$6($methodVal(adapter, "SetAddress")) }, { k: "open", v: new funcType$7($methodVal(session, "Open")) }, { k: "close", v: new funcType$7($methodVal(session, "Close")) }, { k: "send", v: new funcType$8($methodVal(adapter, "Send")) }]);
 	};
-	ptrType$4.methods = [{prop: "object", name: "object", pkg: "ninchatclient/lib", typ: $funcType([], [ptrType], false)}, {prop: "onReply", name: "onReply", pkg: "ninchatclient/lib", typ: $funcType([ptrType$1], [], false)}, {prop: "resolveCall", name: "resolveCall", pkg: "ninchatclient/lib", typ: $funcType([sliceType$3], [], false)}, {prop: "invoke1", name: "invoke1", pkg: "ninchatclient/lib", typ: $funcType([callback1, ptrType$1, $String], [], false)}, {prop: "invoke2", name: "invoke2", pkg: "ninchatclient/lib", typ: $funcType([callback2, ptrType$1, $String], [], false)}, {prop: "invokeCall", name: "invokeCall", pkg: "ninchatclient/lib", typ: $funcType([callback2, sliceType$3, $String], [], false)}];
-	ptrType$5.methods = [{prop: "OnSessionEvent", name: "OnSessionEvent", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnEvent", name: "OnEvent", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnClose", name: "OnClose", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnConnState", name: "OnConnState", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnConnActive", name: "OnConnActive", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnLog", name: "OnLog", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "SetAddress", name: "SetAddress", pkg: "", typ: $funcType([$String], [], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([mapType, ptrType], [ptrType], false)}];
-	callback1.init([mapType], [], false);
-	callback2.init([$emptyInterface, sliceType$4], [], false);
-	promise.init([{prop: "resolvers", name: "resolvers", pkg: "ninchatclient/lib", typ: sliceType, tag: ""}, {prop: "rejecters", name: "rejecters", pkg: "ninchatclient/lib", typ: sliceType$1, tag: ""}, {prop: "notifiers", name: "notifiers", pkg: "ninchatclient/lib", typ: sliceType, tag: ""}, {prop: "onPanic", name: "onPanic", pkg: "ninchatclient/lib", typ: funcType$9, tag: ""}]);
+	ptrType$4.methods = [{prop: "Object", name: "Object", pkg: "", typ: $funcType([], [ptrType], false)}, {prop: "OnReply", name: "OnReply", pkg: "", typ: $funcType([ptrType$1], [], false)}, {prop: "Resolve", name: "Resolve", pkg: "", typ: $funcType([sliceType$3], [], true)}, {prop: "Reject", name: "Reject", pkg: "", typ: $funcType([sliceType$3], [], true)}, {prop: "Notify", name: "Notify", pkg: "", typ: $funcType([sliceType$3], [], true)}, {prop: "invoke", name: "invoke", pkg: "ninchatclient/lib", typ: $funcType([$String, ptrType, sliceType$3], [], true)}];
+	ptrType$5.methods = [{prop: "InvokeOnSessionEvent", name: "InvokeOnSessionEvent", pkg: "", typ: $funcType([$String, ptrType, ptrType$1], [], false)}, {prop: "OnSessionEvent", name: "OnSessionEvent", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "InvokeOnEvent", name: "InvokeOnEvent", pkg: "", typ: $funcType([$String, ptrType, ptrType$1], [], false)}, {prop: "OnEvent", name: "OnEvent", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnClose", name: "OnClose", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnConnState", name: "OnConnState", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnConnActive", name: "OnConnActive", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnLog", name: "OnLog", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "SetAddress", name: "SetAddress", pkg: "", typ: $funcType([$String], [], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([mapType, ptrType], [ptrType], false)}];
+	Promise.init([{prop: "OnPanic", name: "OnPanic", pkg: "", typ: funcType$9, tag: ""}, {prop: "fulfillers", name: "fulfillers", pkg: "ninchatclient/lib", typ: sliceType, tag: ""}, {prop: "rejecters", name: "rejecters", pkg: "ninchatclient/lib", typ: sliceType, tag: ""}, {prop: "notifiers", name: "notifiers", pkg: "ninchatclient/lib", typ: sliceType, tag: ""}]);
 	SessionAdapter.init([{prop: "Session", name: "Session", pkg: "", typ: ptrType$2, tag: ""}, {prop: "OnPanic", name: "OnPanic", pkg: "", typ: funcType$9, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};

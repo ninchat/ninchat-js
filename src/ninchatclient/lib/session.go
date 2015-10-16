@@ -13,7 +13,7 @@ type SessionAdapter struct {
 func NewSessionAdapter(session *ninchat.Session) *SessionAdapter {
 	return &SessionAdapter{
 		Session: session,
-		OnPanic: panicer(func() func(string) {
+		OnPanic: Panicer(func() func(string) {
 			return func(msg string) {
 				session.OnLog(msg)
 			}
@@ -21,30 +21,38 @@ func NewSessionAdapter(session *ninchat.Session) *SessionAdapter {
 	}
 }
 
+func (adapter *SessionAdapter) InvokeOnSessionEvent(logPrefix string, callback *js.Object, e *ninchat.Event) {
+	defer func() {
+		adapter.OnPanic(logPrefix, recover())
+	}()
+
+	callback.Invoke(e.Params)
+}
+
 func (adapter *SessionAdapter) OnSessionEvent(callback *js.Object) {
 	adapter.Session.OnSessionEvent = func(e *ninchat.Event) {
-		defer func() {
-			adapter.OnPanic("Session onSessionEvent callback:", recover())
-		}()
-
-		callback.Invoke(e.Params)
+		adapter.InvokeOnSessionEvent("Session.onSessionEvent callback:", callback, e)
 	}
+}
+
+func (adapter *SessionAdapter) InvokeOnEvent(logPrefix string, callback *js.Object, e *ninchat.Event) {
+	defer func() {
+		adapter.OnPanic(logPrefix, recover())
+	}()
+
+	callback.Invoke(e.Params, UnwrapPayload(e.Payload))
 }
 
 func (adapter *SessionAdapter) OnEvent(callback *js.Object) {
 	adapter.Session.OnEvent = func(e *ninchat.Event) {
-		defer func() {
-			adapter.OnPanic("Session onEvent callback:", recover())
-		}()
-
-		callback.Invoke(e.Params, unwrapPayload(e.Payload))
+		adapter.InvokeOnEvent("Session.onEvent callback:", callback, e)
 	}
 }
 
 func (adapter *SessionAdapter) OnClose(callback *js.Object) {
 	adapter.Session.OnClose = func() {
 		defer func() {
-			adapter.OnPanic("Session onClose callback:", recover())
+			adapter.OnPanic("Session.onClose callback:", recover())
 		}()
 
 		callback.Invoke()
@@ -59,7 +67,7 @@ func (adapter *SessionAdapter) OnConnState(callback *js.Object) {
 
 	adapter.Session.OnConnState = func(state string) {
 		defer func() {
-			adapter.OnPanic("Session onConnState callback:", recover())
+			adapter.OnPanic("Session.onConnState callback:", recover())
 		}()
 
 		callback.Invoke(state)
@@ -74,7 +82,7 @@ func (adapter *SessionAdapter) OnConnActive(callback *js.Object) {
 
 	adapter.Session.OnConnActive = func() {
 		defer func() {
-			adapter.OnPanic("Session onConnActive callback:", recover())
+			adapter.OnPanic("Session.onConnActive callback:", recover())
 		}()
 
 		callback.Invoke(js.Global.Get("Date").New().Call("getTime"))
@@ -130,16 +138,16 @@ func (adapter *SessionAdapter) SetAddress(value string) {
 func (adapter *SessionAdapter) Send(params map[string]interface{}, payload *js.Object) (result *js.Object) {
 	action := &ninchat.Action{
 		Params:  params,
-		Payload: wrapPayload(payload),
+		Payload: WrapPayload(payload),
 	}
 
 	if _, disabled := params["action_id"]; !disabled {
-		p := &promise{
-			onPanic: adapter.OnPanic,
+		p := &Promise{
+			OnPanic: adapter.OnPanic,
 		}
 
-		action.OnReply = p.onReply
-		result = p.object()
+		action.OnReply = p.OnReply
+		result = p.Object()
 	}
 
 	adapter.Session.Send(action)
