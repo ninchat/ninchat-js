@@ -3929,34 +3929,43 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 				/* } */ case 7:
 			/* } */ case 5:
 		/* } */ case 2:
+		/* */ if (event.String() === "user_deleted") { $s = 11; continue; }
+		/* */ $s = 12; continue;
+		/* if (event.String() === "user_deleted") { */ case 11:
+			s[0].sessionId = $ifaceNil;
+			s[0].running = false;
+			$r = s[0].OnSessionEvent(event); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			sessionLost = true;
+			return [actionId[0], sessionLost, needsAck, ok];
+		/* } */ case 12:
 		_tuple$2 = event.getError();
 		errorType = _tuple$2[0];
 		errorReason = _tuple$2[1];
 		sessionLost = _tuple$2[2];
 		err = _tuple$2[3];
-		/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 11; continue; }
-		/* */ $s = 12; continue;
-		/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 11:
-			$r = s[0].log(new sliceType$1([new $String("event:"), err])); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* */ if (sessionLost) { $s = 14; continue; }
-			/* */ $s = 15; continue;
-			/* if (sessionLost) { */ case 14:
+		/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 14; continue; }
+		/* */ $s = 15; continue;
+		/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 14:
+			$r = s[0].log(new sliceType$1([new $String("event:"), err])); /* */ $s = 16; case 16: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ if (sessionLost) { $s = 17; continue; }
+			/* */ $s = 18; continue;
+			/* if (sessionLost) { */ case 17:
 				s[0].sessionId = $ifaceNil;
-				/* */ if (!s[0].canLogin()) { $s = 16; continue; }
-				/* */ $s = 17; continue;
-				/* if (!s[0].canLogin()) { */ case 16:
+				/* */ if (!s[0].canLogin()) { $s = 19; continue; }
+				/* */ $s = 20; continue;
+				/* if (!s[0].canLogin()) { */ case 19:
 					s[0].running = false;
-					$r = s[0].OnSessionEvent(event); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 17:
-			/* } */ case 15:
+					$r = s[0].OnSessionEvent(event); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 20:
+			/* } */ case 18:
 			return [actionId[0], sessionLost, needsAck, ok];
-		/* } */ case 12:
-		/* */ if (errorType === "deprecated") { $s = 19; continue; }
-		/* */ $s = 20; continue;
-		/* if (errorType === "deprecated") { */ case 19:
-			$r = s[0].log(new sliceType$1([new $String("deprecated:"), new $String(errorReason)])); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* } */ case 20:
-		$r = s[0].OnEvent(event); /* */ $s = 22; case 22: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 15:
+		/* */ if (errorType === "deprecated") { $s = 22; continue; }
+		/* */ $s = 23; continue;
+		/* if (errorType === "deprecated") { */ case 22:
+			$r = s[0].log(new sliceType$1([new $String("deprecated:"), new $String(errorReason)])); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 23:
+		$r = s[0].OnEvent(event); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		ok = true;
 		return [actionId[0], sessionLost, needsAck, ok];
 		/* */ } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.handleEvent }; } $f.$ptr = $ptr; $f._r = _r; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.action = action; $f.actionId = actionId; $f.err = err; $f.errorReason = errorReason; $f.errorType = errorType; $f.event = event; $f.eventId = eventId; $f.i = i; $f.needsAck = needsAck; $f.ok = ok; $f.s = s; $f.sessionLost = sessionLost; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.x$3 = x$3; $f.x$4 = x$4; $f.$s = $s; $f.$r = $r; return $f;

@@ -16,31 +16,38 @@ function print(text) {
 
 function testClient() {
 	var session = NinchatClient.newSession();
+	var userAuth;
 
 	session.onSessionEvent(function(sessionHeader) {
 		print("SESSION: " + JSON.stringify(sessionHeader));
 
-		var sendSequence = 1;
+		if (sessionHeader.event == "session_created") {
+			userAuth = sessionHeader.user_auth;
 
-		var intervalId = setInterval(function() {
-			var messageHeader = {
-				action:       "send_message",
-				user_id:      sessionHeader.user_id,
-				message_type: "ninchat.com/text"
-			};
+			var sendSequence = 1;
 
-			var messagePayload = [
-				JSON.stringify({"text": "" + sendSequence})
-			];
+			var intervalId = setInterval(function() {
+				var messageHeader = {
+					action:       "send_message",
+					user_id:      sessionHeader.user_id,
+					message_type: "ninchat.com/text"
+				};
 
-			session.send(messageHeader, messagePayload);
+				var messagePayload = [
+					JSON.stringify({"text": "" + sendSequence})
+				];
 
-			if (sendSequence == 100) {
-				clearInterval(intervalId);
-			} else {
-				sendSequence++;
-			}
-		}, 100);
+				session.send(messageHeader, messagePayload);
+
+				if (sendSequence == 100) {
+					clearInterval(intervalId);
+				} else {
+					sendSequence++;
+				}
+			}, 100);
+		} else {
+			session.close();
+		}
 	});
 
 	var eventSequence = 2;
@@ -77,7 +84,10 @@ function testClient() {
 				closing = true;
 
 				setTimeout(function() {
-					session.close();
+					session.send({
+						action:    "delete_user",
+						user_auth: userAuth
+					});
 
 					var ok = true;
 
