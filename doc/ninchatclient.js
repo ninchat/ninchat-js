@@ -229,15 +229,4 @@ function Promise() { return {
 	 */
 	then: function(onFulfilled, onRejected, onNotified) {},
 
-	/**
-	 * Add callback to be called when the promise is rejected.
-	 *
-	 * @param {Function} onRejected
-	 *
-	 * @return {Promise}
-	 *
-	 * @name Promise.catch
-	 */
-	catch: function(onRejected) {}
-
 } };

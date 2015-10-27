@@ -207,17 +207,5 @@ updated.
 
 * **Promise** 
 
-## Promise.catch(onRejected)
-
-Add callback to be called when the promise is rejected.
-
-### Params:
-
-* **Function** *onRejected* 
-
-### Return:
-
-* **Promise** 
-
 <!-- End doc/ninchatclient.js -->
 

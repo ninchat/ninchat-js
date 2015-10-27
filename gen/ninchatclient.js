@@ -2960,8 +2960,9 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		var $ptr, _entry, _i, _keys, _ref, c, key, req, timeout, value, xhr, $s, $deferred, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _entry = $f._entry; _i = $f._i; _keys = $f._keys; _ref = $f._ref; c = $f.c; key = $f.key; req = $f.req; timeout = $f.timeout; value = $f.value; xhr = $f.xhr; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		c = [c];
+		req = [req];
 		xhr = [xhr];
-		$deferred.push([(function(c, xhr) { return function $b() {
+		$deferred.push([(function(c, req, xhr) { return function $b() {
 			var $ptr, err, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; err = $f.err; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 			err = jsError($recover());
@@ -2971,43 +2972,46 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 				$r = $send(c[0], new httpResponse.ptr(null, err)); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			/* } */ case 2:
 			/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.err = err; $f.$s = $s; $f.$r = $r; return $f;
-		}; })(c, xhr), []]);
+		}; })(c, req, xhr), []]);
 		xhr[0] = new (xhrType)();
-		xhr[0].onload = $externalize((function(c, xhr) { return function() {
+		xhr[0].onload = $externalize((function(c, req, xhr) { return function() {
 			var $ptr, response;
 			response = xhr[0].responseText;
-			$go((function(c, xhr) { return function $b() {
+			$go((function(c, req, xhr) { return function $b() {
 				var $ptr, $s, $r;
 				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 				$r = $send(c[0], new httpResponse.ptr(response, $ifaceNil)); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
-			}; })(c, xhr), []);
-		}; })(c, xhr), funcType);
-		xhr[0].onprogress = $externalize((function(c, xhr) { return function() {
+			}; })(c, req, xhr), []);
+		}; })(c, req, xhr), funcType);
+		xhr[0].onprogress = $externalize((function(c, req, xhr) { return function() {
 			var $ptr;
-		}; })(c, xhr), funcType);
-		xhr[0].ontimeout = $externalize((function(c, xhr) { return function() {
+			$global.setTimeout($externalize((function(c, req, xhr) { return function() {
+				var $ptr;
+			}; })(c, req, xhr), funcType), 0);
+		}; })(c, req, xhr), funcType);
+		xhr[0].ontimeout = $externalize((function(c, req, xhr) { return function() {
 			var $ptr;
-			$go((function(c, xhr) { return function $b() {
+			$go((function(c, req, xhr) { return function $b() {
 				var $ptr, $s, $r;
 				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 				$r = $send(c[0], new httpResponse.ptr(null, errors.New("timeout"))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
-			}; })(c, xhr), []);
-		}; })(c, xhr), funcType);
-		xhr[0].onerror = $externalize((function(c, xhr) { return function() {
+			}; })(c, req, xhr), []);
+		}; })(c, req, xhr), funcType);
+		xhr[0].onerror = $externalize((function(c, req, xhr) { return function() {
 			var $ptr;
-			$go((function(c, xhr) { return function $b() {
+			$go((function(c, req, xhr) { return function $b() {
 				var $ptr, $s, $r;
 				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 				$r = $send(c[0], new httpResponse.ptr(null, errors.New("error"))); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				/* */ $s = -1; case -1: } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$ptr = $ptr; $f.$s = $s; $f.$r = $r; return $f;
-			}; })(c, xhr), []);
-		}; })(c, xhr), funcType);
-		xhr[0].open($externalize(req.Method, $String), $externalize(req.URL, $String));
+			}; })(c, req, xhr), []);
+		}; })(c, req, xhr), funcType);
+		xhr[0].open($externalize(req[0].Method, $String), $externalize(req[0].URL, $String));
 		xhr[0].timeout = $externalize(timeout, duration);
 		if (xhrRequestHeaderSupport) {
-			_ref = req.Header;
+			_ref = req[0].Header;
 			_i = 0;
 			_keys = $keys(_ref);
 			while (true) {
@@ -3023,7 +3027,10 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 				_i++;
 			}
 		}
-		xhr[0].send(req.data);
+		$global.setTimeout($externalize((function(c, req, xhr) { return function() {
+			var $ptr;
+			xhr[0].send(req[0].data);
+		}; })(c, req, xhr), funcType), 0);
 		/* */ $s = -1; case -1: } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: putResponseToChannel }; } $f.$ptr = $ptr; $f._entry = _entry; $f._i = _i; $f._keys = _keys; $f._ref = _ref; $f.c = c; $f.key = key; $f.req = req; $f.timeout = timeout; $f.value = value; $f.xhr = xhr; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	jitterFloat64 = function(x, scale) {
@@ -4840,11 +4847,6 @@ $packages["ninchatclient/lib"] = (function() {
 			}
 			return o;
 		}), funcType$3);
-		o.catch = $externalize((function(onRejected) {
-			var $ptr, onRejected;
-			p.rejecters = $append(p.rejecters, onRejected);
-			return o;
-		}), funcType$2);
 		return o;
 	};
 	Promise.prototype.Object = function() { return this.$val.Object(); };

@@ -32,12 +32,6 @@ func (p *Promise) Object() (o *js.Object) {
 		return o
 	})
 
-	o.Set("catch", func(onRejected *js.Object) *js.Object {
-		p.rejecters = append(p.rejecters, onRejected)
-
-		return o
-	})
-
 	return
 }
 
