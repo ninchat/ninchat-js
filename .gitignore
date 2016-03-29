@@ -1,13 +1,9 @@
 /bin/
 /pkg/
-/src/github.com/cpuguy83/
-/src/github.com/inconshreveable/mousetrap/
+/src/github.com/fsnotify/fsnotify/
 /src/github.com/kardianos/osext/
 /src/github.com/neelance/sourcemap/
-/src/github.com/russross/
-/src/github.com/shurcooL/
 /src/github.com/spf13/cobra/
 /src/github.com/spf13/pflag/
 /src/golang.org/x/crypto/
 /src/golang.org/x/tools/
-/src/gopkg.in/fsnotify.v1/

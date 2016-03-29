@@ -25,28 +25,25 @@ doc/ninchatclient.md: doc/ninchatclient.js
 	$(MARKDOX) -o $@ doc/ninchatclient.js
 
 $(GOPHERJS):
+	$(GO) get github.com/fsnotify/fsnotify
 	$(GO) get github.com/kardianos/osext
 	$(GO) get github.com/neelance/sourcemap
 	$(GO) get github.com/spf13/cobra
+	$(GO) get github.com/spf13/pflag
 	$(GO) get golang.org/x/crypto/ssh/terminal
-	$(GO) get golang.org/x/tools/go/exact
-	$(GO) get gopkg.in/fsnotify.v1
+	$(GO) get golang.org/x/tools/go/types/typeutil
 	$(GO) build -o $@ github.com/gopherjs/gopherjs
 
 clean:
 	rm -rf bin
 	rm -rf pkg
-	rm -rf src/github.com/cpuguy83/go-md2man
-	rm -rf src/github.com/inconshreveable/mousetrap
+	rm -rf src/github.com/fsnotify/fsnotify
 	rm -rf src/github.com/kardianos/osext
 	rm -rf src/github.com/neelance/sourcemap
-	rm -rf src/github.com/russross/blackfriday
-	rm -rf src/github.com/shurcooL/sanitized_anchor_name
 	rm -rf src/github.com/spf13/cobra
 	rm -rf src/github.com/spf13/pflag
 	rm -rf src/golang.org/x/crypto
 	rm -rf src/golang.org/x/tools
-	rm -rf src/gopkg.in/fsnotify.v1
 
 container-for-testing:
 	$(DOCKER) build -t $(DOCKER_TAG) .
