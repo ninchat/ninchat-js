@@ -12,7 +12,7 @@ export GOPATH
 
 build: ninchatclient
 
-ninchatclient: gen/ninchatclient.js gen/ninchatclient.min.js doc/ninchatclient.md
+ninchatclient: gen/ninchatclient.js gen/ninchatclient.min.js docs/ninchatclient.md
 
 gen/ninchatclient.js gen/ninchatclient.min.js: $(wildcard src/ninchatclient/*.go src/ninchatclient/*/*.go) $(wildcard src/github.com/ninchat/ninchat-go/*.go) $(GOPHERJS)
 	@ mkdir -p gen
@@ -21,8 +21,8 @@ gen/ninchatclient.js gen/ninchatclient.min.js: $(wildcard src/ninchatclient/*.go
 	$(GOFMT) -d -s src/ninchatclient
 	$(GO) vet ninchatclient
 
-doc/ninchatclient.md: doc/ninchatclient.js
-	$(MARKDOX) -o $@ doc/ninchatclient.js
+docs/ninchatclient.md: docs/ninchatclient.js
+	$(MARKDOX) -o $@ docs/ninchatclient.js
 
 $(GOPHERJS):
 	$(GO) get github.com/fsnotify/fsnotify
