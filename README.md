@@ -13,7 +13,7 @@ Points of interest:
   at `https://ninchat.com/js/ninchatclient.js` and
   `https://ninchat.com/js/ninchatclient.min.js`.
 
-- [`doc/ninchatclient.md`](doc/ninchatclient.md) contains API
+- [`docs/ninchatclient.md`](docs/ninchatclient.md) contains API
   documentation.
 
 - `example/client-test.js` demonstrates usage.
