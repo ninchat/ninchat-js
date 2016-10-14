@@ -2746,7 +2746,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		if (n > 0) {
 			return;
 		}
-		if (action.String() === "search") {
+		if (e.String() === "search_results") {
 			if (!($interfaceIsEqual((_entry = e.Params[$String.keyFor("users")], _entry !== undefined ? _entry.v : $ifaceNil), $ifaceNil)) || !($interfaceIsEqual((_entry$1 = e.Params[$String.keyFor("channels")], _entry$1 !== undefined ? _entry$1.v : $ifaceNil), $ifaceNil))) {
 				return;
 			}
