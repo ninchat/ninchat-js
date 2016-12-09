@@ -2,7 +2,7 @@ package clientlib
 
 import (
 	"github.com/gopherjs/gopherjs/js"
-	"github.com/ninchat/ninchat-go"
+	ninchat "github.com/ninchat/ninchat-go"
 )
 
 type SessionAdapter struct {
@@ -22,9 +22,11 @@ func NewSessionAdapter(session *ninchat.Session) *SessionAdapter {
 }
 
 func (adapter *SessionAdapter) InvokeOnSessionEvent(logPrefix string, callback *js.Object, e *ninchat.Event) {
-	defer func() {
-		adapter.OnPanic(logPrefix, recover())
-	}()
+	if adapter.OnPanic != nil {
+		defer func() {
+			adapter.OnPanic(logPrefix, recover())
+		}()
+	}
 
 	callback.Invoke(e.Params)
 }
@@ -36,9 +38,11 @@ func (adapter *SessionAdapter) OnSessionEvent(callback *js.Object) {
 }
 
 func (adapter *SessionAdapter) InvokeOnEvent(logPrefix string, callback *js.Object, e *ninchat.Event) {
-	defer func() {
-		adapter.OnPanic(logPrefix, recover())
-	}()
+	if adapter.OnPanic != nil {
+		defer func() {
+			adapter.OnPanic(logPrefix, recover())
+		}()
+	}
 
 	callback.Invoke(e.Params, UnwrapPayload(e.Payload))
 }
@@ -51,9 +55,11 @@ func (adapter *SessionAdapter) OnEvent(callback *js.Object) {
 
 func (adapter *SessionAdapter) OnClose(callback *js.Object) {
 	adapter.Session.OnClose = func() {
-		defer func() {
-			adapter.OnPanic("Session.onClose callback:", recover())
-		}()
+		if adapter.OnPanic != nil {
+			defer func() {
+				adapter.OnPanic("Session.onClose callback:", recover())
+			}()
+		}
 
 		callback.Invoke()
 	}
@@ -66,9 +72,11 @@ func (adapter *SessionAdapter) OnConnState(callback *js.Object) {
 	}
 
 	adapter.Session.OnConnState = func(state string) {
-		defer func() {
-			adapter.OnPanic("Session.onConnState callback:", recover())
-		}()
+		if adapter.OnPanic != nil {
+			defer func() {
+				adapter.OnPanic("Session.onConnState callback:", recover())
+			}()
+		}
 
 		callback.Invoke(state)
 	}
@@ -81,9 +89,11 @@ func (adapter *SessionAdapter) OnConnActive(callback *js.Object) {
 	}
 
 	adapter.Session.OnConnActive = func() {
-		defer func() {
-			adapter.OnPanic("Session.onConnActive callback:", recover())
-		}()
+		if adapter.OnPanic != nil {
+			defer func() {
+				adapter.OnPanic("Session.onConnActive callback:", recover())
+			}()
+		}
 
 		callback.Invoke(js.Global.Get("Date").New().Call("getTime"))
 	}
@@ -96,9 +106,11 @@ func (adapter *SessionAdapter) OnLog(callback *js.Object) {
 	}
 
 	adapter.Session.OnLog = func(tokens ...interface{}) {
-		defer func() {
-			recover()
-		}()
+		if adapter.OnPanic != nil {
+			defer func() {
+				recover()
+			}()
+		}
 
 		message := ""
 
@@ -154,9 +166,13 @@ func (adapter *SessionAdapter) Send(params map[string]interface{}, payload *js.O
 	return
 }
 
-func newSession() map[string]interface{} {
+func newSession(dontRecover *js.Object) map[string]interface{} {
 	session := new(ninchat.Session)
 	adapter := NewSessionAdapter(session)
+
+	if dontRecover != js.Undefined {
+		adapter.OnPanic = nil
+	}
 
 	return map[string]interface{}{
 		"onSessionEvent": adapter.OnSessionEvent,

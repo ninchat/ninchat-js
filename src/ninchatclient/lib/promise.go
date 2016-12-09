@@ -2,7 +2,7 @@ package clientlib
 
 import (
 	"github.com/gopherjs/gopherjs/js"
-	"github.com/ninchat/ninchat-go"
+	ninchat "github.com/ninchat/ninchat-go"
 )
 
 type Promise struct {
@@ -66,9 +66,11 @@ func (p *Promise) Notify(args ...interface{}) {
 }
 
 func (p *Promise) invoke(logPrefix string, callback *js.Object, args ...interface{}) {
-	defer func() {
-		p.OnPanic(logPrefix, recover())
-	}()
+	if p.OnPanic != nil {
+		defer func() {
+			p.OnPanic(logPrefix, recover())
+		}()
+	}
 
 	callback.Invoke(args...)
 }
