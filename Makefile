@@ -27,6 +27,7 @@ docs/ninchatclient.md: docs/ninchatclient.js
 $(GOPHERJS):
 	$(GO) get github.com/fsnotify/fsnotify
 	$(GO) get github.com/kardianos/osext
+	$(GO) get github.com/kisielk/gotool
 	$(GO) get github.com/neelance/sourcemap
 	$(GO) get github.com/spf13/cobra
 	$(GO) get github.com/spf13/pflag
@@ -39,6 +40,7 @@ clean:
 	rm -rf pkg
 	rm -rf src/github.com/fsnotify/fsnotify
 	rm -rf src/github.com/kardianos/osext
+	rm -rf src/github.com/kisielk/gotool
 	rm -rf src/github.com/neelance/sourcemap
 	rm -rf src/github.com/spf13/cobra
 	rm -rf src/github.com/spf13/pflag
