@@ -4084,7 +4084,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	Session.prototype.log = function(tokens) { return this.$val.log(tokens); };
 	timeNow = function() {
 		var $ptr, x;
-		return (x = $internalize(new ($global.Date)()($externalize("getTime", $String)), $Int64), new timeTime(x.$high, x.$low));
+		return (x = $internalize(new ($global.Date)().getTime(), $Int64), new timeTime(x.$high, x.$low));
 	};
 	timeAdd = function(t, d) {
 		var $ptr, d, t, x;
