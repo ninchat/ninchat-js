@@ -9,7 +9,9 @@ func call(params map[string]interface{}, onLog *js.Object, address string) *js.O
 	p := &Promise{
 		OnPanic: Panicer(func() func(string) {
 			return func(msg string) {
-				onLog.Invoke(msg)
+				if onLog != js.Undefined {
+					onLog.Invoke(msg)
+				}
 			}
 		}),
 	}
@@ -26,7 +28,9 @@ func call(params map[string]interface{}, onLog *js.Object, address string) *js.O
 		events, err := caller.Call(action)
 		if err != nil {
 			reason := err.Error()
-			onLog.Invoke(reason)
+			if onLog != js.Undefined {
+				onLog.Invoke(reason)
+			}
 			p.OnReply(&ninchat.Event{
 				Params: map[string]interface{}{
 					"event":        "error",
