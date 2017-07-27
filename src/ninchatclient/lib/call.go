@@ -6,6 +6,10 @@ import (
 )
 
 func call(params map[string]interface{}, onLog *js.Object, address string) *js.Object {
+	if address == "undefined" {
+		address = ""
+	}
+
 	p := &Promise{
 		OnPanic: Panicer(func() func(string) {
 			return func(msg string) {
