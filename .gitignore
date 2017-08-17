@@ -1,10 +1,2 @@
 /bin/
 /pkg/
-/src/github.com/fsnotify/fsnotify/
-/src/github.com/kardianos/osext/
-/src/github.com/neelance/sourcemap/
-/src/github.com/spf13/cobra/
-/src/github.com/spf13/pflag/
-/src/golang.org/x/crypto/
-/src/golang.org/x/sys/
-/src/golang.org/x/tools/

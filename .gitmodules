@@ -7,3 +7,27 @@
 [submodule "src/github.com/ninchat/ninchat-go"]
 	path = src/github.com/ninchat/ninchat-go
 	url = https://github.com/ninchat/ninchat-go.git
+[submodule "src/github.com/fsnotify/fsnotify"]
+	path = src/github.com/fsnotify/fsnotify
+	url = https://github.com/fsnotify/fsnotify.git
+[submodule "src/github.com/kardianos/osext"]
+	path = src/github.com/kardianos/osext
+	url = https://github.com/kardianos/osext.git
+[submodule "src/github.com/neelance/sourcemap"]
+	path = src/github.com/neelance/sourcemap
+	url = https://github.com/neelance/sourcemap.git
+[submodule "src/github.com/spf13/cobra"]
+	path = src/github.com/spf13/cobra
+	url = https://github.com/spf13/cobra.git
+[submodule "src/github.com/spf13/pflag"]
+	path = src/github.com/spf13/pflag
+	url = https://github.com/spf13/pflag.git
+[submodule "src/golang.org/x/crypto"]
+	path = src/golang.org/x/crypto
+	url = https://github.com/golang/crypto.git
+[submodule "src/golang.org/x/tools"]
+	path = src/golang.org/x/tools
+	url = https://github.com/golang/tools.git
+[submodule "src/golang.org/x/sys"]
+	path = src/golang.org/x/sys
+	url = https://github.com/golang/sys.git
