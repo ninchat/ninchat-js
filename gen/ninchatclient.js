@@ -3627,8 +3627,6 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		backoff$1 = [backoff$1];
 		s = [s];
 		s[0] = this;
-		$r = s[0].log(new sliceType$1([new $String("opening")])); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$deferred.push([$methodVal(s[0], "log"), [new sliceType$1([new $String("closed")])]]);
 		$deferred.push([(function(backoff$1, s) { return function $b() {
 			var $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -3640,6 +3638,8 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 			$s = -1; return;
 			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$s = $s; $f.$r = $r; return $f;
 		}; })(backoff$1, s), []]);
+		$r = s[0].log(new sliceType$1([new $String("opening")])); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$deferred.push([$methodVal(s[0], "log"), [new sliceType$1([new $String("closed")])]]);
 		$deferred.push([$methodVal(s[0], "connState"), ["disconnected"]]);
 		backoff$1[0] = new backoff.ptr(0);
 		/* while (true) { */ case 2:
