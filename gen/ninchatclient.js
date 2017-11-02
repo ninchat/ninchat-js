@@ -5056,7 +5056,11 @@ $packages["ninchatclient/lib"] = (function() {
 			return (function $b(msg) {
 				var msg, $s, $r;
 				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; msg = $f.msg; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-				$r = session.OnLog(new sliceType$3([new $String(msg)])); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ if (!(session.OnLog === $throwNilPointerError)) { $s = 1; continue; }
+				/* */ $s = 2; continue;
+				/* if (!(session.OnLog === $throwNilPointerError)) { */ case 1:
+					$r = session.OnLog(new sliceType$3([new $String(msg)])); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 2:
 				$s = -1; return;
 				/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.msg = msg; $f.$s = $s; $f.$r = $r; return $f;
 			});

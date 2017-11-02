@@ -15,7 +15,9 @@ func NewSessionAdapter(session *ninchat.Session) *SessionAdapter {
 		Session: session,
 		OnPanic: Panicer(func() func(string) {
 			return func(msg string) {
-				session.OnLog(msg)
+				if session.OnLog != nil {
+					session.OnLog(msg)
+				}
 			}
 		}),
 	}
