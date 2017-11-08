@@ -2388,7 +2388,7 @@ $packages["github.com/ninchat/ninchat-go/vendor/sort"] = (function() {
 	return $pkg;
 })();
 $packages["github.com/ninchat/ninchat-go"] = (function() {
-	var $pkg = {}, $init, errors, js, sort, Action, Event, Frame, backoff, Caller, httpHeader, httpRequest, httpResponse, Session, transport, duration, timeTime, timer, webSocket, sliceType, sliceType$1, mapType, sliceType$2, ptrType, sliceType$3, ptrType$1, ptrType$2, sliceType$4, ptrType$3, funcType, ptrType$4, ptrType$5, structType, ptrType$6, sliceType$5, ptrType$7, ptrType$8, sliceType$6, funcType$1, funcType$2, ptrType$9, ptrType$10, ptrType$11, funcType$3, funcType$4, chanType, xhrType, xhrRequestHeaderSupport, sessionEventAckWindow, webSocketSupported, getAddress, getEndpointHosts, singleFrame, emptyData, dataLength, stringData, StringifyFrame, jsError, newJSONRequest, getJSONRequestResponseChannel, getResponseChannel, init, newGETRequest, newDataRequest, getResponseData, putResponseToChannel, jitterFloat64, jitterDuration, jitterInt64, jsonMarshal, jsonUnmarshalArray, jsonUnmarshalObject, jsonParse, longPollBinaryPayload, longPollTransport, longPollTransfer, longPollPing, longPollClose, logErrorResponse, randFloat64, timeNow, timeAdd, timeSub, newTimer, init$1, newWebSocket, webSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive;
+	var $pkg = {}, $init, errors, js, sort, Action, Event, Frame, backoff, Caller, httpHeader, httpRequest, httpResponse, Session, transport, duration, timeTime, timer, webSocket, sliceType, sliceType$1, mapType, sliceType$2, ptrType, sliceType$3, ptrType$1, ptrType$2, sliceType$4, ptrType$3, funcType, ptrType$4, ptrType$5, structType, ptrType$6, sliceType$5, ptrType$7, ptrType$8, sliceType$6, funcType$1, funcType$2, ptrType$9, ptrType$10, ptrType$11, funcType$3, funcType$4, chanType, xhrType, xhrRequestHeaderSupport, sessionEventAckWindow, webSocketClass, webSocketSupported, getAddress, getEndpointHosts, singleFrame, emptyData, dataLength, stringData, StringifyFrame, jsError, newJSONRequest, getJSONRequestResponseChannel, getResponseChannel, init, newGETRequest, newDataRequest, getResponseData, putResponseToChannel, jitterFloat64, jitterDuration, jitterInt64, jsonMarshal, jsonUnmarshalArray, jsonUnmarshalObject, jsonParse, longPollBinaryPayload, longPollTransport, longPollTransfer, longPollPing, longPollClose, logErrorResponse, randFloat64, timeNow, timeAdd, timeSub, newTimer, init$1, newWebSocket, webSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive;
 	errors = $packages["errors"];
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	sort = $packages["github.com/ninchat/ninchat-go/vendor/sort"];
@@ -2878,7 +2878,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	};
 	Caller.prototype.Call = function(action) { return this.$val.Call(action); };
 	emptyData = function() {
-		return new ($global.String)();
+		return new ($global.ArrayBuffer)();
 	};
 	dataLength = function(x) {
 		var x;
@@ -2964,6 +2964,9 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		xhrType = $global.XDomainRequest;
 		if (xhrType === undefined) {
 			xhrType = $global.XMLHttpRequest;
+			if (xhrType === undefined) {
+				xhrType = $module.require($externalize("xhr2", $String));
+			}
 			xhrRequestHeaderSupport = true;
 		}
 	};
@@ -4126,14 +4129,16 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	};
 	timer.prototype.Stop = function() { return this.$val.Stop(); };
 	init$1 = function() {
-		var class$1;
-		class$1 = $global.WebSocket;
-		webSocketSupported = !(class$1 === undefined) && !(class$1.CLOSING === undefined);
+		webSocketClass = $global.WebSocket;
+		if (webSocketClass === undefined) {
+			webSocketClass = $module.require($externalize("ws", $String));
+		}
+		webSocketSupported = !(webSocketClass === undefined) && !(webSocketClass.CLOSING === undefined);
 	};
 	newWebSocket = function(url, timeout) {
 		var clearTimeout, closeNotify, notifyClosed, timeout, timeoutId, url, ws;
 		ws = ptrType$8.nil;
-		ws = new webSocket.ptr(new $Chan(structType, 1), false, $ifaceNil, new ($global.WebSocket)($externalize(url, $String)), false, sliceType$6.nil);
+		ws = new webSocket.ptr(new $Chan(structType, 1), false, $ifaceNil, new (webSocketClass)($externalize(url, $String)), false, sliceType$6.nil);
 		ws.impl.binaryType = $externalize("arraybuffer", $String);
 		notifyClosed = false;
 		closeNotify = (function() {
@@ -4765,6 +4770,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		$r = sort.$init(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		xhrType = null;
 		xhrRequestHeaderSupport = false;
+		webSocketClass = null;
 		webSocketSupported = false;
 		sessionEventAckWindow = jitterInt64(new $Int64(0, 4096), -0.25);
 		init();
