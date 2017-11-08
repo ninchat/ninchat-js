@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/gopherjs/gopherjs/js"
 
-	"ninchatclient/lib"
+	clientlib "ninchatclient/lib"
 )
 
 const (
@@ -11,7 +11,16 @@ const (
 )
 
 func main() {
-	module := js.Global.Get("Object").New()
-	clientlib.Init(module)
-	js.Global.Set(namespace, module)
+	api := js.Undefined
+
+	if js.Module != js.Undefined {
+		api = js.Module.Get("exports")
+	}
+
+	if api == js.Undefined {
+		api = js.Global.Get("Object").New()
+		js.Global.Set(namespace, api)
+	}
+
+	clientlib.Init(api)
 }
