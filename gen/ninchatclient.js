@@ -5293,10 +5293,16 @@ $packages["ninchatclient"] = (function() {
 	ninchat = $packages["github.com/ninchat/ninchat-go"];
 	clientlib = $packages["ninchatclient/lib"];
 	main = function() {
-		var module;
-		module = new ($global.Object)();
-		clientlib.Init(module);
-		$global.NinchatClient = module;
+		var api;
+		api = undefined;
+		if (!($module === undefined)) {
+			api = $module.exports;
+		}
+		if (api === undefined) {
+			api = new ($global.Object)();
+			$global.NinchatClient = api;
+		}
+		clientlib.Init(api);
 	};
 	$init = function() {
 		$pkg.$init = function() {};
