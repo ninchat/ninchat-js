@@ -1,0 +1,12 @@
+{
+  "name": "ninchat-js",
+  "version": "1.0.0",
+  "description": "Browser client library for api.ninchat.com",
+  "repository": "ninchat/ninchat-js",
+  "license": "BSD-2-Clause",
+  "main": "gen/ninchatclient.js",
+  "optionalDependencies": {
+    "ws": "^3.3.0",
+    "xhr2": "^0.1.4"
+  }
+}
