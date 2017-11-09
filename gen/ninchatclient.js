@@ -4814,7 +4814,7 @@ $packages["ninchatclient/lib"] = (function() {
 	mapType = $mapType($String, $emptyInterface);
 	sliceType$2 = $sliceType(mapType);
 	sliceType$3 = $sliceType($emptyInterface);
-	funcType = $funcType([mapType, ptrType, $String], [ptrType], false);
+	funcType = $funcType([mapType, ptrType, ptrType], [ptrType], false);
 	funcType$1 = $funcType([], [mapType], false);
 	funcType$2 = $funcType([ptrType], [ptrType], false);
 	funcType$3 = $funcType([ptrType, ptrType, ptrType], [ptrType], false);
@@ -4831,17 +4831,23 @@ $packages["ninchatclient/lib"] = (function() {
 	funcType$9 = $funcType([$String, $emptyInterface], [], false);
 	ptrType$5 = $ptrType(SessionAdapter);
 	call = function(params, onLog, address) {
-		var address, onLog, p, params;
+		var address, apihost, onLog, p, params;
+		apihost = "";
+		if (!(address === undefined)) {
+			apihost = $internalize(address, $String);
+		}
 		p = new Promise.ptr(Panicer((function() {
 			return (function(msg) {
 				var msg;
-				onLog($externalize(msg, $String));
+				if (!(onLog === undefined)) {
+					onLog($externalize(msg, $String));
+				}
 			});
 		})), sliceType.nil, sliceType.nil, sliceType.nil);
 		$go((function $b() {
 			var _i, _r, _r$1, _ref, _tuple, action, caller, e, err, events, paramsArray, reason, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _i = $f._i; _r = $f._r; _r$1 = $f._r$1; _ref = $f._ref; _tuple = $f._tuple; action = $f.action; caller = $f.caller; e = $f.e; err = $f.err; events = $f.events; paramsArray = $f.paramsArray; reason = $f.reason; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			caller = new ninchat.Caller.ptr(address);
+			caller = new ninchat.Caller.ptr(apihost);
 			action = new ninchat.Action.ptr(params, sliceType$1.nil, $throwNilPointerError, new $Int64(0, 0));
 			_r = caller.Call(action); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 			_tuple = _r;
@@ -4852,7 +4858,9 @@ $packages["ninchatclient/lib"] = (function() {
 			/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 2:
 				_r$1 = err.Error(); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 				reason = _r$1;
-				onLog($externalize(reason, $String));
+				if (!(onLog === undefined)) {
+					onLog($externalize(reason, $String));
+				}
 				$r = p.OnReply(new ninchat.Event.ptr($makeMap($String.keyFor, [{ k: "event", v: new $String("error") }, { k: "error_type", v: new $String("internal") }, { k: "error_reason", v: new $String(reason) }]), sliceType$1.nil, false)); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = -1; return;
 			/* } */ case 3:

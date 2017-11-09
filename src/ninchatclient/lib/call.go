@@ -5,18 +5,26 @@ import (
 	"github.com/ninchat/ninchat-go"
 )
 
-func call(params map[string]interface{}, onLog *js.Object, address string) *js.Object {
+func call(params map[string]interface{}, onLog *js.Object, address *js.Object) *js.Object {
+	var apihost string
+
+	if address != js.Undefined {
+		apihost = address.String()
+	}
+
 	p := &Promise{
 		OnPanic: Panicer(func() func(string) {
 			return func(msg string) {
-				onLog.Invoke(msg)
+				if onLog != js.Undefined {
+					onLog.Invoke(msg)
+				}
 			}
 		}),
 	}
 
 	go func() {
 		caller := ninchat.Caller{
-			Address: address,
+			Address: apihost,
 		}
 
 		action := &ninchat.Action{
@@ -26,7 +34,9 @@ func call(params map[string]interface{}, onLog *js.Object, address string) *js.O
 		events, err := caller.Call(action)
 		if err != nil {
 			reason := err.Error()
-			onLog.Invoke(reason)
+			if onLog != js.Undefined {
+				onLog.Invoke(reason)
+			}
 			p.OnReply(&ninchat.Event{
 				Params: map[string]interface{}{
 					"event":        "error",
