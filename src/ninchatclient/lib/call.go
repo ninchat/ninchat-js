@@ -5,9 +5,11 @@ import (
 	"github.com/ninchat/ninchat-go"
 )
 
-func call(params map[string]interface{}, onLog *js.Object, address string) *js.Object {
-	if address == "undefined" {
-		address = ""
+func call(params map[string]interface{}, onLog *js.Object, address *js.Object) *js.Object {
+	var api string
+
+	if address != js.Undefined {
+		api = address.String()
 	}
 
 	p := &Promise{
@@ -22,7 +24,7 @@ func call(params map[string]interface{}, onLog *js.Object, address string) *js.O
 
 	go func() {
 		caller := ninchat.Caller{
-			Address: address,
+			Address: api,
 		}
 
 		action := &ninchat.Action{
