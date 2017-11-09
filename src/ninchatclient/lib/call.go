@@ -6,10 +6,10 @@ import (
 )
 
 func call(params map[string]interface{}, onLog *js.Object, address *js.Object) *js.Object {
-	var api string
+	var apihost string
 
 	if address != js.Undefined {
-		api = address.String()
+		apihost = address.String()
 	}
 
 	p := &Promise{
@@ -24,7 +24,7 @@ func call(params map[string]interface{}, onLog *js.Object, address *js.Object) *
 
 	go func() {
 		caller := ninchat.Caller{
-			Address: api,
+			Address: apihost,
 		}
 
 		action := &ninchat.Action{
