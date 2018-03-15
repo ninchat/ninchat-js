@@ -129,11 +129,6 @@ function testClient() {
 		print("LOG: " + message);
 	});
 
-	if (false) {
-		// don't even try websocket
-		session.setTransport("longpoll");
-	}
-
 	var params = {
 		message_types: [
 			"ninchat.com/info/*",

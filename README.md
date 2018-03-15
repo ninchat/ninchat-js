@@ -3,7 +3,8 @@ JavaScript utilities for use with the [Ninchat](https://ninchat.com) API.
 Points of interest:
 
 - `src/ninchatclient/` contains Go sources for NinchatClient, a library for
-  accessing `api.ninchat.com` from a web browser.  It is a thin wrapper on the
+  accessing `api.ninchat.com` from a web browser, Node.js or React Native.
+  It is a thin wrapper over the
   [`ninchat-go`](https://github.com/ninchat/ninchat-go) package (referenced as
   a Git submodule).
 

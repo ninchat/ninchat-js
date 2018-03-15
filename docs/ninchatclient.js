@@ -148,16 +148,6 @@ function Session() { return {
 	setParams: function(params) {},
 
 	/**
-	 * Force a specific network transport implementation to be used.
-	 * Currently only `longpoll` may be specified.
-	 *
-	 * @param {String}  name
-	 *
-	 * @name Session.setTransport
-	 */
-	setTransport: function(name) {},
-
-	/**
 	 * Use an alternative API endpoint.
 	 *
 	 * @param {String}  address

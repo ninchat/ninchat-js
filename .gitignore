@@ -1,7 +1,6 @@
 /bin/
 /pkg/
 /src/github.com/fsnotify/fsnotify/
-/src/github.com/kardianos/osext/
 /src/github.com/kisielk/gotool/
 /src/github.com/neelance/sourcemap/
 /src/github.com/spf13/cobra/

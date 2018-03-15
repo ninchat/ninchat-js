@@ -1,6 +1,6 @@
 
 
-<!-- Start doc/ninchatclient.js -->
+<!-- Start docs/ninchatclient.js -->
 
 Ninchat API connection library.
 
@@ -137,15 +137,6 @@ called, this takes effect when a session is lost.
 
 * **Object** *params* 
 
-## Session.setTransport(name)
-
-Force a specific network transport implementation to be used.
-Currently only `longpoll` may be specified.
-
-### Params:
-
-* **String** *name* 
-
 ## Session.setAddress(address)
 
 Use an alternative API endpoint.
@@ -207,5 +198,5 @@ updated.
 
 * **Promise** 
 
-<!-- End doc/ninchatclient.js -->
+<!-- End docs/ninchatclient.js -->
 

@@ -168,10 +168,14 @@ func newSession() map[string]interface{} {
 		"onConnActive":   adapter.OnConnActive,
 		"onLog":          adapter.OnLog,
 		"setParams":      session.SetParams,
-		"setTransport":   session.SetTransport,
+		"setTransport":   setTransport,
 		"setAddress":     adapter.SetAddress,
 		"open":           session.Open,
 		"close":          session.Close,
 		"send":           adapter.Send,
 	}
+}
+
+func setTransport(string) {
+	println("NinchatClient.Session.setTransport doesn't do anything anymore")
 }

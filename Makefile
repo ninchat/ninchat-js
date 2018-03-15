@@ -19,19 +19,18 @@ gen/ninchatclient.js gen/ninchatclient.min.js: $(wildcard src/ninchatclient/*.go
 	$(GOPHERJS) build -o gen/ninchatclient.js ninchatclient
 	$(GOPHERJS) build -m -o gen/ninchatclient.min.js ninchatclient
 	$(GOFMT) -d -s src/ninchatclient
-	$(GO) vet ninchatclient
+	$(GO) vet -tags=js ninchatclient
 
 docs/ninchatclient.md: docs/ninchatclient.js
 	$(MARKDOX) -o $@ docs/ninchatclient.js
 
 $(GOPHERJS):
 	$(GO) get github.com/fsnotify/fsnotify
-	$(GO) get github.com/kardianos/osext
 	$(GO) get github.com/kisielk/gotool
 	$(GO) get github.com/neelance/sourcemap
 	$(GO) get github.com/spf13/cobra
-	$(GO) get github.com/spf13/pflag
 	$(GO) get golang.org/x/crypto/ssh/terminal
+	$(GO) get golang.org/x/tools/go/gcimporter15
 	$(GO) get golang.org/x/tools/go/types/typeutil
 	$(GO) build -o $@ github.com/gopherjs/gopherjs
 
@@ -39,11 +38,9 @@ clean:
 	rm -rf bin
 	rm -rf pkg
 	rm -rf src/github.com/fsnotify/fsnotify
-	rm -rf src/github.com/kardianos/osext
 	rm -rf src/github.com/kisielk/gotool
 	rm -rf src/github.com/neelance/sourcemap
 	rm -rf src/github.com/spf13/cobra
-	rm -rf src/github.com/spf13/pflag
 	rm -rf src/golang.org/x/crypto
 	rm -rf src/golang.org/x/tools
 
