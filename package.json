@@ -1,6 +1,6 @@
 {
   "name": "ninchat-js",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Browser client library for api.ninchat.com",
   "repository": "ninchat/ninchat-js",
   "license": "BSD-2-Clause",
