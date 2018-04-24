@@ -5249,7 +5249,8 @@ $packages["ninchatclient/lib"] = (function() {
 	};
 	SessionAdapter.prototype.SetAddress = function(value) { return this.$val.SetAddress(value); };
 	SessionAdapter.ptr.prototype.Send = function(params, payload) {
-		var _entry, _tuple, action, adapter, disabled, p, params, payload, result;
+		var _entry, _r, _tuple, action, adapter, disabled, p, params, payload, result, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _entry = $f._entry; _r = $f._r; _tuple = $f._tuple; action = $f.action; adapter = $f.adapter; disabled = $f.disabled; p = $f.p; params = $f.params; payload = $f.payload; result = $f.result; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		result = null;
 		adapter = this;
 		action = new ninchat.Action.ptr(params, WrapPayload(payload), $throwNilPointerError, new $Int64(0, 0));
@@ -5260,13 +5261,15 @@ $packages["ninchatclient/lib"] = (function() {
 			action.OnReply = $methodVal(p, "OnReply");
 			result = p.Object();
 		}
-		adapter.Session.Send(action);
-		return result;
+		_r = adapter.Session.Send(action); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_r;
+		$s = -1; return result;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: SessionAdapter.ptr.prototype.Send }; } $f._entry = _entry; $f._r = _r; $f._tuple = _tuple; $f.action = action; $f.adapter = adapter; $f.disabled = disabled; $f.p = p; $f.params = params; $f.payload = payload; $f.result = result; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	SessionAdapter.prototype.Send = function(params, payload) { return this.$val.Send(params, payload); };
 	newSession = function() {
 		var adapter, session;
-		session = new ninchat.Session.ptr($throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, "", false, false, $ifaceNil, "", new $Int64(0, 0), $chanNil, sliceType$4.nil, 0, false, new $Int64(0, 0), new $Int64(0, 0), $chanNil, false, false);
+		session = new ninchat.Session.ptr($throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, "", false, new $packages["sync"].Mutex.ptr(0, 0), false, $ifaceNil, "", new $Int64(0, 0), $chanNil, sliceType$4.nil, 0, false, new $Int64(0, 0), new $Int64(0, 0), $chanNil, false, false);
 		adapter = NewSessionAdapter(session);
 		return $makeMap($String.keyFor, [{ k: "onSessionEvent", v: new funcType$4($methodVal(adapter, "OnSessionEvent")) }, { k: "onEvent", v: new funcType$4($methodVal(adapter, "OnEvent")) }, { k: "onClose", v: new funcType$4($methodVal(adapter, "OnClose")) }, { k: "onConnState", v: new funcType$4($methodVal(adapter, "OnConnState")) }, { k: "onConnActive", v: new funcType$4($methodVal(adapter, "OnConnActive")) }, { k: "onLog", v: new funcType$4($methodVal(adapter, "OnLog")) }, { k: "setParams", v: new funcType$5($methodVal(session, "SetParams")) }, { k: "setTransport", v: new funcType$6(setTransport) }, { k: "setAddress", v: new funcType$6($methodVal(adapter, "SetAddress")) }, { k: "open", v: new funcType$7($methodVal(session, "Open")) }, { k: "close", v: new funcType$7($methodVal(session, "Close")) }, { k: "send", v: new funcType$8($methodVal(adapter, "Send")) }]);
 	};

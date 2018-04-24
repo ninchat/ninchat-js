@@ -28,9 +28,9 @@ $(GOPHERJS):
 	$(GO) get github.com/fsnotify/fsnotify
 	$(GO) get github.com/kisielk/gotool
 	$(GO) get github.com/neelance/sourcemap
+	$(GO) get github.com/shurcooL/httpfs/vfsutil
 	$(GO) get github.com/spf13/cobra
 	$(GO) get golang.org/x/crypto/ssh/terminal
-	$(GO) get golang.org/x/tools/go/gcimporter15
 	$(GO) get golang.org/x/tools/go/types/typeutil
 	$(GO) build -o $@ github.com/gopherjs/gopherjs
 
