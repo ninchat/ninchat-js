@@ -157,14 +157,15 @@ Close the session on the server.
 
 Send an action.
 
-To send an action without an `action_id` parameter, specify it as
-null.  Otherwise an `action_id` is generated automatically.
+An `action_id` sequence number is generated automatically; it must not
+be specified explicitly.  To send an action without an `action_id`
+parameter, specify it as null (the only valid value).
 
-If an `action_id` is used, a [Promise](#promise) is returned.  It may be
-used to wait for a reply from the server; the promise will be resolved
-with an event header and a payload array parameter.  If the Session
-object is closed before a reply is received, the promise will be
-rejected without a parameter.
+If an `action_id` is generated (the default), a [Promise](#promise) is
+returned.  It may be used to wait for a reply from the server; the
+promise will be resolved with an event header and a payload array
+parameter.  If the Session object is closed before a reply is received,
+the promise will be rejected without a parameter.
 
 With specific actions that cause multiple reply events, the notify
 callback will be called for each event until the final event which

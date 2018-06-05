@@ -143,7 +143,11 @@ func (adapter *SessionAdapter) Send(params map[string]interface{}, payload *js.O
 		Payload: WrapPayload(payload),
 	}
 
-	if _, disabled := params["action_id"]; !disabled {
+	if value, found := params["action_id"]; found {
+		if value != nil {
+			println("NinchatClient.Session.send called incorrectly with an action_id value")
+		}
+	} else {
 		p := &Promise{
 			OnPanic: adapter.OnPanic,
 		}

@@ -82,6 +82,7 @@ function testClient() {
 				setTimeout(function() {
 					session.send({
 						action:    "delete_user",
+						action_id: 9999, // incorrect but should work, and generate a console message
 						user_auth: userAuth
 					});
 
