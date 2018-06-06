@@ -5249,13 +5249,18 @@ $packages["ninchatclient/lib"] = (function() {
 	};
 	SessionAdapter.prototype.SetAddress = function(value) { return this.$val.SetAddress(value); };
 	SessionAdapter.ptr.prototype.Send = function(params, payload) {
-		var _entry, _tuple, action, adapter, disabled, p, params, payload, result;
+		var _entry, _tuple, action, adapter, found, p, params, payload, result, value;
 		result = null;
 		adapter = this;
 		action = new ninchat.Action.ptr(params, WrapPayload(payload), $throwNilPointerError, new $Int64(0, 0));
 		_tuple = (_entry = params[$String.keyFor("action_id")], _entry !== undefined ? [_entry.v, true] : [$ifaceNil, false]);
-		disabled = _tuple[1];
-		if (!disabled) {
+		value = _tuple[0];
+		found = _tuple[1];
+		if (found) {
+			if (!($interfaceIsEqual(value, $ifaceNil))) {
+				console.log("NinchatClient.Session.send called incorrectly with an action_id value");
+			}
+		} else {
 			p = new Promise.ptr(adapter.OnPanic, sliceType.nil, sliceType.nil, sliceType.nil);
 			action.OnReply = $methodVal(p, "OnReply");
 			result = p.Object();
