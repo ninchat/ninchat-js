@@ -2387,11 +2387,416 @@ $packages["github.com/ninchat/ninchat-go/vendor/sort"] = (function() {
 	$pkg.$init = $init;
 	return $pkg;
 })();
+$packages["internal/race"] = (function() {
+	var $pkg = {}, $init, Acquire, Release;
+	Acquire = function(addr) {
+		var addr;
+	};
+	$pkg.Acquire = Acquire;
+	Release = function(addr) {
+		var addr;
+	};
+	$pkg.Release = Release;
+	$init = function() {
+		$pkg.$init = function() {};
+		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.$init = $init;
+	return $pkg;
+})();
+$packages["sync/atomic"] = (function() {
+	var $pkg = {}, $init, js, CompareAndSwapInt32, AddInt32;
+	js = $packages["github.com/gopherjs/gopherjs/js"];
+	CompareAndSwapInt32 = function(addr, old, new$1) {
+		var addr, new$1, old;
+		if (addr.$get() === old) {
+			addr.$set(new$1);
+			return true;
+		}
+		return false;
+	};
+	$pkg.CompareAndSwapInt32 = CompareAndSwapInt32;
+	AddInt32 = function(addr, delta) {
+		var addr, delta, new$1;
+		new$1 = addr.$get() + delta >> 0;
+		addr.$set(new$1);
+		return new$1;
+	};
+	$pkg.AddInt32 = AddInt32;
+	$init = function() {
+		$pkg.$init = function() {};
+		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		$r = js.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.$init = $init;
+	return $pkg;
+})();
+$packages["sync"] = (function() {
+	var $pkg = {}, $init, js, race, runtime, atomic, Pool, Mutex, poolLocalInternal, poolLocal, notifyList, ptrType, sliceType, ptrType$1, chanType, sliceType$1, ptrType$6, ptrType$7, sliceType$4, funcType, ptrType$16, arrayType$2, semWaiters, semAwoken, expunged, allPools, runtime_registerPoolCleanup, runtime_SemacquireMutex, runtime_Semrelease, runtime_notifyListCheck, runtime_canSpin, runtime_nanotime, throw$1, poolCleanup, init, indexLocal, init$1, runtime_doSpin;
+	js = $packages["github.com/gopherjs/gopherjs/js"];
+	race = $packages["internal/race"];
+	runtime = $packages["runtime"];
+	atomic = $packages["sync/atomic"];
+	Pool = $pkg.Pool = $newType(0, $kindStruct, "sync.Pool", true, "sync", true, function(local_, localSize_, store_, New_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.local = 0;
+			this.localSize = 0;
+			this.store = sliceType$4.nil;
+			this.New = $throwNilPointerError;
+			return;
+		}
+		this.local = local_;
+		this.localSize = localSize_;
+		this.store = store_;
+		this.New = New_;
+	});
+	Mutex = $pkg.Mutex = $newType(0, $kindStruct, "sync.Mutex", true, "sync", true, function(state_, sema_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.state = 0;
+			this.sema = 0;
+			return;
+		}
+		this.state = state_;
+		this.sema = sema_;
+	});
+	poolLocalInternal = $pkg.poolLocalInternal = $newType(0, $kindStruct, "sync.poolLocalInternal", true, "sync", false, function(private$0_, shared_, Mutex_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.private$0 = $ifaceNil;
+			this.shared = sliceType$4.nil;
+			this.Mutex = new Mutex.ptr(0, 0);
+			return;
+		}
+		this.private$0 = private$0_;
+		this.shared = shared_;
+		this.Mutex = Mutex_;
+	});
+	poolLocal = $pkg.poolLocal = $newType(0, $kindStruct, "sync.poolLocal", true, "sync", false, function(poolLocalInternal_, pad_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.poolLocalInternal = new poolLocalInternal.ptr($ifaceNil, sliceType$4.nil, new Mutex.ptr(0, 0));
+			this.pad = arrayType$2.zero();
+			return;
+		}
+		this.poolLocalInternal = poolLocalInternal_;
+		this.pad = pad_;
+	});
+	notifyList = $pkg.notifyList = $newType(0, $kindStruct, "sync.notifyList", true, "sync", false, function(wait_, notify_, lock_, head_, tail_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.wait = 0;
+			this.notify = 0;
+			this.lock = 0;
+			this.head = 0;
+			this.tail = 0;
+			return;
+		}
+		this.wait = wait_;
+		this.notify = notify_;
+		this.lock = lock_;
+		this.head = head_;
+		this.tail = tail_;
+	});
+	ptrType = $ptrType(Pool);
+	sliceType = $sliceType(ptrType);
+	ptrType$1 = $ptrType($Uint32);
+	chanType = $chanType($Bool, false, false);
+	sliceType$1 = $sliceType(chanType);
+	ptrType$6 = $ptrType($Int32);
+	ptrType$7 = $ptrType(poolLocal);
+	sliceType$4 = $sliceType($emptyInterface);
+	funcType = $funcType([], [$emptyInterface], false);
+	ptrType$16 = $ptrType(Mutex);
+	arrayType$2 = $arrayType($Uint8, 100);
+	Pool.ptr.prototype.Get = function() {
+		var _r, p, x, x$1, x$2, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; p = $f.p; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		p = this;
+		/* */ if (p.store.$length === 0) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if (p.store.$length === 0) { */ case 1:
+			/* */ if (!(p.New === $throwNilPointerError)) { $s = 3; continue; }
+			/* */ $s = 4; continue;
+			/* if (!(p.New === $throwNilPointerError)) { */ case 3:
+				_r = p.New(); /* */ $s = 5; case 5: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+				$s = -1; return _r;
+			/* } */ case 4:
+			$s = -1; return $ifaceNil;
+		/* } */ case 2:
+		x$2 = (x = p.store, x$1 = p.store.$length - 1 >> 0, ((x$1 < 0 || x$1 >= x.$length) ? ($throwRuntimeError("index out of range"), undefined) : x.$array[x.$offset + x$1]));
+		p.store = $subslice(p.store, 0, (p.store.$length - 1 >> 0));
+		$s = -1; return x$2;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Pool.ptr.prototype.Get }; } $f._r = _r; $f.p = p; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Pool.prototype.Get = function() { return this.$val.Get(); };
+	Pool.ptr.prototype.Put = function(x) {
+		var p, x;
+		p = this;
+		if ($interfaceIsEqual(x, $ifaceNil)) {
+			return;
+		}
+		p.store = $append(p.store, x);
+	};
+	Pool.prototype.Put = function(x) { return this.$val.Put(x); };
+	runtime_registerPoolCleanup = function(cleanup) {
+		var cleanup;
+	};
+	runtime_SemacquireMutex = function(s, lifo) {
+		var _entry, _entry$1, _entry$2, _entry$3, _entry$4, _key, _key$1, _key$2, _r, ch, lifo, s, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _entry = $f._entry; _entry$1 = $f._entry$1; _entry$2 = $f._entry$2; _entry$3 = $f._entry$3; _entry$4 = $f._entry$4; _key = $f._key; _key$1 = $f._key$1; _key$2 = $f._key$2; _r = $f._r; ch = $f.ch; lifo = $f.lifo; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		/* */ if (((s.$get() - (_entry = semAwoken[ptrType$1.keyFor(s)], _entry !== undefined ? _entry.v : 0) >>> 0)) === 0) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if (((s.$get() - (_entry = semAwoken[ptrType$1.keyFor(s)], _entry !== undefined ? _entry.v : 0) >>> 0)) === 0) { */ case 1:
+			ch = new $Chan($Bool, 0);
+			if (lifo) {
+				_key = s; (semWaiters || $throwRuntimeError("assignment to entry in nil map"))[ptrType$1.keyFor(_key)] = { k: _key, v: $appendSlice(new sliceType$1([ch]), (_entry$1 = semWaiters[ptrType$1.keyFor(s)], _entry$1 !== undefined ? _entry$1.v : sliceType$1.nil)) };
+			} else {
+				_key$1 = s; (semWaiters || $throwRuntimeError("assignment to entry in nil map"))[ptrType$1.keyFor(_key$1)] = { k: _key$1, v: $append((_entry$2 = semWaiters[ptrType$1.keyFor(s)], _entry$2 !== undefined ? _entry$2.v : sliceType$1.nil), ch) };
+			}
+			_r = $recv(ch); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_r[0];
+			_key$2 = s; (semAwoken || $throwRuntimeError("assignment to entry in nil map"))[ptrType$1.keyFor(_key$2)] = { k: _key$2, v: (_entry$3 = semAwoken[ptrType$1.keyFor(s)], _entry$3 !== undefined ? _entry$3.v : 0) - (1) >>> 0 };
+			if ((_entry$4 = semAwoken[ptrType$1.keyFor(s)], _entry$4 !== undefined ? _entry$4.v : 0) === 0) {
+				delete semAwoken[ptrType$1.keyFor(s)];
+			}
+		/* } */ case 2:
+		s.$set(s.$get() - (1) >>> 0);
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: runtime_SemacquireMutex }; } $f._entry = _entry; $f._entry$1 = _entry$1; $f._entry$2 = _entry$2; $f._entry$3 = _entry$3; $f._entry$4 = _entry$4; $f._key = _key; $f._key$1 = _key$1; $f._key$2 = _key$2; $f._r = _r; $f.ch = ch; $f.lifo = lifo; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	runtime_Semrelease = function(s, handoff) {
+		var _entry, _entry$1, _key, _key$1, ch, handoff, s, w, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _entry = $f._entry; _entry$1 = $f._entry$1; _key = $f._key; _key$1 = $f._key$1; ch = $f.ch; handoff = $f.handoff; s = $f.s; w = $f.w; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		s.$set(s.$get() + (1) >>> 0);
+		w = (_entry = semWaiters[ptrType$1.keyFor(s)], _entry !== undefined ? _entry.v : sliceType$1.nil);
+		if (w.$length === 0) {
+			$s = -1; return;
+		}
+		ch = (0 >= w.$length ? ($throwRuntimeError("index out of range"), undefined) : w.$array[w.$offset + 0]);
+		w = $subslice(w, 1);
+		_key = s; (semWaiters || $throwRuntimeError("assignment to entry in nil map"))[ptrType$1.keyFor(_key)] = { k: _key, v: w };
+		if (w.$length === 0) {
+			delete semWaiters[ptrType$1.keyFor(s)];
+		}
+		_key$1 = s; (semAwoken || $throwRuntimeError("assignment to entry in nil map"))[ptrType$1.keyFor(_key$1)] = { k: _key$1, v: (_entry$1 = semAwoken[ptrType$1.keyFor(s)], _entry$1 !== undefined ? _entry$1.v : 0) + (1) >>> 0 };
+		$r = $send(ch, true); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: runtime_Semrelease }; } $f._entry = _entry; $f._entry$1 = _entry$1; $f._key = _key; $f._key$1 = _key$1; $f.ch = ch; $f.handoff = handoff; $f.s = s; $f.w = w; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	runtime_notifyListCheck = function(size) {
+		var size;
+	};
+	runtime_canSpin = function(i) {
+		var i;
+		return false;
+	};
+	runtime_nanotime = function() {
+		return $mul64($internalize(new ($global.Date)().getTime(), $Int64), new $Int64(0, 1000000));
+	};
+	throw$1 = function(s) {
+		var s;
+		$throwRuntimeError($externalize(s, $String));
+	};
+	Mutex.ptr.prototype.Lock = function() {
+		var awoke, delta, iter, m, new$1, old, queueLifo, starving, waitStartTime, x, x$1, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; awoke = $f.awoke; delta = $f.delta; iter = $f.iter; m = $f.m; new$1 = $f.new$1; old = $f.old; queueLifo = $f.queueLifo; starving = $f.starving; waitStartTime = $f.waitStartTime; x = $f.x; x$1 = $f.x$1; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		m = this;
+		if (atomic.CompareAndSwapInt32((m.$ptr_state || (m.$ptr_state = new ptrType$6(function() { return this.$target.state; }, function($v) { this.$target.state = $v; }, m))), 0, 1)) {
+			if (false) {
+				race.Acquire((m));
+			}
+			$s = -1; return;
+		}
+		waitStartTime = new $Int64(0, 0);
+		starving = false;
+		awoke = false;
+		iter = 0;
+		old = m.state;
+		/* while (true) { */ case 1:
+			/* */ if (((old & 5) === 1) && runtime_canSpin(iter)) { $s = 3; continue; }
+			/* */ $s = 4; continue;
+			/* if (((old & 5) === 1) && runtime_canSpin(iter)) { */ case 3:
+				if (!awoke && ((old & 2) === 0) && !(((old >> 3 >> 0) === 0)) && atomic.CompareAndSwapInt32((m.$ptr_state || (m.$ptr_state = new ptrType$6(function() { return this.$target.state; }, function($v) { this.$target.state = $v; }, m))), old, old | 2)) {
+					awoke = true;
+				}
+				runtime_doSpin();
+				iter = iter + (1) >> 0;
+				old = m.state;
+				/* continue; */ $s = 1; continue;
+			/* } */ case 4:
+			new$1 = old;
+			if ((old & 4) === 0) {
+				new$1 = new$1 | (1);
+			}
+			if (!(((old & 5) === 0))) {
+				new$1 = new$1 + (8) >> 0;
+			}
+			if (starving && !(((old & 1) === 0))) {
+				new$1 = new$1 | (4);
+			}
+			if (awoke) {
+				if ((new$1 & 2) === 0) {
+					throw$1("sync: inconsistent mutex state");
+				}
+				new$1 = (new$1 & ~(2)) >> 0;
+			}
+			/* */ if (atomic.CompareAndSwapInt32((m.$ptr_state || (m.$ptr_state = new ptrType$6(function() { return this.$target.state; }, function($v) { this.$target.state = $v; }, m))), old, new$1)) { $s = 5; continue; }
+			/* */ $s = 6; continue;
+			/* if (atomic.CompareAndSwapInt32((m.$ptr_state || (m.$ptr_state = new ptrType$6(function() { return this.$target.state; }, function($v) { this.$target.state = $v; }, m))), old, new$1)) { */ case 5:
+				if ((old & 5) === 0) {
+					/* break; */ $s = 2; continue;
+				}
+				queueLifo = !((waitStartTime.$high === 0 && waitStartTime.$low === 0));
+				if ((waitStartTime.$high === 0 && waitStartTime.$low === 0)) {
+					waitStartTime = runtime_nanotime();
+				}
+				$r = runtime_SemacquireMutex((m.$ptr_sema || (m.$ptr_sema = new ptrType$1(function() { return this.$target.sema; }, function($v) { this.$target.sema = $v; }, m))), queueLifo); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				starving = starving || (x = (x$1 = runtime_nanotime(), new $Int64(x$1.$high - waitStartTime.$high, x$1.$low - waitStartTime.$low)), (x.$high > 0 || (x.$high === 0 && x.$low > 1000000)));
+				old = m.state;
+				if (!(((old & 4) === 0))) {
+					if (!(((old & 3) === 0)) || ((old >> 3 >> 0) === 0)) {
+						throw$1("sync: inconsistent mutex state");
+					}
+					delta = -7;
+					if (!starving || ((old >> 3 >> 0) === 1)) {
+						delta = delta - (4) >> 0;
+					}
+					atomic.AddInt32((m.$ptr_state || (m.$ptr_state = new ptrType$6(function() { return this.$target.state; }, function($v) { this.$target.state = $v; }, m))), delta);
+					/* break; */ $s = 2; continue;
+				}
+				awoke = true;
+				iter = 0;
+				$s = 7; continue;
+			/* } else { */ case 6:
+				old = m.state;
+			/* } */ case 7:
+		/* } */ $s = 1; continue; case 2:
+		if (false) {
+			race.Acquire((m));
+		}
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Mutex.ptr.prototype.Lock }; } $f.awoke = awoke; $f.delta = delta; $f.iter = iter; $f.m = m; $f.new$1 = new$1; $f.old = old; $f.queueLifo = queueLifo; $f.starving = starving; $f.waitStartTime = waitStartTime; $f.x = x; $f.x$1 = x$1; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Mutex.prototype.Lock = function() { return this.$val.Lock(); };
+	Mutex.ptr.prototype.Unlock = function() {
+		var m, new$1, old, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; m = $f.m; new$1 = $f.new$1; old = $f.old; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		m = this;
+		if (false) {
+			$unused(m.state);
+			race.Release((m));
+		}
+		new$1 = atomic.AddInt32((m.$ptr_state || (m.$ptr_state = new ptrType$6(function() { return this.$target.state; }, function($v) { this.$target.state = $v; }, m))), -1);
+		if ((((new$1 + 1 >> 0)) & 1) === 0) {
+			throw$1("sync: unlock of unlocked mutex");
+		}
+		/* */ if ((new$1 & 4) === 0) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if ((new$1 & 4) === 0) { */ case 1:
+			old = new$1;
+			/* while (true) { */ case 4:
+				if (((old >> 3 >> 0) === 0) || !(((old & 7) === 0))) {
+					$s = -1; return;
+				}
+				new$1 = ((old - 8 >> 0)) | 2;
+				/* */ if (atomic.CompareAndSwapInt32((m.$ptr_state || (m.$ptr_state = new ptrType$6(function() { return this.$target.state; }, function($v) { this.$target.state = $v; }, m))), old, new$1)) { $s = 6; continue; }
+				/* */ $s = 7; continue;
+				/* if (atomic.CompareAndSwapInt32((m.$ptr_state || (m.$ptr_state = new ptrType$6(function() { return this.$target.state; }, function($v) { this.$target.state = $v; }, m))), old, new$1)) { */ case 6:
+					$r = runtime_Semrelease((m.$ptr_sema || (m.$ptr_sema = new ptrType$1(function() { return this.$target.sema; }, function($v) { this.$target.sema = $v; }, m))), false); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$s = -1; return;
+				/* } */ case 7:
+				old = m.state;
+			/* } */ $s = 4; continue; case 5:
+			$s = 3; continue;
+		/* } else { */ case 2:
+			$r = runtime_Semrelease((m.$ptr_sema || (m.$ptr_sema = new ptrType$1(function() { return this.$target.sema; }, function($v) { this.$target.sema = $v; }, m))), true); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 3:
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Mutex.ptr.prototype.Unlock }; } $f.m = m; $f.new$1 = new$1; $f.old = old; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Mutex.prototype.Unlock = function() { return this.$val.Unlock(); };
+	poolCleanup = function() {
+		var _i, _i$1, _ref, _ref$1, i, i$1, j, l, p, x;
+		_ref = allPools;
+		_i = 0;
+		while (true) {
+			if (!(_i < _ref.$length)) { break; }
+			i = _i;
+			p = ((_i < 0 || _i >= _ref.$length) ? ($throwRuntimeError("index out of range"), undefined) : _ref.$array[_ref.$offset + _i]);
+			((i < 0 || i >= allPools.$length) ? ($throwRuntimeError("index out of range"), undefined) : allPools.$array[allPools.$offset + i] = ptrType.nil);
+			i$1 = 0;
+			while (true) {
+				if (!(i$1 < ((p.localSize >> 0)))) { break; }
+				l = indexLocal(p.local, i$1);
+				l.poolLocalInternal.private$0 = $ifaceNil;
+				_ref$1 = l.poolLocalInternal.shared;
+				_i$1 = 0;
+				while (true) {
+					if (!(_i$1 < _ref$1.$length)) { break; }
+					j = _i$1;
+					(x = l.poolLocalInternal.shared, ((j < 0 || j >= x.$length) ? ($throwRuntimeError("index out of range"), undefined) : x.$array[x.$offset + j] = $ifaceNil));
+					_i$1++;
+				}
+				l.poolLocalInternal.shared = sliceType$4.nil;
+				i$1 = i$1 + (1) >> 0;
+			}
+			p.local = 0;
+			p.localSize = 0;
+			_i++;
+		}
+		allPools = new sliceType([]);
+	};
+	init = function() {
+		runtime_registerPoolCleanup(poolCleanup);
+	};
+	indexLocal = function(l, i) {
+		var i, l, lp;
+		lp = (((l) + ($imul(((i >>> 0)), 128) >>> 0) >>> 0));
+		return ($pointerOfStructConversion(lp, ptrType$7));
+	};
+	init$1 = function() {
+		var n;
+		n = new notifyList.ptr(0, 0, 0, 0, 0);
+		runtime_notifyListCheck(20);
+	};
+	runtime_doSpin = function() {
+		$throwRuntimeError("native function not implemented: sync.runtime_doSpin");
+	};
+	ptrType.methods = [{prop: "Get", name: "Get", pkg: "", typ: $funcType([], [$emptyInterface], false)}, {prop: "Put", name: "Put", pkg: "", typ: $funcType([$emptyInterface], [], false)}, {prop: "getSlow", name: "getSlow", pkg: "sync", typ: $funcType([], [$emptyInterface], false)}, {prop: "pin", name: "pin", pkg: "sync", typ: $funcType([], [ptrType$7], false)}, {prop: "pinSlow", name: "pinSlow", pkg: "sync", typ: $funcType([], [ptrType$7], false)}];
+	ptrType$16.methods = [{prop: "Lock", name: "Lock", pkg: "", typ: $funcType([], [], false)}, {prop: "Unlock", name: "Unlock", pkg: "", typ: $funcType([], [], false)}];
+	Pool.init("sync", [{prop: "local", name: "local", anonymous: false, exported: false, typ: $UnsafePointer, tag: ""}, {prop: "localSize", name: "localSize", anonymous: false, exported: false, typ: $Uintptr, tag: ""}, {prop: "store", name: "store", anonymous: false, exported: false, typ: sliceType$4, tag: ""}, {prop: "New", name: "New", anonymous: false, exported: true, typ: funcType, tag: ""}]);
+	Mutex.init("sync", [{prop: "state", name: "state", anonymous: false, exported: false, typ: $Int32, tag: ""}, {prop: "sema", name: "sema", anonymous: false, exported: false, typ: $Uint32, tag: ""}]);
+	poolLocalInternal.init("sync", [{prop: "private$0", name: "private", anonymous: false, exported: false, typ: $emptyInterface, tag: ""}, {prop: "shared", name: "shared", anonymous: false, exported: false, typ: sliceType$4, tag: ""}, {prop: "Mutex", name: "Mutex", anonymous: true, exported: true, typ: Mutex, tag: ""}]);
+	poolLocal.init("sync", [{prop: "poolLocalInternal", name: "poolLocalInternal", anonymous: true, exported: false, typ: poolLocalInternal, tag: ""}, {prop: "pad", name: "pad", anonymous: false, exported: false, typ: arrayType$2, tag: ""}]);
+	notifyList.init("sync", [{prop: "wait", name: "wait", anonymous: false, exported: false, typ: $Uint32, tag: ""}, {prop: "notify", name: "notify", anonymous: false, exported: false, typ: $Uint32, tag: ""}, {prop: "lock", name: "lock", anonymous: false, exported: false, typ: $Uintptr, tag: ""}, {prop: "head", name: "head", anonymous: false, exported: false, typ: $UnsafePointer, tag: ""}, {prop: "tail", name: "tail", anonymous: false, exported: false, typ: $UnsafePointer, tag: ""}]);
+	$init = function() {
+		$pkg.$init = function() {};
+		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		$r = js.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = race.$init(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = runtime.$init(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = atomic.$init(); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		allPools = sliceType.nil;
+		semWaiters = {};
+		semAwoken = {};
+		expunged = (new Uint8Array(8));
+		init();
+		init$1();
+		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.$init = $init;
+	return $pkg;
+})();
 $packages["github.com/ninchat/ninchat-go"] = (function() {
-	var $pkg = {}, $init, errors, js, sort, Action, Event, Frame, backoff, Caller, httpHeader, httpRequest, httpResponse, Session, transport, duration, timeTime, timer, webSocket, sliceType, sliceType$1, mapType, sliceType$2, ptrType, sliceType$3, ptrType$1, ptrType$2, sliceType$4, ptrType$3, funcType, ptrType$4, ptrType$5, structType, ptrType$6, sliceType$5, ptrType$7, ptrType$8, sliceType$6, funcType$1, funcType$2, ptrType$9, ptrType$10, ptrType$11, funcType$3, funcType$4, chanType, xhrType, xhrRequestHeaderSupport, sessionEventAckWindow, webSocketClass, webSocketSupported, getAddress, getEndpointHosts, singleFrame, emptyData, dataLength, stringData, StringifyFrame, jsError, newJSONRequest, getJSONRequestResponseChannel, getResponseChannel, init, newGETRequest, newDataRequest, getResponseData, putResponseToChannel, jitterFloat64, jitterDuration, jitterInt64, jsonMarshal, jsonUnmarshalArray, jsonUnmarshalObject, jsonParse, longPollBinaryPayload, longPollTransport, longPollTransfer, longPollPing, longPollClose, logErrorResponse, randFloat64, timeNow, timeAdd, timeSub, newTimer, init$1, newWebSocket, webSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive;
+	var $pkg = {}, $init, errors, js, sort, sync, Action, Event, Frame, backoff, Caller, httpHeader, httpRequest, httpResponse, Session, transport, duration, timeTime, timer, webSocket, sliceType, sliceType$1, mapType, sliceType$2, ptrType, sliceType$3, ptrType$1, ptrType$2, sliceType$4, ptrType$3, funcType, ptrType$4, ptrType$5, structType, ptrType$6, sliceType$5, ptrType$7, ptrType$8, sliceType$6, funcType$1, funcType$2, ptrType$9, ptrType$10, ptrType$11, funcType$3, funcType$4, chanType, xhrType, xhrRequestHeaderSupport, sessionEventAckWindow, webSocketClass, webSocketSupported, getAddress, getEndpointHosts, singleFrame, emptyData, dataLength, stringData, StringifyFrame, jsError, newJSONRequest, getJSONRequestResponseChannel, getResponseChannel, init, newGETRequest, newDataRequest, getResponseData, putResponseToChannel, jitterFloat64, jitterDuration, jitterInt64, jsonMarshal, jsonUnmarshalArray, jsonUnmarshalObject, jsonParse, longPollBinaryPayload, longPollTransport, longPollTransfer, longPollPing, longPollClose, logErrorResponseLockless, randFloat64, timeNow, timeAdd, timeSub, newTimer, init$1, newWebSocket, webSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive;
 	errors = $packages["errors"];
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	sort = $packages["github.com/ninchat/ninchat-go/vendor/sort"];
+	sync = $packages["sync"];
 	Action = $pkg.Action = $newType(0, $kindStruct, "ninchat.Action", true, "github.com/ninchat/ninchat-go", true, function(Params_, Payload_, OnReply_, id_) {
 		this.$val = this;
 		if (arguments.length === 0) {
@@ -2460,7 +2865,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		this.data = data_;
 		this.err = err_;
 	});
-	Session = $pkg.Session = $newType(0, $kindStruct, "ninchat.Session", true, "github.com/ninchat/ninchat-go", true, function(OnSessionEvent_, OnEvent_, OnClose_, OnConnState_, OnConnActive_, OnLog_, Address_, forceLongPoll_, sessionParams_, sessionId_, latestConnState_, lastActionId_, sendNotify_, sendBuffer_, numSent_, sendEventAck_, receivedEventId_, ackedEventId_, closeNotify_, closed_, running_) {
+	Session = $pkg.Session = $newType(0, $kindStruct, "ninchat.Session", true, "github.com/ninchat/ninchat-go", true, function(OnSessionEvent_, OnEvent_, OnClose_, OnConnState_, OnConnActive_, OnLog_, Address_, forceLongPoll_, mutex_, sessionParams_, sessionId_, latestConnState_, lastActionId_, sendNotify_, sendBuffer_, numSent_, sendEventAck_, receivedEventId_, ackedEventId_, closeNotify_, closed_, running_) {
 		this.$val = this;
 		if (arguments.length === 0) {
 			this.OnSessionEvent = $throwNilPointerError;
@@ -2471,6 +2876,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 			this.OnLog = $throwNilPointerError;
 			this.Address = "";
 			this.forceLongPoll = false;
+			this.mutex = new sync.Mutex.ptr(0, 0);
 			this.sessionParams = false;
 			this.sessionId = $ifaceNil;
 			this.latestConnState = "";
@@ -2494,6 +2900,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		this.OnLog = OnLog_;
 		this.Address = Address_;
 		this.forceLongPoll = forceLongPoll_;
+		this.mutex = mutex_;
 		this.sessionParams = sessionParams_;
 		this.sessionId = sessionId_;
 		this.latestConnState = latestConnState_;
@@ -3178,65 +3585,68 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		/* if ($interfaceIsEqual(s.sessionId, $ifaceNil)) { */ case 1:
 			$r = s.log(new sliceType$1([new $String("session creation")])); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			action = s.makeCreateSessionAction();
-			timeout = jitterDuration(new duration(0, 13000), 0.2);
-			_r = getJSONRequestResponseChannel(url, action, timeout); /* */ $s = 5; case 5: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_r$1 = $select([[_r], [s.closeNotify]]); /* */ $s = 6; case 6: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			timeout = jitterDuration(new duration(0, 37000), 0.2);
+			$r = s.mutex.Unlock(); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_r = getJSONRequestResponseChannel(url, action, timeout); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_r$1 = $select([[_r], [s.closeNotify]]); /* */ $s = 7; case 7: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 			_selection = _r$1;
-			/* */ if (_selection[0] === 0) { $s = 7; continue; }
-			/* */ if (_selection[0] === 1) { $s = 8; continue; }
-			/* */ $s = 9; continue;
-			/* if (_selection[0] === 0) { */ case 7:
+			/* */ if (_selection[0] === 0) { $s = 8; continue; }
+			/* */ if (_selection[0] === 1) { $s = 9; continue; }
+			/* */ $s = 10; continue;
+			/* if (_selection[0] === 0) { */ case 8:
 				response = $clone(_selection[1][0], httpResponse);
-				/* */ if (!($interfaceIsEqual(response.err, $ifaceNil))) { $s = 10; continue; }
-				/* */ $s = 11; continue;
-				/* if (!($interfaceIsEqual(response.err, $ifaceNil))) { */ case 10:
-					$r = s.log(new sliceType$1([new $String("session creation:"), response.err])); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = s.mutex.Lock(); /* */ $s = 11; case 11: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ if (!($interfaceIsEqual(response.err, $ifaceNil))) { $s = 12; continue; }
+				/* */ $s = 13; continue;
+				/* if (!($interfaceIsEqual(response.err, $ifaceNil))) { */ case 12:
+					$r = s.log(new sliceType$1([new $String("session creation:"), response.err])); /* */ $s = 14; case 14: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					$s = -1; return [connWorked[0], gotOnline[0]];
-				/* } */ case 11:
+				/* } */ case 13:
 				array[0] = sliceType$1.nil;
 				err = jsonUnmarshalArray(response.data, (array.$ptr || (array.$ptr = new ptrType$1(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, array))));
-				/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 13; continue; }
-				/* */ $s = 14; continue;
-				/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 13:
-					$r = s.log(new sliceType$1([new $String("session creation response:"), err])); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 15; continue; }
+				/* */ $s = 16; continue;
+				/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 15:
+					$r = s.log(new sliceType$1([new $String("session creation response:"), err])); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					$s = -1; return [connWorked[0], gotOnline[0]];
-				/* } */ case 14:
-				/* */ if (array[0].$length === 0) { $s = 16; continue; }
-				/* */ $s = 17; continue;
-				/* if (array[0].$length === 0) { */ case 16:
-					$r = s.log(new sliceType$1([new $String("session creation response JSON array is empty")])); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 16:
+				/* */ if (array[0].$length === 0) { $s = 18; continue; }
+				/* */ $s = 19; continue;
+				/* if (array[0].$length === 0) { */ case 18:
+					$r = s.log(new sliceType$1([new $String("session creation response JSON array is empty")])); /* */ $s = 20; case 20: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					$s = -1; return [connWorked[0], gotOnline[0]];
-				/* } */ case 17:
+				/* } */ case 19:
 				_tuple = $assertType((0 >= array[0].$length ? ($throwRuntimeError("index out of range"), undefined) : array[0].$array[array[0].$offset + 0]), mapType, true);
 				event = _tuple[0];
 				ok = _tuple[1];
-				/* */ if (!ok) { $s = 19; continue; }
-				/* */ $s = 20; continue;
-				/* if (!ok) { */ case 19:
-					$r = s.log(new sliceType$1([new $String("session creation response header is not a JSON object")])); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ if (!ok) { $s = 21; continue; }
+				/* */ $s = 22; continue;
+				/* if (!ok) { */ case 21:
+					$r = s.log(new sliceType$1([new $String("session creation response header is not a JSON object")])); /* */ $s = 23; case 23: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					$s = -1; return [connWorked[0], gotOnline[0]];
-				/* } */ case 20:
-				_r$2 = s.handleSessionEvent(event); /* */ $s = 24; case 24: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-				/* */ if (!_r$2) { $s = 22; continue; }
-				/* */ $s = 23; continue;
-				/* if (!_r$2) { */ case 22:
+				/* } */ case 22:
+				_r$2 = s.handleSessionEvent(event); /* */ $s = 26; case 26: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+				/* */ if (!_r$2) { $s = 24; continue; }
+				/* */ $s = 25; continue;
+				/* if (!_r$2) { */ case 24:
 					$s = -1; return [connWorked[0], gotOnline[0]];
-				/* } */ case 23:
-				$s = 9; continue;
-			/* } else if (_selection[0] === 1) { */ case 8:
-				$r = longPollClose(s, url); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 25:
+				$s = 10; continue;
+			/* } else if (_selection[0] === 1) { */ case 9:
+				$r = s.mutex.Lock(); /* */ $s = 27; case 27: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = longPollClose(s, url); /* */ $s = 28; case 28: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = -1; return [connWorked[0], gotOnline[0]];
-			/* } */ case 9:
+			/* } */ case 10:
 			connWorked[0] = true;
 			gotOnline[0] = true;
-			$r = s.connState("connected"); /* */ $s = 26; case 26: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = s.connActive(); /* */ $s = 27; case 27: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = s.connState("connected"); /* */ $s = 29; case 29: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = s.connActive(); /* */ $s = 30; case 30: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$s = 3; continue;
 		/* } else { */ case 2:
-			$r = s.log(new sliceType$1([new $String("session resumption")])); /* */ $s = 28; case 28: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$r = longPollPing(s, url); /* */ $s = 29; case 29: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = s.log(new sliceType$1([new $String("session resumption")])); /* */ $s = 31; case 31: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = longPollPing(s, url); /* */ $s = 32; case 32: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		/* } */ case 3:
-		$r = longPollTransfer(s, url, (connWorked.$ptr || (connWorked.$ptr = new ptrType$5(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, connWorked))), (gotOnline.$ptr || (gotOnline.$ptr = new ptrType$5(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, gotOnline)))); /* */ $s = 30; case 30: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = longPollTransfer(s, url, (connWorked.$ptr || (connWorked.$ptr = new ptrType$5(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, connWorked))), (gotOnline.$ptr || (gotOnline.$ptr = new ptrType$5(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, gotOnline)))); /* */ $s = 33; case 33: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$s = -1; return [connWorked[0], gotOnline[0]];
 		/* */ } return; } if ($f === undefined) { $f = { $blk: longPollTransport }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._selection = _selection; $f._tuple = _tuple; $f.action = action; $f.array = array; $f.connWorked = connWorked; $f.err = err; $f.event = event; $f.gotOnline = gotOnline; $f.host = host; $f.ok = ok; $f.response = response; $f.s = s; $f.timeout = timeout; $f.url = url; $f.$s = $s; $f.$r = $r; return $f;
 	};
@@ -3291,7 +3701,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 				delete action$1.Params[$String.keyFor("session_id")];
 				delete action$1.Params[$String.keyFor("payload")];
 				if ((x$3 = action$1.id, (x$3.$high === 0 && x$3.$low === 0))) {
-					$go(logErrorResponse, [s, channel, "send error:"]);
+					$go(logErrorResponseLockless, [s, channel, "send error:"]);
 					s.sendBuffer = $appendSlice($subslice(s.sendBuffer, 0, s.numSent), $subslice(s.sendBuffer, (s.numSent + 1 >> 0)));
 				} else {
 					sender = channel;
@@ -3299,113 +3709,118 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 				}
 			/* } */ case 7:
 			response = new httpResponse.ptr(null, $ifaceNil);
-			_r$2 = $select([[poller], [sender], [s.sendNotify], [s.closeNotify]]); /* */ $s = 17; case 17: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+			$r = s.mutex.Unlock(); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_r$2 = $select([[poller], [sender], [s.sendNotify], [s.closeNotify]]); /* */ $s = 18; case 18: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
 			_selection = _r$2;
-			/* */ if (_selection[0] === 0) { $s = 18; continue; }
-			/* */ if (_selection[0] === 1) { $s = 19; continue; }
-			/* */ if (_selection[0] === 2) { $s = 20; continue; }
-			/* */ if (_selection[0] === 3) { $s = 21; continue; }
-			/* */ $s = 22; continue;
-			/* if (_selection[0] === 0) { */ case 18:
+			/* */ if (_selection[0] === 0) { $s = 19; continue; }
+			/* */ if (_selection[0] === 1) { $s = 20; continue; }
+			/* */ if (_selection[0] === 2) { $s = 21; continue; }
+			/* */ if (_selection[0] === 3) { $s = 22; continue; }
+			/* */ $s = 23; continue;
+			/* if (_selection[0] === 0) { */ case 19:
 				httpResponse.copy(response, _selection[1][0]);
-				/* */ if (!($interfaceIsEqual(response.err, $ifaceNil))) { $s = 23; continue; }
-				/* */ $s = 24; continue;
-				/* if (!($interfaceIsEqual(response.err, $ifaceNil))) { */ case 23:
-					$r = s.log(new sliceType$1([new $String("poll error:"), response.err])); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 24:
+				$r = s.mutex.Lock(); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ if (!($interfaceIsEqual(response.err, $ifaceNil))) { $s = 25; continue; }
+				/* */ $s = 26; continue;
+				/* if (!($interfaceIsEqual(response.err, $ifaceNil))) { */ case 25:
+					$r = s.log(new sliceType$1([new $String("poll error:"), response.err])); /* */ $s = 27; case 27: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 26:
 				poller = $chanNil;
-				$r = s.connActive(); /* */ $s = 26; case 26: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$s = 22; continue;
-			/* } else if (_selection[0] === 1) { */ case 19:
+				$r = s.connActive(); /* */ $s = 28; case 28: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$s = 23; continue;
+			/* } else if (_selection[0] === 1) { */ case 20:
 				httpResponse.copy(response, _selection[1][0]);
-				/* */ if (!($interfaceIsEqual(response.err, $ifaceNil))) { $s = 27; continue; }
-				/* */ if ((sendingId.$high > 0 || (sendingId.$high === 0 && sendingId.$low > 0))) { $s = 28; continue; }
-				/* */ $s = 29; continue;
-				/* if (!($interfaceIsEqual(response.err, $ifaceNil))) { */ case 27:
-					$r = s.log(new sliceType$1([new $String("send error:"), response.err])); /* */ $s = 30; case 30: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$s = 29; continue;
-				/* } else if ((sendingId.$high > 0 || (sendingId.$high === 0 && sendingId.$low > 0))) { */ case 28:
+				$r = s.mutex.Lock(); /* */ $s = 29; case 29: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ if (!($interfaceIsEqual(response.err, $ifaceNil))) { $s = 30; continue; }
+				/* */ if ((sendingId.$high > 0 || (sendingId.$high === 0 && sendingId.$low > 0))) { $s = 31; continue; }
+				/* */ $s = 32; continue;
+				/* if (!($interfaceIsEqual(response.err, $ifaceNil))) { */ case 30:
+					$r = s.log(new sliceType$1([new $String("send error:"), response.err])); /* */ $s = 33; case 33: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$s = 32; continue;
+				/* } else if ((sendingId.$high > 0 || (sendingId.$high === 0 && sendingId.$low > 0))) { */ case 31:
 					s.numSent = s.numSent + (1) >> 0;
-				/* } */ case 29:
+				/* } */ case 32:
 				sender = $chanNil;
 				sendingId = new $Int64(0, 0);
-				$s = 22; continue;
-			/* } else if (_selection[0] === 2) { */ case 20:
+				$s = 23; continue;
+			/* } else if (_selection[0] === 2) { */ case 21:
 				_tuple = _selection[1];
 				sending = _tuple[1];
-				/* */ if (!sending) { $s = 31; continue; }
-				/* */ $s = 32; continue;
-				/* if (!sending) { */ case 31:
-					$r = longPollClose(s, url); /* */ $s = 33; case 33: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = s.mutex.Lock(); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ if (!sending) { $s = 35; continue; }
+				/* */ $s = 36; continue;
+				/* if (!sending) { */ case 35:
+					$r = longPollClose(s, url); /* */ $s = 37; case 37: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					$s = -1; return;
-				/* } */ case 32:
+				/* } */ case 36:
 				/* continue; */ $s = 1; continue;
-				$s = 22; continue;
-			/* } else if (_selection[0] === 3) { */ case 21:
-				$r = longPollClose(s, url); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$s = 23; continue;
+			/* } else if (_selection[0] === 3) { */ case 22:
+				$r = s.mutex.Lock(); /* */ $s = 38; case 38: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = longPollClose(s, url); /* */ $s = 39; case 39: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = -1; return;
-			/* } */ case 22:
+			/* } */ case 23:
 			array[0] = sliceType$1.nil;
 			err$1 = response.err;
-			/* */ if ($interfaceIsEqual(err$1, $ifaceNil)) { $s = 35; continue; }
-			/* */ $s = 36; continue;
-			/* if ($interfaceIsEqual(err$1, $ifaceNil)) { */ case 35:
-				err$1 = jsonUnmarshalArray(response.data, (array.$ptr || (array.$ptr = new ptrType$1(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, array))));
-				/* */ if (!($interfaceIsEqual(err$1, $ifaceNil))) { $s = 37; continue; }
-				/* */ $s = 38; continue;
-				/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ case 37:
-					$r = s.log(new sliceType$1([new $String("response:"), err$1])); /* */ $s = 39; case 39: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 38:
-			/* } */ case 36:
-			/* */ if (!($interfaceIsEqual(err$1, $ifaceNil))) { $s = 40; continue; }
+			/* */ if ($interfaceIsEqual(err$1, $ifaceNil)) { $s = 40; continue; }
 			/* */ $s = 41; continue;
-			/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ case 40:
+			/* if ($interfaceIsEqual(err$1, $ifaceNil)) { */ case 40:
+				err$1 = jsonUnmarshalArray(response.data, (array.$ptr || (array.$ptr = new ptrType$1(function() { return this.$target[0]; }, function($v) { this.$target[0] = $v; }, array))));
+				/* */ if (!($interfaceIsEqual(err$1, $ifaceNil))) { $s = 42; continue; }
+				/* */ $s = 43; continue;
+				/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ case 42:
+					$r = s.log(new sliceType$1([new $String("response:"), err$1])); /* */ $s = 44; case 44: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 43:
+			/* } */ case 41:
+			/* */ if (!($interfaceIsEqual(err$1, $ifaceNil))) { $s = 45; continue; }
+			/* */ $s = 46; continue;
+			/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ case 45:
 				failures = failures + (1) >> 0;
 				s.numSent = 0;
 				/* continue; */ $s = 1; continue;
-			/* } */ case 41:
+			/* } */ case 46:
 			failures = 0;
 			connWorked.$set(true);
 			_ref = array[0];
 			_i = 0;
-			/* while (true) { */ case 42:
-				/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 43; continue; }
+			/* while (true) { */ case 47:
+				/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 48; continue; }
 				x$4 = ((_i < 0 || _i >= _ref.$length) ? ($throwRuntimeError("index out of range"), undefined) : _ref.$array[_ref.$offset + _i]);
 				_tuple$1 = $assertType(x$4, mapType, true);
 				params = _tuple$1[0];
 				ok = _tuple$1[1];
-				/* */ if (!ok) { $s = 44; continue; }
-				/* */ $s = 45; continue;
-				/* if (!ok) { */ case 44:
-					$r = s.log(new sliceType$1([new $String("poll event is not an object")])); /* */ $s = 46; case 46: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ if (!ok) { $s = 49; continue; }
+				/* */ $s = 50; continue;
+				/* if (!ok) { */ case 49:
+					$r = s.log(new sliceType$1([new $String("poll event is not an object")])); /* */ $s = 51; case 51: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					$s = -1; return;
-				/* } */ case 45:
+				/* } */ case 50:
 				event = new Event.ptr(params, sliceType$2.nil, false);
 				x$5 = (_entry = params[$String.keyFor("payload")], _entry !== undefined ? _entry.v : $ifaceNil);
-				/* */ if (!($interfaceIsEqual(x$5, $ifaceNil))) { $s = 47; continue; }
-				/* */ $s = 48; continue;
-				/* if (!($interfaceIsEqual(x$5, $ifaceNil))) { */ case 47:
+				/* */ if (!($interfaceIsEqual(x$5, $ifaceNil))) { $s = 52; continue; }
+				/* */ $s = 53; continue;
+				/* if (!($interfaceIsEqual(x$5, $ifaceNil))) { */ case 52:
 					_tuple$2 = $assertType(x$5, mapType, true);
 					object$1 = _tuple$2[0];
 					ok$1 = _tuple$2[1];
-					/* */ if (!ok$1) { $s = 49; continue; }
-					/* */ $s = 50; continue;
-					/* if (!ok$1) { */ case 49:
-						$r = s.log(new sliceType$1([new $String("poll payload is not an object")])); /* */ $s = 51; case 51: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* */ if (!ok$1) { $s = 54; continue; }
+					/* */ $s = 55; continue;
+					/* if (!ok$1) { */ case 54:
+						$r = s.log(new sliceType$1([new $String("poll payload is not an object")])); /* */ $s = 56; case 56: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 						$s = -1; return;
-					/* } */ case 50:
+					/* } */ case 55:
 					_tuple$3 = jsonMarshal(object$1);
 					json = _tuple$3[0];
 					err$2 = _tuple$3[1];
-					/* */ if (!($interfaceIsEqual(err$2, $ifaceNil))) { $s = 52; continue; }
-					/* */ $s = 53; continue;
-					/* if (!($interfaceIsEqual(err$2, $ifaceNil))) { */ case 52:
-						$r = s.log(new sliceType$1([new $String("poll payload:"), err$2])); /* */ $s = 54; case 54: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* */ if (!($interfaceIsEqual(err$2, $ifaceNil))) { $s = 57; continue; }
+					/* */ $s = 58; continue;
+					/* if (!($interfaceIsEqual(err$2, $ifaceNil))) { */ case 57:
+						$r = s.log(new sliceType$1([new $String("poll payload:"), err$2])); /* */ $s = 59; case 59: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 						$s = -1; return;
-					/* } */ case 53:
+					/* } */ case 58:
 					event.Payload = singleFrame(json);
-				/* } */ case 48:
-				_r$3 = s.handleEvent(event); /* */ $s = 55; case 55: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+				/* } */ case 53:
+				_r$3 = s.handleEvent(event); /* */ $s = 60; case 60: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
 				_tuple$4 = _r$3;
 				ackedActionId = _tuple$4[0];
 				sessionLost = _tuple$4[1];
@@ -3420,14 +3835,14 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 					}
 					$s = -1; return;
 				}
-				/* */ if (!gotOnline.$get()) { $s = 56; continue; }
-				/* */ $s = 57; continue;
-				/* if (!gotOnline.$get()) { */ case 56:
+				/* */ if (!gotOnline.$get()) { $s = 61; continue; }
+				/* */ $s = 62; continue;
+				/* if (!gotOnline.$get()) { */ case 61:
 					gotOnline.$set(true);
-					$r = s.connState("connected"); /* */ $s = 58; case 58: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 57:
+					$r = s.connState("connected"); /* */ $s = 63; case 63: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 62:
 				_i++;
-			/* } */ $s = 42; continue; case 43:
+			/* } */ $s = 47; continue; case 48:
 		/* } */ $s = 1; continue; case 2:
 		$s = -1; return;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: longPollTransfer }; } $f._entry = _entry; $f._i = _i; $f._key = _key; $f._key$1 = _key$1; $f._key$2 = _key$2; $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._ref = _ref; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f._tuple$3 = _tuple$3; $f._tuple$4 = _tuple$4; $f.ackedActionId = ackedActionId; $f.action = action; $f.action$1 = action$1; $f.array = array; $f.channel = channel; $f.connWorked = connWorked; $f.err = err; $f.err$1 = err$1; $f.err$2 = err$2; $f.event = event; $f.failures = failures; $f.gotOnline = gotOnline; $f.json = json; $f.object = object; $f.object$1 = object$1; $f.ok = ok; $f.ok$1 = ok$1; $f.params = params; $f.poller = poller; $f.response = response; $f.s = s; $f.sender = sender; $f.sending = sending; $f.sendingId = sendingId; $f.sessionLost = sessionLost; $f.timeout = timeout; $f.timeout$1 = timeout$1; $f.url = url; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.x$3 = x$3; $f.x$4 = x$4; $f.x$5 = x$5; $f.$s = $s; $f.$r = $r; return $f;
@@ -3438,7 +3853,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		action = $makeMap($String.keyFor, [{ k: "action", v: new $String("ping") }, { k: "session_id", v: s.sessionId }]);
 		_r = getJSONRequestResponseChannel(url, action, jitterDuration(new duration(0, 7000), 0.9)); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		c = _r;
-		$go(logErrorResponse, [s, c, "ping error:"]);
+		$go(logErrorResponseLockless, [s, c, "ping error:"]);
 		$s = -1; return;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: longPollPing }; } $f._r = _r; $f.action = action; $f.c = c; $f.s = s; $f.url = url; $f.$s = $s; $f.$r = $r; return $f;
 	};
@@ -3448,29 +3863,32 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		action = $makeMap($String.keyFor, [{ k: "action", v: new $String("close_session") }, { k: "session_id", v: s.sessionId }]);
 		_r = getJSONRequestResponseChannel(url, action, jitterDuration(new duration(0, 7000), 0.9)); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		c = _r;
-		$go(logErrorResponse, [s, c, "send error:"]);
+		$go(logErrorResponseLockless, [s, c, "send error:"]);
 		$s = -1; return;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: longPollClose }; } $f._r = _r; $f.action = action; $f.c = c; $f.s = s; $f.url = url; $f.$s = $s; $f.$r = $r; return $f;
 	};
-	logErrorResponse = function(s, channel, prefix) {
+	logErrorResponseLockless = function(s, channel, prefix) {
 		var _r, channel, prefix, resp, s, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; channel = $f.channel; prefix = $f.prefix; resp = $f.resp; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		_r = $recv(channel); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		resp = $clone(_r[0], httpResponse);
-		/* */ if (!($interfaceIsEqual(resp.err, $ifaceNil))) { $s = 2; continue; }
+		/* */ if (!($interfaceIsEqual(resp.err, $ifaceNil)) && !(s.OnLog === $throwNilPointerError)) { $s = 2; continue; }
 		/* */ $s = 3; continue;
-		/* if (!($interfaceIsEqual(resp.err, $ifaceNil))) { */ case 2:
-			$r = s.log(new sliceType$1([new $String(prefix), resp.err])); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* if (!($interfaceIsEqual(resp.err, $ifaceNil)) && !(s.OnLog === $throwNilPointerError)) { */ case 2:
+			$r = s.OnLog(new sliceType$1([new $String(prefix), resp.err])); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		/* } */ case 3:
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: logErrorResponse }; } $f._r = _r; $f.channel = channel; $f.prefix = prefix; $f.resp = resp; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: logErrorResponseLockless }; } $f._r = _r; $f.channel = channel; $f.prefix = prefix; $f.resp = resp; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	randFloat64 = function() {
 		return $parseFloat($global.Math.random());
 	};
 	Session.ptr.prototype.SetParams = function(params) {
-		var _entry, _entry$1, _tuple, found, params, s, x;
+		var _entry, _entry$1, _tuple, found, params, s, x, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _entry = $f._entry; _entry$1 = $f._entry$1; _tuple = $f._tuple; found = $f.found; params = $f.params; s = $f.s; x = $f.x; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		s = this;
+		$r = s.mutex.Lock(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$deferred.push([$methodVal(s.mutex, "Unlock"), []]);
 		if ($interfaceIsEqual((_entry = params[$String.keyFor("message_types")], _entry !== undefined ? _entry.v : $ifaceNil), $ifaceNil)) {
 			$panic(new $String("message_types parameter not defined"));
 		}
@@ -3487,11 +3905,16 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 			s.running = true;
 			$go($methodVal(s, "discover"), []);
 		}
+		$s = -1; return;
+		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Session.ptr.prototype.SetParams }; } $f._entry = _entry; $f._entry$1 = _entry$1; $f._tuple = _tuple; $f.found = found; $f.params = params; $f.s = s; $f.x = x; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	Session.prototype.SetParams = function(params) { return this.$val.SetParams(params); };
 	Session.ptr.prototype.Open = function() {
-		var s;
+		var s, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; s = $f.s; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		s = this;
+		$r = s.mutex.Lock(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$deferred.push([$methodVal(s.mutex, "Unlock"), []]);
 		if (s.closed) {
 			$panic(new $String("session already closed"));
 		}
@@ -3511,28 +3934,32 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		s.closeNotify = new $Chan(structType, 1);
 		s.running = true;
 		$go($methodVal(s, "discover"), []);
+		$s = -1; return;
+		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Session.ptr.prototype.Open }; } $f.s = s; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	Session.prototype.Open = function() { return this.$val.Open(); };
 	Session.ptr.prototype.Close = function() {
-		var _i, _ref, action, s, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _i = $f._i; _ref = $f._ref; action = $f.action; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _i, _ref, action, s, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _i = $f._i; _ref = $f._ref; action = $f.action; s = $f.s; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		s = [s];
 		s[0] = this;
+		$r = s[0].mutex.Lock(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$deferred.push([$methodVal(s[0].mutex, "Unlock"), []]);
 		if (s[0].closed) {
 			$s = -1; return;
 		}
 		_ref = s[0].sendBuffer;
 		_i = 0;
-		/* while (true) { */ case 1:
-			/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 2; continue; }
+		/* while (true) { */ case 2:
+			/* if (!(_i < _ref.$length)) { break; } */ if(!(_i < _ref.$length)) { $s = 3; continue; }
 			action = ((_i < 0 || _i >= _ref.$length) ? ($throwRuntimeError("index out of range"), undefined) : _ref.$array[_ref.$offset + _i]);
-			/* */ if (!(action.OnReply === $throwNilPointerError)) { $s = 3; continue; }
-			/* */ $s = 4; continue;
-			/* if (!(action.OnReply === $throwNilPointerError)) { */ case 3:
-				$r = action.OnReply(ptrType.nil); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* } */ case 4:
+			/* */ if (!(action.OnReply === $throwNilPointerError)) { $s = 4; continue; }
+			/* */ $s = 5; continue;
+			/* if (!(action.OnReply === $throwNilPointerError)) { */ case 4:
+				$r = action.OnReply(ptrType.nil); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 5:
 			_i++;
-		/* } */ $s = 1; continue; case 2:
+		/* } */ $s = 2; continue; case 3:
 		s[0].sendBuffer = sliceType$5.nil;
 		s[0].numSent = 0;
 		s[0].closed = true;
@@ -3546,13 +3973,16 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$s = $s; $f.$r = $r; return $f;
 		}; })(s), []);
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.Close }; } $f._i = _i; $f._ref = _ref; $f.action = action; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Session.ptr.prototype.Close }; } $f._i = _i; $f._ref = _ref; $f.action = action; $f.s = s; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	Session.prototype.Close = function() { return this.$val.Close(); };
 	Session.ptr.prototype.Send = function(action) {
-		var _entry, _key, _tuple, action, err, found, s, x, x$1, x$2;
+		var _entry, _key, _tuple, action, err, found, s, x, x$1, x$2, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _entry = $f._entry; _key = $f._key; _tuple = $f._tuple; action = $f.action; err = $f.err; found = $f.found; s = $f.s; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		err = $ifaceNil;
 		s = this;
+		$r = s.mutex.Lock(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$deferred.push([$methodVal(s.mutex, "Unlock"), []]);
 		if (s.sendNotify === $chanNil) {
 			$panic(new $String("session not initialized"));
 		}
@@ -3573,7 +4003,8 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 			_key = "action_id"; (action.Params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key)] = { k: _key, v: action.id };
 		}
 		s.send(action);
-		return err;
+		$s = -1; return err;
+		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  err; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Session.ptr.prototype.Send }; } $f._entry = _entry; $f._key = _key; $f._tuple = _tuple; $f.action = action; $f.err = err; $f.found = found; $f.s = s; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	Session.prototype.Send = function(action) { return this.$val.Send(action); };
 	Session.ptr.prototype.send = function(action) {
@@ -3613,25 +4044,27 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		backoff$1 = [backoff$1];
 		s = [s];
 		s[0] = this;
+		$r = s[0].mutex.Lock(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$deferred.push([(function(backoff$1, s) { return function $b() {
-			var $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			/* */ if (s[0].closed && !(s[0].OnClose === $throwNilPointerError)) { $s = 1; continue; }
-			/* */ $s = 2; continue;
-			/* if (s[0].closed && !(s[0].OnClose === $throwNilPointerError)) { */ case 1:
-				$r = s[0].OnClose(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* } */ case 2:
+			var closed, $s, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; closed = $f.closed; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+			closed = s[0].closed;
+			$r = s[0].mutex.Unlock(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* */ if (closed && !(s[0].OnClose === $throwNilPointerError)) { $s = 2; continue; }
+			/* */ $s = 3; continue;
+			/* if (closed && !(s[0].OnClose === $throwNilPointerError)) { */ case 2:
+				$r = s[0].OnClose(); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 3:
 			$s = -1; return;
-			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$s = $s; $f.$r = $r; return $f;
+			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.closed = closed; $f.$s = $s; $f.$r = $r; return $f;
 		}; })(backoff$1, s), []]);
-		$r = s[0].log(new sliceType$1([new $String("opening")])); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$deferred.push([$methodVal(s[0], "log"), [new sliceType$1([new $String("closed")])]]);
+		$r = s[0].log(new sliceType$1([new $String("starting")])); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$deferred.push([$methodVal(s[0], "log"), [new sliceType$1([new $String("stopped")])]]);
 		$deferred.push([$methodVal(s[0], "connState"), ["disconnected"]]);
 		backoff$1[0] = new backoff.ptr(0);
-		/* while (true) { */ case 2:
-			/* if (!(s[0].running)) { break; } */ if(!(s[0].running)) { $s = 3; continue; }
+		/* while (true) { */ case 3:
+			/* if (!(s[0].running)) { break; } */ if(!(s[0].running)) { $s = 4; continue; }
 			endpoint = [endpoint];
-			$r = s[0].log(new sliceType$1([new $String("endpoint discovery")])); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			$r = s[0].connState("connecting"); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			url = "https://" + getAddress(s[0].Address) + "/v2/endpoint";
 			_tuple = newGETRequest(url);
@@ -3640,14 +4073,16 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 			if (!($interfaceIsEqual(err, $ifaceNil))) {
 				$panic(err);
 			}
-			_r = getResponseChannel(request, jitterDuration(new duration(0, 7000), 0.1)); /* */ $s = 6; case 6: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-			_r$1 = $select([[_r], [s[0].closeNotify]]); /* */ $s = 7; case 7: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			$r = s[0].mutex.Unlock(); /* */ $s = 6; case 6: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_r = getResponseChannel(request, jitterDuration(new duration(0, 7000), 0.1)); /* */ $s = 7; case 7: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			_r$1 = $select([[_r], [s[0].closeNotify]]); /* */ $s = 8; case 8: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 			_selection = _r$1;
-			/* */ if (_selection[0] === 0) { $s = 8; continue; }
-			/* */ if (_selection[0] === 1) { $s = 9; continue; }
-			/* */ $s = 10; continue;
-			/* if (_selection[0] === 0) { */ case 8:
+			/* */ if (_selection[0] === 0) { $s = 9; continue; }
+			/* */ if (_selection[0] === 1) { $s = 10; continue; }
+			/* */ $s = 11; continue;
+			/* if (_selection[0] === 0) { */ case 9:
 				response = $clone(_selection[1][0], httpResponse);
+				$r = s[0].mutex.Lock(); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				hosts = sliceType.nil;
 				err$1 = response.err;
 				if ($interfaceIsEqual(err$1, $ifaceNil)) {
@@ -3659,37 +4094,38 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 						err$1 = _tuple$1[1];
 					}
 				}
-				/* */ if ($interfaceIsEqual(err$1, $ifaceNil)) { $s = 11; continue; }
-				/* */ $s = 12; continue;
-				/* if ($interfaceIsEqual(err$1, $ifaceNil)) { */ case 11:
-					$r = s[0].log(new sliceType$1([new $String("endpoint discovered")])); /* */ $s = 14; case 14: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					/* */ if (webSocketSupported && !s[0].forceLongPoll) { $s = 15; continue; }
-					/* */ $s = 16; continue;
-					/* if (webSocketSupported && !s[0].forceLongPoll) { */ case 15:
-						_r$2 = s[0].connect(webSocketTransport, hosts, backoff$1[0]); /* */ $s = 19; case 19: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-						/* */ if (_r$2) { $s = 17; continue; }
-						/* */ $s = 18; continue;
-						/* if (_r$2) { */ case 17:
-							/* continue; */ $s = 2; continue;
-						/* } */ case 18:
-					/* } */ case 16:
-					_r$3 = s[0].connect(longPollTransport, hosts, backoff$1[0]); /* */ $s = 20; case 20: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+				/* */ if ($interfaceIsEqual(err$1, $ifaceNil)) { $s = 13; continue; }
+				/* */ $s = 14; continue;
+				/* if ($interfaceIsEqual(err$1, $ifaceNil)) { */ case 13:
+					$r = s[0].log(new sliceType$1([new $String("endpoint discovered")])); /* */ $s = 16; case 16: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* */ if (webSocketSupported && !s[0].forceLongPoll) { $s = 17; continue; }
+					/* */ $s = 18; continue;
+					/* if (webSocketSupported && !s[0].forceLongPoll) { */ case 17:
+						_r$2 = s[0].connect(webSocketTransport, hosts, backoff$1[0]); /* */ $s = 21; case 21: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+						/* */ if (_r$2) { $s = 19; continue; }
+						/* */ $s = 20; continue;
+						/* if (_r$2) { */ case 19:
+							/* continue; */ $s = 3; continue;
+						/* } */ case 20:
+					/* } */ case 18:
+					_r$3 = s[0].connect(longPollTransport, hosts, backoff$1[0]); /* */ $s = 22; case 22: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
 					_r$3;
-					$s = 13; continue;
-				/* } else { */ case 12:
-					$r = s[0].log(new sliceType$1([new $String("endpoint discovery:"), err$1])); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 13:
-				$s = 10; continue;
-			/* } else if (_selection[0] === 1) { */ case 9:
+					$s = 15; continue;
+				/* } else { */ case 14:
+					$r = s[0].log(new sliceType$1([new $String("endpoint discovery:"), err$1])); /* */ $s = 23; case 23: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 15:
+				$s = 11; continue;
+			/* } else if (_selection[0] === 1) { */ case 10:
+				$r = s[0].mutex.Lock(); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = -1; return;
-			/* } */ case 10:
-			_r$4 = s[0].backOff(backoff$1[0]); /* */ $s = 24; case 24: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
-			/* */ if (!_r$4) { $s = 22; continue; }
-			/* */ $s = 23; continue;
-			/* if (!_r$4) { */ case 22:
+			/* } */ case 11:
+			_r$4 = s[0].backOff(backoff$1[0]); /* */ $s = 27; case 27: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
+			/* */ if (!_r$4) { $s = 25; continue; }
+			/* */ $s = 26; continue;
+			/* if (!_r$4) { */ case 25:
 				$s = -1; return;
-			/* } */ case 23:
-		/* } */ $s = 2; continue; case 3:
+			/* } */ case 26:
+		/* } */ $s = 3; continue; case 4:
 		$s = -1; return;
 		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Session.ptr.prototype.discover }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.backoff$1 = backoff$1; $f.endpoint = endpoint; $f.err = err; $f.err$1 = err$1; $f.hosts = hosts; $f.request = request; $f.response = response; $f.s = s; $f.url = url; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
@@ -3750,8 +4186,8 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	};
 	Session.prototype.connect = function(transport$1, hosts, backoff$1) { return this.$val.connect(transport$1, hosts, backoff$1); };
 	Session.ptr.prototype.backOff = function(b) {
-		var _r, _selection, b, delay, ok, s, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _selection = $f._selection; b = $f.b; delay = $f.delay; ok = $f.ok; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _r, _selection, b, delay, ok, s, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _selection = $f._selection; b = $f.b; delay = $f.delay; ok = $f.ok; s = $f.s; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		ok = false;
 		s = this;
 		delay = b.failure(new duration(0, 60000));
@@ -3759,16 +4195,18 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 			ok = true;
 			$s = -1; return ok;
 		}
-		$r = s.log(new sliceType$1([new $String("sleeping")])); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = s.connState("disconnected"); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		_r = $select([[newTimer(delay).C], [s.closeNotify]]); /* */ $s = 3; case 3: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		$r = s.connState("disconnected"); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = s.log(new sliceType$1([new $String("sleeping")])); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = s.mutex.Unlock(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$deferred.push([$methodVal(s.mutex, "Lock"), []]);
+		_r = $select([[newTimer(delay).C], [s.closeNotify]]); /* */ $s = 4; case 4: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 		_selection = _r;
 		if (_selection[0] === 0) {
 			ok = true;
 		} else if (_selection[0] === 1) {
 		}
 		$s = -1; return ok;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.backOff }; } $f._r = _r; $f._selection = _selection; $f.b = b; $f.delay = delay; $f.ok = ok; $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  ok; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Session.ptr.prototype.backOff }; } $f._r = _r; $f._selection = _selection; $f.b = b; $f.delay = delay; $f.ok = ok; $f.s = s; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	Session.prototype.backOff = function(b) { return this.$val.backOff(b); };
 	Session.ptr.prototype.canLogin = function() {
@@ -3880,7 +4318,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 				s.running = false;
 			}
 		}
-		$r = s.OnSessionEvent(event); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = s.deliverSessionEvent(event); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		if (quit) {
 			$s = -1; return ok;
 		}
@@ -3978,7 +4416,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		/* if (event.String() === "user_deleted") { */ case 11:
 			s[0].sessionId = $ifaceNil;
 			s[0].running = false;
-			$r = s[0].OnSessionEvent(event); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = s[0].deliverSessionEvent(event); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			sessionLost = true;
 			$s = -1; return [actionId[0], sessionLost, needsAck, ok];
 		/* } */ case 12:
@@ -3999,7 +4437,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 				/* */ $s = 20; continue;
 				/* if (!s[0].canLogin()) { */ case 19:
 					s[0].running = false;
-					$r = s[0].OnSessionEvent(event); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$r = s[0].deliverSessionEvent(event); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				/* } */ case 20:
 			/* } */ case 18:
 			$s = -1; return [actionId[0], sessionLost, needsAck, ok];
@@ -4009,54 +4447,78 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		/* if (errorType === "deprecated") { */ case 22:
 			$r = s[0].log(new sliceType$1([new $String("deprecated:"), new $String(errorReason)])); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		/* } */ case 23:
-		$r = s[0].OnEvent(event); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = s[0].deliverEvent(event); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		ok = true;
 		$s = -1; return [actionId[0], sessionLost, needsAck, ok];
 		/* */ } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.handleEvent }; } $f._r = _r; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.action = action; $f.actionId = actionId; $f.err = err; $f.errorReason = errorReason; $f.errorType = errorType; $f.event = event; $f.eventId = eventId; $f.i = i; $f.needsAck = needsAck; $f.ok = ok; $f.s = s; $f.sessionLost = sessionLost; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.x$3 = x$3; $f.x$4 = x$4; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	Session.prototype.handleEvent = function(event) { return this.$val.handleEvent(event); };
-	Session.ptr.prototype.connState = function(state) {
-		var s, state, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; s = $f.s; state = $f.state; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+	Session.ptr.prototype.deliverSessionEvent = function(event) {
+		var event, s, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; event = $f.event; s = $f.s; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		s = this;
-		/* */ if (!(s.latestConnState === state)) { $s = 1; continue; }
-		/* */ $s = 2; continue;
-		/* if (!(s.latestConnState === state)) { */ case 1:
-			s.latestConnState = state;
-			/* */ if (!(s.OnConnState === $throwNilPointerError)) { $s = 3; continue; }
-			/* */ $s = 4; continue;
-			/* if (!(s.OnConnState === $throwNilPointerError)) { */ case 3:
-				$r = s.OnConnState(s.latestConnState); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* } */ case 4:
-		/* } */ case 2:
+		$r = s.mutex.Unlock(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$deferred.push([$methodVal(s.mutex, "Lock"), []]);
+		$r = s.OnSessionEvent(event); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.connState }; } $f.s = s; $f.state = state; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Session.ptr.prototype.deliverSessionEvent }; } $f.event = event; $f.s = s; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+	};
+	Session.prototype.deliverSessionEvent = function(event) { return this.$val.deliverSessionEvent(event); };
+	Session.ptr.prototype.deliverEvent = function(event) {
+		var event, s, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; event = $f.event; s = $f.s; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		s = this;
+		$r = s.mutex.Unlock(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$deferred.push([$methodVal(s.mutex, "Lock"), []]);
+		$r = s.OnEvent(event); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$s = -1; return;
+		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Session.ptr.prototype.deliverEvent }; } $f.event = event; $f.s = s; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+	};
+	Session.prototype.deliverEvent = function(event) { return this.$val.deliverEvent(event); };
+	Session.ptr.prototype.connState = function(state) {
+		var s, state, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; s = $f.s; state = $f.state; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		s = this;
+		if (s.latestConnState === state) {
+			$s = -1; return;
+		}
+		s.latestConnState = state;
+		if (s.OnConnState === $throwNilPointerError) {
+			$s = -1; return;
+		}
+		$r = s.mutex.Unlock(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$deferred.push([$methodVal(s.mutex, "Lock"), []]);
+		$r = s.OnConnState(state); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$s = -1; return;
+		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Session.ptr.prototype.connState }; } $f.s = s; $f.state = state; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	Session.prototype.connState = function(state) { return this.$val.connState(state); };
 	Session.ptr.prototype.connActive = function() {
-		var s, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; s = $f.s; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var s, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; s = $f.s; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		s = this;
-		/* */ if (!(s.OnConnActive === $throwNilPointerError)) { $s = 1; continue; }
-		/* */ $s = 2; continue;
-		/* if (!(s.OnConnActive === $throwNilPointerError)) { */ case 1:
-			$r = s.OnConnActive(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* } */ case 2:
+		if (s.OnConnActive === $throwNilPointerError) {
+			$s = -1; return;
+		}
+		$r = s.mutex.Unlock(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$deferred.push([$methodVal(s.mutex, "Lock"), []]);
+		$r = s.OnConnActive(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.connActive }; } $f.s = s; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Session.ptr.prototype.connActive }; } $f.s = s; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	Session.prototype.connActive = function() { return this.$val.connActive(); };
 	Session.ptr.prototype.log = function(tokens) {
-		var s, tokens, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; s = $f.s; tokens = $f.tokens; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var s, tokens, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; s = $f.s; tokens = $f.tokens; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		s = this;
-		/* */ if (!(s.OnLog === $throwNilPointerError)) { $s = 1; continue; }
-		/* */ $s = 2; continue;
-		/* if (!(s.OnLog === $throwNilPointerError)) { */ case 1:
-			$r = s.OnLog(tokens); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		/* } */ case 2:
+		if (s.OnLog === $throwNilPointerError) {
+			$s = -1; return;
+		}
+		$r = s.mutex.Unlock(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$deferred.push([$methodVal(s.mutex, "Lock"), []]);
+		$r = s.OnLog(tokens); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$s = -1; return;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.log }; } $f.s = s; $f.tokens = tokens; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Session.ptr.prototype.log }; } $f.s = s; $f.tokens = tokens; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	Session.prototype.log = function(tokens) { return this.$val.log(tokens); };
 	timeNow = function() {
@@ -4320,46 +4782,48 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 			hostHealthy = false;
 			$r = s.log(new sliceType$1([new $String("connecting to"), new $String(host)])); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 			ws[0] = newWebSocket("wss://" + host + "/v2/socket", jitterDuration(new duration(0, 9000), 0.1));
-			_r = $select([[ws[0].notify], [s.closeNotify]]); /* */ $s = 4; case 4: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			$r = s.mutex.Unlock(); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_r = $select([[ws[0].notify], [s.closeNotify]]); /* */ $s = 5; case 5: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 			_selection = _r;
-			/* */ if (_selection[0] === 0) { $s = 5; continue; }
-			/* */ if (_selection[0] === 1) { $s = 6; continue; }
-			/* */ $s = 7; continue;
-			/* if (_selection[0] === 0) { */ case 5:
+			/* */ if (_selection[0] === 0) { $s = 6; continue; }
+			/* */ if (_selection[0] === 1) { $s = 7; continue; }
+			/* */ $s = 8; continue;
+			/* if (_selection[0] === 0) { */ case 6:
 				_tuple = _selection[1];
 				connected = _tuple[1];
-				/* */ if (connected) { $s = 8; continue; }
-				/* */ if (!($interfaceIsEqual(ws[0].err, $ifaceNil))) { $s = 9; continue; }
-				/* */ $s = 10; continue;
-				/* if (connected) { */ case 8:
-					$r = s.log(new sliceType$1([new $String("connected")])); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$r = s.connState("connected"); /* */ $s = 13; case 13: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = s.mutex.Lock(); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ if (connected) { $s = 10; continue; }
+				/* */ if (!($interfaceIsEqual(ws[0].err, $ifaceNil))) { $s = 11; continue; }
+				/* */ $s = 12; continue;
+				/* if (connected) { */ case 10:
+					$r = s.connState("connected"); /* */ $s = 14; case 14: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					connWorked = true;
-					_r$1 = webSocketHandshake(s, ws[0]); /* */ $s = 14; case 14: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+					_r$1 = webSocketHandshake(s, ws[0]); /* */ $s = 15; case 15: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 					_tuple$1 = _r$1;
 					gotOnline = _tuple$1[0];
 					hostHealthy = _tuple$1[1];
-					$s = 11; continue;
-				/* } else if (!($interfaceIsEqual(ws[0].err, $ifaceNil))) { */ case 9:
-					$r = s.log(new sliceType$1([new $String("connection failed:"), ws[0].err])); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$s = 11; continue;
-				/* } else { */ case 10:
-					$r = s.log(new sliceType$1([new $String("connection failed")])); /* */ $s = 16; case 16: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 11:
-				$s = 7; continue;
-			/* } else if (_selection[0] === 1) { */ case 6:
-			/* } */ case 7:
+					$s = 13; continue;
+				/* } else if (!($interfaceIsEqual(ws[0].err, $ifaceNil))) { */ case 11:
+					$r = s.log(new sliceType$1([new $String("connection failed:"), ws[0].err])); /* */ $s = 16; case 16: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$s = 13; continue;
+				/* } else { */ case 12:
+					$r = s.log(new sliceType$1([new $String("connection failed")])); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 13:
+				$s = 8; continue;
+			/* } else if (_selection[0] === 1) { */ case 7:
+				$r = s.mutex.Lock(); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 8:
 			goingAway = ws[0].goingAway;
 			ws[0].close();
 			ws[0] = ptrType$8.nil;
-			/* */ if (goingAway) { $s = 17; continue; }
-			/* */ $s = 18; continue;
-			/* if (goingAway) { */ case 17:
-				$r = s.log(new sliceType$1([new $String("disconnected (server is going away)")])); /* */ $s = 20; case 20: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$s = 19; continue;
-			/* } else { */ case 18:
-				$r = s.log(new sliceType$1([new $String("disconnected")])); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* } */ case 19:
+			/* */ if (goingAway) { $s = 19; continue; }
+			/* */ $s = 20; continue;
+			/* if (goingAway) { */ case 19:
+				$r = s.log(new sliceType$1([new $String("disconnected (server is going away)")])); /* */ $s = 22; case 22: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$s = 21; continue;
+			/* } else { */ case 20:
+				$r = s.log(new sliceType$1([new $String("disconnected")])); /* */ $s = 23; case 23: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 21:
 			if (!gotOnline || !hostHealthy || !s.running || goingAway) {
 				$s = -1; return [connWorked, gotOnline];
 			}
@@ -4368,42 +4832,46 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [connWorked, gotOnline]; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: webSocketTransport }; } $f._r = _r; $f._r$1 = _r$1; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.connWorked = connWorked; $f.connected = connected; $f.goingAway = goingAway; $f.gotOnline = gotOnline; $f.host = host; $f.hostHealthy = hostHealthy; $f.s = s; $f.ws = ws; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	webSocketHandshake = function(s, ws) {
-		var _r, _r$1, _r$2, _r$3, _selection, _tuple, _tuple$1, _tuple$2, connected, done, err, err$1, fail, gotEvents, gotOnline, hostHealthy, params, params$1, s, timer$1, ws, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _selection = $f._selection; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; connected = $f.connected; done = $f.done; err = $f.err; err$1 = $f.err$1; fail = $f.fail; gotEvents = $f.gotEvents; gotOnline = $f.gotOnline; hostHealthy = $f.hostHealthy; params = $f.params; params$1 = $f.params$1; s = $f.s; timer$1 = $f.timer$1; ws = $f.ws; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _r, _r$1, _r$2, _r$3, _selection, _tuple, _tuple$1, _tuple$2, connected, done, err, err$1, fail, gotEvents, gotOnline, hostHealthy, params, params$1, s, timer$1, ws, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _selection = $f._selection; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; connected = $f.connected; done = $f.done; err = $f.err; err$1 = $f.err$1; fail = $f.fail; gotEvents = $f.gotEvents; gotOnline = $f.gotOnline; hostHealthy = $f.hostHealthy; params = $f.params; params$1 = $f.params$1; s = $f.s; timer$1 = $f.timer$1; ws = $f.ws; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		done = [done];
+		fail = [fail];
+		s = [s];
+		ws = [ws];
 		gotOnline = false;
 		hostHealthy = false;
 		params = false;
-		/* */ if ($interfaceIsEqual(s.sessionId, $ifaceNil)) { $s = 1; continue; }
+		/* */ if ($interfaceIsEqual(s[0].sessionId, $ifaceNil)) { $s = 1; continue; }
 		/* */ $s = 2; continue;
-		/* if ($interfaceIsEqual(s.sessionId, $ifaceNil)) { */ case 1:
-			$r = s.log(new sliceType$1([new $String("session creation")])); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			params = s.makeCreateSessionAction();
+		/* if ($interfaceIsEqual(s[0].sessionId, $ifaceNil)) { */ case 1:
+			$r = s[0].log(new sliceType$1([new $String("session creation")])); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			params = s[0].makeCreateSessionAction();
 			$s = 3; continue;
 		/* } else { */ case 2:
-			$r = s.log(new sliceType$1([new $String("session resumption")])); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			params = s.makeResumeSessionAction(true);
+			$r = s[0].log(new sliceType$1([new $String("session resumption")])); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			params = s[0].makeResumeSessionAction(true);
 		/* } */ case 3:
-		err = ws.sendJSON(params);
+		err = ws[0].sendJSON(params);
 		/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 6; continue; }
 		/* */ $s = 7; continue;
 		/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 6:
-			$r = s.log(new sliceType$1([new $String("send:"), err])); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = s[0].log(new sliceType$1([new $String("send:"), err])); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		/* } */ case 7:
-		/* */ if ($interfaceIsEqual(s.sessionId, $ifaceNil)) { $s = 9; continue; }
+		/* */ if ($interfaceIsEqual(s[0].sessionId, $ifaceNil)) { $s = 9; continue; }
 		/* */ $s = 10; continue;
-		/* if ($interfaceIsEqual(s.sessionId, $ifaceNil)) { */ case 9:
+		/* if ($interfaceIsEqual(s[0].sessionId, $ifaceNil)) { */ case 9:
 			params$1 = false;
 			connected = true;
-			timer$1 = newTimer(jitterDuration(new duration(0, 13000), 0.2));
+			timer$1 = newTimer(jitterDuration(new duration(0, 37000), 0.2));
 			/* while (true) { */ case 11:
 				err$1 = $ifaceNil;
-				_tuple = ws.receiveJSON();
+				_tuple = ws[0].receiveJSON();
 				params$1 = _tuple[0];
 				err$1 = _tuple[1];
 				/* */ if (!($interfaceIsEqual(err$1, $ifaceNil))) { $s = 13; continue; }
 				/* */ $s = 14; continue;
 				/* if (!($interfaceIsEqual(err$1, $ifaceNil))) { */ case 13:
-					$r = s.log(new sliceType$1([new $String("session creation:"), err$1])); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$r = s[0].log(new sliceType$1([new $String("session creation:"), err$1])); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					$s = -1; return [gotOnline, hostHealthy];
 				/* } */ case 14:
 				if (!(params$1 === false)) {
@@ -4413,60 +4881,66 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 				/* */ if (!connected) { $s = 16; continue; }
 				/* */ $s = 17; continue;
 				/* if (!connected) { */ case 16:
-					$r = s.log(new sliceType$1([new $String("disconnected during session creation:"), ws.err])); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$r = s[0].log(new sliceType$1([new $String("disconnected during session creation:"), ws[0].err])); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					timer$1.Stop();
 					$s = -1; return [gotOnline, hostHealthy];
 				/* } */ case 17:
-				_r = $select([[ws.notify], [timer$1.C]]); /* */ $s = 19; case 19: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+				$r = s[0].mutex.Unlock(); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				_r = $select([[ws[0].notify], [timer$1.C]]); /* */ $s = 20; case 20: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 				_selection = _r;
-				/* */ if (_selection[0] === 0) { $s = 20; continue; }
-				/* */ if (_selection[0] === 1) { $s = 21; continue; }
-				/* */ $s = 22; continue;
-				/* if (_selection[0] === 0) { */ case 20:
+				/* */ if (_selection[0] === 0) { $s = 21; continue; }
+				/* */ if (_selection[0] === 1) { $s = 22; continue; }
+				/* */ $s = 23; continue;
+				/* if (_selection[0] === 0) { */ case 21:
 					_tuple$1 = _selection[1];
 					connected = _tuple$1[1];
-					$s = 22; continue;
-				/* } else if (_selection[0] === 1) { */ case 21:
-					$r = s.log(new sliceType$1([new $String("session creation timeout")])); /* */ $s = 23; case 23: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$r = s[0].mutex.Lock(); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$s = 23; continue;
+				/* } else if (_selection[0] === 1) { */ case 22:
+					$r = s[0].mutex.Lock(); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$r = s[0].log(new sliceType$1([new $String("session creation timeout")])); /* */ $s = 26; case 26: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					$s = -1; return [gotOnline, hostHealthy];
-				/* } */ case 22:
+				/* } */ case 23:
 			/* } */ $s = 11; continue; case 12:
-			_r$1 = s.handleSessionEvent(params$1); /* */ $s = 26; case 26: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-			/* */ if (!_r$1) { $s = 24; continue; }
-			/* */ $s = 25; continue;
-			/* if (!_r$1) { */ case 24:
+			_r$1 = s[0].handleSessionEvent(params$1); /* */ $s = 29; case 29: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			/* */ if (!_r$1) { $s = 27; continue; }
+			/* */ $s = 28; continue;
+			/* if (!_r$1) { */ case 27:
 				$s = -1; return [gotOnline, hostHealthy];
-			/* } */ case 25:
+			/* } */ case 28:
 			gotOnline = true;
 			hostHealthy = true;
-			$r = s.connActive(); /* */ $s = 27; case 27: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$r = s[0].connActive(); /* */ $s = 30; case 30: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		/* } */ case 10:
-		fail = new $Chan(structType, 1);
-		done = new $Chan(structType, 0);
-		$go(webSocketSend, [s, ws, fail, done]);
-		_r$2 = webSocketReceive(s, ws, fail); /* */ $s = 28; case 28: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+		fail[0] = new $Chan(structType, 2);
+		done[0] = new $Chan(structType, 0);
+		$go((function(done, fail, s, ws) { return function $b() {
+			var _arg, $s, $deferred, $r;
+			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _arg = $f._arg; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+			$deferred.push([function(_arg) { $close(_arg); }, [done[0]]]);
+			$r = s[0].mutex.Lock(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$deferred.push([$methodVal(s[0].mutex, "Unlock"), []]);
+			$r = webSocketSend(s[0], ws[0], fail[0]); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			$s = -1; return;
+			/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: $b }; } $f._arg = _arg; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+		}; })(done, fail, s, ws), []);
+		_r$2 = webSocketReceive(s[0], ws[0], fail[0]); /* */ $s = 31; case 31: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
 		_tuple$2 = _r$2;
 		gotEvents = _tuple$2[0];
 		hostHealthy = _tuple$2[1];
 		if (gotEvents) {
 			gotOnline = true;
 		}
-		_r$3 = $recv(done); /* */ $s = 29; case 29: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+		$r = s[0].mutex.Unlock(); /* */ $s = 32; case 32: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$deferred.push([$methodVal(s[0].mutex, "Lock"), []]);
+		_r$3 = $recv(done[0]); /* */ $s = 33; case 33: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
 		_r$3[0];
 		$s = -1; return [gotOnline, hostHealthy];
-		/* */ } return; } if ($f === undefined) { $f = { $blk: webSocketHandshake }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.connected = connected; $f.done = done; $f.err = err; $f.err$1 = err$1; $f.fail = fail; $f.gotEvents = gotEvents; $f.gotOnline = gotOnline; $f.hostHealthy = hostHealthy; $f.params = params; $f.params$1 = params$1; $f.s = s; $f.timer$1 = timer$1; $f.ws = ws; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [gotOnline, hostHealthy]; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: webSocketHandshake }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.connected = connected; $f.done = done; $f.err = err; $f.err$1 = err$1; $f.fail = fail; $f.gotEvents = gotEvents; $f.gotOnline = gotOnline; $f.hostHealthy = hostHealthy; $f.params = params; $f.params$1 = params$1; $f.s = s; $f.timer$1 = timer$1; $f.ws = ws; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
-	webSocketSend = function(s, ws, fail, done) {
-		var _key, _key$1, _r, _selection, _tuple, action, action$1, closeSession, done, err, err$1, err$2, err$3, err$4, fail, keeper, s, sending, ws, x, x$1, x$2, x$3, x$4, x$5, x$6, $s, $deferred, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _key = $f._key; _key$1 = $f._key$1; _r = $f._r; _selection = $f._selection; _tuple = $f._tuple; action = $f.action; action$1 = $f.action$1; closeSession = $f.closeSession; done = $f.done; err = $f.err; err$1 = $f.err$1; err$2 = $f.err$2; err$3 = $f.err$3; err$4 = $f.err$4; fail = $f.fail; keeper = $f.keeper; s = $f.s; sending = $f.sending; ws = $f.ws; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; x$3 = $f.x$3; x$4 = $f.x$4; x$5 = $f.x$5; x$6 = $f.x$6; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
-		done = [done];
-		$deferred.push([(function(done) { return function $b() {
-			var $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			$r = $send(done[0], $clone(new structType.ptr(), structType)); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$s = -1; return;
-			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$s = $s; $f.$r = $r; return $f;
-		}; })(done), []]);
+	webSocketSend = function(s, ws, fail) {
+		var _key, _key$1, _r, _selection, _tuple, action, action$1, closeSession, err, err$1, err$2, err$3, err$4, fail, keeper, s, sending, ws, x, x$1, x$2, x$3, x$4, x$5, x$6, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _key = $f._key; _key$1 = $f._key$1; _r = $f._r; _selection = $f._selection; _tuple = $f._tuple; action = $f.action; action$1 = $f.action$1; closeSession = $f.closeSession; err = $f.err; err$1 = $f.err$1; err$2 = $f.err$2; err$3 = $f.err$3; err$4 = $f.err$4; fail = $f.fail; keeper = $f.keeper; s = $f.s; sending = $f.sending; ws = $f.ws; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; x$3 = $f.x$3; x$4 = $f.x$4; x$5 = $f.x$5; x$6 = $f.x$6; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		keeper = newTimer(jitterDuration(new duration(0, 56000), -0.3));
 		$deferred.push([$methodVal(keeper, "Stop"), []]);
 		s.numSent = 0;
@@ -4524,45 +4998,49 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 					$s = -1; return;
 				/* } */ case 18:
 			/* } */ case 16:
-			_r = $select([[s.sendNotify], [keeper.C], [fail]]); /* */ $s = 21; case 21: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+			$r = s.mutex.Unlock(); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_r = $select([[s.sendNotify], [keeper.C], [fail]]); /* */ $s = 22; case 22: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
 			_selection = _r;
-			/* */ if (_selection[0] === 0) { $s = 22; continue; }
-			/* */ if (_selection[0] === 1) { $s = 23; continue; }
-			/* */ if (_selection[0] === 2) { $s = 24; continue; }
-			/* */ $s = 25; continue;
-			/* if (_selection[0] === 0) { */ case 22:
+			/* */ if (_selection[0] === 0) { $s = 23; continue; }
+			/* */ if (_selection[0] === 1) { $s = 24; continue; }
+			/* */ if (_selection[0] === 2) { $s = 25; continue; }
+			/* */ $s = 26; continue;
+			/* if (_selection[0] === 0) { */ case 23:
 				_tuple = _selection[1];
 				sending = _tuple[1];
-				/* */ if (!sending) { $s = 26; continue; }
-				/* */ $s = 27; continue;
-				/* if (!sending) { */ case 26:
+				$r = s.mutex.Lock(); /* */ $s = 27; case 27: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ if (!sending) { $s = 28; continue; }
+				/* */ $s = 29; continue;
+				/* if (!sending) { */ case 28:
 					closeSession = $makeMap($String.keyFor, [{ k: "action", v: new $String("close_session") }]);
 					err$3 = ws.sendJSON(closeSession);
-					/* */ if (!($interfaceIsEqual(err$3, $ifaceNil))) { $s = 28; continue; }
-					/* */ $s = 29; continue;
-					/* if (!($interfaceIsEqual(err$3, $ifaceNil))) { */ case 28:
-						$r = s.log(new sliceType$1([new $String("send:"), err$3])); /* */ $s = 30; case 30: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					/* } */ case 29:
+					/* */ if (!($interfaceIsEqual(err$3, $ifaceNil))) { $s = 30; continue; }
+					/* */ $s = 31; continue;
+					/* if (!($interfaceIsEqual(err$3, $ifaceNil))) { */ case 30:
+						$r = s.log(new sliceType$1([new $String("send:"), err$3])); /* */ $s = 32; case 32: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* } */ case 31:
 					$s = -1; return;
-				/* } */ case 27:
-				$s = 25; continue;
-			/* } else if (_selection[0] === 1) { */ case 23:
+				/* } */ case 29:
+				$s = 26; continue;
+			/* } else if (_selection[0] === 1) { */ case 24:
+				$r = s.mutex.Lock(); /* */ $s = 33; case 33: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				err$4 = ws.send(emptyData());
-				/* */ if (!($interfaceIsEqual(err$4, $ifaceNil))) { $s = 31; continue; }
-				/* */ $s = 32; continue;
-				/* if (!($interfaceIsEqual(err$4, $ifaceNil))) { */ case 31:
-					$r = s.log(new sliceType$1([new $String("send:"), err$4])); /* */ $s = 33; case 33: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$r = $send(fail, $clone(new structType.ptr(), structType)); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ if (!($interfaceIsEqual(err$4, $ifaceNil))) { $s = 34; continue; }
+				/* */ $s = 35; continue;
+				/* if (!($interfaceIsEqual(err$4, $ifaceNil))) { */ case 34:
+					$r = s.log(new sliceType$1([new $String("send:"), err$4])); /* */ $s = 36; case 36: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$r = $send(fail, $clone(new structType.ptr(), structType)); /* */ $s = 37; case 37: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					$s = -1; return;
-				/* } */ case 32:
+				/* } */ case 35:
 				keeper.Reset(jitterDuration(new duration(0, 56000), -0.3));
-				$s = 25; continue;
-			/* } else if (_selection[0] === 2) { */ case 24:
+				$s = 26; continue;
+			/* } else if (_selection[0] === 2) { */ case 25:
+				$r = s.mutex.Lock(); /* */ $s = 38; case 38: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = -1; return;
-			/* } */ case 25:
+			/* } */ case 26:
 		/* } */ $s = 1; continue; case 2:
 		$s = -1; return;
-		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: webSocketSend }; } $f._key = _key; $f._key$1 = _key$1; $f._r = _r; $f._selection = _selection; $f._tuple = _tuple; $f.action = action; $f.action$1 = action$1; $f.closeSession = closeSession; $f.done = done; $f.err = err; $f.err$1 = err$1; $f.err$2 = err$2; $f.err$3 = err$3; $f.err$4 = err$4; $f.fail = fail; $f.keeper = keeper; $f.s = s; $f.sending = sending; $f.ws = ws; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.x$3 = x$3; $f.x$4 = x$4; $f.x$5 = x$5; $f.x$6 = x$6; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: webSocketSend }; } $f._key = _key; $f._key$1 = _key$1; $f._r = _r; $f._selection = _selection; $f._tuple = _tuple; $f.action = action; $f.action$1 = action$1; $f.closeSession = closeSession; $f.err = err; $f.err$1 = err$1; $f.err$2 = err$2; $f.err$3 = err$3; $f.err$4 = err$4; $f.fail = fail; $f.keeper = keeper; $f.s = s; $f.sending = sending; $f.ws = ws; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.x$3 = x$3; $f.x$4 = x$4; $f.x$5 = x$5; $f.x$6 = x$6; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	webSocketReceive = function(s, ws, fail) {
 		var _r, _r$1, _selection, _selection$1, _tuple, _tuple$1, _tuple$2, ackNeeded, acker, connected, d, d$1, data, data$1, err, event, fail, frames, gotEvents, hostHealthy, n, needsAck, ok, params, remain, s, sessionLost, text, watchdog, watchdogTime, ws, wsNotify, x, x$1, $s, $deferred, $r;
@@ -4658,69 +5136,83 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 					gotEvents = true;
 					hostHealthy = true;
 				/* } */ case 16:
+				$r = s.mutex.Unlock(); /* */ $s = 21; case 21: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				_selection = $select([[s.closeNotify], [fail], []]);
-				if (_selection[0] === 0) {
+				/* */ if (_selection[0] === 0) { $s = 22; continue; }
+				/* */ if (_selection[0] === 1) { $s = 23; continue; }
+				/* */ if (_selection[0] === 2) { $s = 24; continue; }
+				/* */ $s = 25; continue;
+				/* if (_selection[0] === 0) { */ case 22:
+					$r = s.mutex.Lock(); /* */ $s = 26; case 26: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					$s = -1; return [gotEvents, hostHealthy];
-				} else if (_selection[0] === 1) {
+				/* } else if (_selection[0] === 1) { */ case 23:
+					$r = s.mutex.Lock(); /* */ $s = 27; case 27: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					$s = -1; return [gotEvents, hostHealthy];
-				} else if (_selection[0] === 2) {
-				}
-			/* } */ $s = 3; continue; case 4:
-			/* */ if (!connected && event === ptrType.nil) { $s = 21; continue; }
-			/* */ $s = 22; continue;
-			/* if (!connected && event === ptrType.nil) { */ case 21:
-				/* */ if (!($interfaceIsEqual(ws.err, $ifaceNil))) { $s = 23; continue; }
-				/* */ $s = 24; continue;
-				/* if (!($interfaceIsEqual(ws.err, $ifaceNil))) { */ case 23:
-					$r = s.log(new sliceType$1([new $String("receive:"), ws.err])); /* */ $s = 26; case 26: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$s = 25; continue;
-				/* } else { */ case 24:
-					$r = s.log(new sliceType$1([new $String("receive disconnect")])); /* */ $s = 27; case 27: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } else if (_selection[0] === 2) { */ case 24:
+					$r = s.mutex.Lock(); /* */ $s = 28; case 28: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				/* } */ case 25:
-				$r = $send(fail, $clone(new structType.ptr(), structType)); /* */ $s = 28; case 28: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ $s = 3; continue; case 4:
+			/* */ if (!connected && event === ptrType.nil) { $s = 29; continue; }
+			/* */ $s = 30; continue;
+			/* if (!connected && event === ptrType.nil) { */ case 29:
+				/* */ if (!($interfaceIsEqual(ws.err, $ifaceNil))) { $s = 31; continue; }
+				/* */ $s = 32; continue;
+				/* if (!($interfaceIsEqual(ws.err, $ifaceNil))) { */ case 31:
+					$r = s.log(new sliceType$1([new $String("receive:"), ws.err])); /* */ $s = 34; case 34: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$s = 33; continue;
+				/* } else { */ case 32:
+					$r = s.log(new sliceType$1([new $String("receive disconnect")])); /* */ $s = 35; case 35: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 33:
+				$r = $send(fail, $clone(new structType.ptr(), structType)); /* */ $s = 36; case 36: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = -1; return [gotEvents, hostHealthy];
-			/* } */ case 22:
+			/* } */ case 30:
 			if (ackNeeded && !acker.Active()) {
 				acker.Reset(jitterDuration(new duration(0, 7000), -0.3));
 			}
-			_r$1 = $select([[wsNotify], [watchdog.C], [acker.C], [s.closeNotify], [fail]]); /* */ $s = 29; case 29: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			$r = s.mutex.Unlock(); /* */ $s = 37; case 37: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_r$1 = $select([[wsNotify], [watchdog.C], [acker.C], [s.closeNotify], [fail]]); /* */ $s = 38; case 38: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
 			_selection$1 = _r$1;
-			/* */ if (_selection$1[0] === 0) { $s = 30; continue; }
-			/* */ if (_selection$1[0] === 1) { $s = 31; continue; }
-			/* */ if (_selection$1[0] === 2) { $s = 32; continue; }
-			/* */ if (_selection$1[0] === 3) { $s = 33; continue; }
-			/* */ if (_selection$1[0] === 4) { $s = 34; continue; }
-			/* */ $s = 35; continue;
-			/* if (_selection$1[0] === 0) { */ case 30:
+			/* */ if (_selection$1[0] === 0) { $s = 39; continue; }
+			/* */ if (_selection$1[0] === 1) { $s = 40; continue; }
+			/* */ if (_selection$1[0] === 2) { $s = 41; continue; }
+			/* */ if (_selection$1[0] === 3) { $s = 42; continue; }
+			/* */ if (_selection$1[0] === 4) { $s = 43; continue; }
+			/* */ $s = 44; continue;
+			/* if (_selection$1[0] === 0) { */ case 39:
 				_tuple$2 = _selection$1[1];
 				connected = _tuple$2[1];
+				$r = s.mutex.Lock(); /* */ $s = 45; case 45: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				if (!connected) {
 					wsNotify = $chanNil;
 				}
-				$s = 35; continue;
-			/* } else if (_selection$1[0] === 1) { */ case 31:
+				$s = 44; continue;
+			/* } else if (_selection$1[0] === 1) { */ case 40:
+				$r = s.mutex.Lock(); /* */ $s = 46; case 46: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				remain = timeSub(watchdogTime, timeNow());
-				/* */ if ((remain.$high > 0 || (remain.$high === 0 && remain.$low > 16))) { $s = 36; continue; }
-				/* */ $s = 37; continue;
-				/* if ((remain.$high > 0 || (remain.$high === 0 && remain.$low > 16))) { */ case 36:
+				/* */ if ((remain.$high > 0 || (remain.$high === 0 && remain.$low > 16))) { $s = 47; continue; }
+				/* */ $s = 48; continue;
+				/* if ((remain.$high > 0 || (remain.$high === 0 && remain.$low > 16))) { */ case 47:
 					watchdog.Reset(remain);
-					$s = 38; continue;
-				/* } else { */ case 37:
-					$r = s.log(new sliceType$1([new $String("receive timeout")])); /* */ $s = 39; case 39: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$r = $send(fail, $clone(new structType.ptr(), structType)); /* */ $s = 40; case 40: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$s = 49; continue;
+				/* } else { */ case 48:
+					$r = s.log(new sliceType$1([new $String("receive timeout")])); /* */ $s = 50; case 50: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$r = $send(fail, $clone(new structType.ptr(), structType)); /* */ $s = 51; case 51: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					$s = -1; return [gotEvents, hostHealthy];
-				/* } */ case 38:
-				$s = 35; continue;
-			/* } else if (_selection$1[0] === 2) { */ case 32:
+				/* } */ case 49:
+				$s = 44; continue;
+			/* } else if (_selection$1[0] === 2) { */ case 41:
+				$r = s.mutex.Lock(); /* */ $s = 52; case 52: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				if (!s.sendEventAck && !((x = s.ackedEventId, x$1 = s.receivedEventId, (x.$high === x$1.$high && x.$low === x$1.$low)))) {
 					s.sendAck();
 				}
-				$s = 35; continue;
-			/* } else if (_selection$1[0] === 3) { */ case 33:
+				$s = 44; continue;
+			/* } else if (_selection$1[0] === 3) { */ case 42:
+				$r = s.mutex.Lock(); /* */ $s = 53; case 53: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = -1; return [gotEvents, hostHealthy];
-			/* } else if (_selection$1[0] === 4) { */ case 34:
+			/* } else if (_selection$1[0] === 4) { */ case 43:
+				$r = s.mutex.Lock(); /* */ $s = 54; case 54: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = -1; return [gotEvents, hostHealthy];
-			/* } */ case 35:
+			/* } */ case 44:
 		/* } */ $s = 1; continue; case 2:
 		$s = -1; return [gotEvents, hostHealthy];
 		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [gotEvents, hostHealthy]; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: webSocketReceive }; } $f._r = _r; $f._r$1 = _r$1; $f._selection = _selection; $f._selection$1 = _selection$1; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.ackNeeded = ackNeeded; $f.acker = acker; $f.connected = connected; $f.d = d; $f.d$1 = d$1; $f.data = data; $f.data$1 = data$1; $f.err = err; $f.event = event; $f.fail = fail; $f.frames = frames; $f.gotEvents = gotEvents; $f.hostHealthy = hostHealthy; $f.n = n; $f.needsAck = needsAck; $f.ok = ok; $f.params = params; $f.remain = remain; $f.s = s; $f.sessionLost = sessionLost; $f.text = text; $f.watchdog = watchdog; $f.watchdogTime = watchdogTime; $f.ws = ws; $f.wsNotify = wsNotify; $f.x = x; $f.x$1 = x$1; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
@@ -4730,7 +5222,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	ptrType$9.methods = [{prop: "success", name: "success", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "failure", name: "failure", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([duration], [duration], false)}];
 	ptrType$10.methods = [{prop: "Call", name: "Call", pkg: "", typ: $funcType([ptrType$6], [sliceType$3, $error], false)}];
 	httpHeader.methods = [{prop: "Set", name: "Set", pkg: "", typ: $funcType([$String, $String], [], false)}];
-	ptrType$11.methods = [{prop: "SetParams", name: "SetParams", pkg: "", typ: $funcType([mapType], [], false)}, {prop: "Open", name: "Open", pkg: "", typ: $funcType([], [], false)}, {prop: "Close", name: "Close", pkg: "", typ: $funcType([], [], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([ptrType$6], [$error], false)}, {prop: "send", name: "send", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6], [], false)}, {prop: "sendAck", name: "sendAck", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "discover", name: "discover", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "connect", name: "connect", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([transport, sliceType, ptrType$9], [$Bool], false)}, {prop: "backOff", name: "backOff", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$9], [$Bool], false)}, {prop: "canLogin", name: "canLogin", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [$Bool], false)}, {prop: "makeCreateSessionAction", name: "makeCreateSessionAction", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [mapType], false)}, {prop: "makeResumeSessionAction", name: "makeResumeSessionAction", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([$Bool], [mapType], false)}, {prop: "handleSessionEvent", name: "handleSessionEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([mapType], [$Bool], false)}, {prop: "handleEvent", name: "handleEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [$Int64, $Bool, $Bool, $Bool], false)}, {prop: "connState", name: "connState", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([$String], [], false)}, {prop: "connActive", name: "connActive", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "log", name: "log", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([sliceType$1], [], true)}];
+	ptrType$11.methods = [{prop: "SetParams", name: "SetParams", pkg: "", typ: $funcType([mapType], [], false)}, {prop: "Open", name: "Open", pkg: "", typ: $funcType([], [], false)}, {prop: "Close", name: "Close", pkg: "", typ: $funcType([], [], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([ptrType$6], [$error], false)}, {prop: "send", name: "send", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6], [], false)}, {prop: "sendAck", name: "sendAck", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "discover", name: "discover", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "connect", name: "connect", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([transport, sliceType, ptrType$9], [$Bool], false)}, {prop: "backOff", name: "backOff", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$9], [$Bool], false)}, {prop: "canLogin", name: "canLogin", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [$Bool], false)}, {prop: "makeCreateSessionAction", name: "makeCreateSessionAction", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [mapType], false)}, {prop: "makeResumeSessionAction", name: "makeResumeSessionAction", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([$Bool], [mapType], false)}, {prop: "handleSessionEvent", name: "handleSessionEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([mapType], [$Bool], false)}, {prop: "handleEvent", name: "handleEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [$Int64, $Bool, $Bool, $Bool], false)}, {prop: "deliverSessionEvent", name: "deliverSessionEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [], false)}, {prop: "deliverEvent", name: "deliverEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [], false)}, {prop: "connState", name: "connState", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([$String], [], false)}, {prop: "connActive", name: "connActive", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "log", name: "log", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([sliceType$1], [], true)}];
 	ptrType$7.methods = [{prop: "Active", name: "Active", pkg: "", typ: $funcType([], [$Bool], false)}, {prop: "Reset", name: "Reset", pkg: "", typ: $funcType([duration], [], false)}, {prop: "Stop", name: "Stop", pkg: "", typ: $funcType([], [], false)}];
 	ptrType$8.methods = [{prop: "send", name: "send", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$4], [$error], false)}, {prop: "sendJSON", name: "sendJSON", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([mapType], [$error], false)}, {prop: "sendPayload", name: "sendPayload", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6], [$error], false)}, {prop: "receive", name: "receive", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [ptrType$4], false)}, {prop: "receiveJSON", name: "receiveJSON", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [mapType, $error], false)}, {prop: "close", name: "close", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}];
 	Action.init("github.com/ninchat/ninchat-go", [{prop: "Params", name: "Params", anonymous: false, exported: true, typ: mapType, tag: ""}, {prop: "Payload", name: "Payload", anonymous: false, exported: true, typ: sliceType$2, tag: ""}, {prop: "OnReply", name: "OnReply", anonymous: false, exported: true, typ: funcType$2, tag: ""}, {prop: "id", name: "id", anonymous: false, exported: false, typ: $Int64, tag: ""}]);
@@ -4741,7 +5233,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	httpHeader.init($String, $String);
 	httpRequest.init("github.com/ninchat/ninchat-go", [{prop: "Method", name: "Method", anonymous: false, exported: true, typ: $String, tag: ""}, {prop: "URL", name: "URL", anonymous: false, exported: true, typ: $String, tag: ""}, {prop: "Header", name: "Header", anonymous: false, exported: true, typ: httpHeader, tag: ""}, {prop: "data", name: "data", anonymous: false, exported: false, typ: ptrType$4, tag: ""}]);
 	httpResponse.init("github.com/ninchat/ninchat-go", [{prop: "data", name: "data", anonymous: false, exported: false, typ: ptrType$4, tag: ""}, {prop: "err", name: "err", anonymous: false, exported: false, typ: $error, tag: ""}]);
-	Session.init("github.com/ninchat/ninchat-go", [{prop: "OnSessionEvent", name: "OnSessionEvent", anonymous: false, exported: true, typ: funcType$2, tag: ""}, {prop: "OnEvent", name: "OnEvent", anonymous: false, exported: true, typ: funcType$2, tag: ""}, {prop: "OnClose", name: "OnClose", anonymous: false, exported: true, typ: funcType, tag: ""}, {prop: "OnConnState", name: "OnConnState", anonymous: false, exported: true, typ: funcType$3, tag: ""}, {prop: "OnConnActive", name: "OnConnActive", anonymous: false, exported: true, typ: funcType, tag: ""}, {prop: "OnLog", name: "OnLog", anonymous: false, exported: true, typ: funcType$4, tag: ""}, {prop: "Address", name: "Address", anonymous: false, exported: true, typ: $String, tag: ""}, {prop: "forceLongPoll", name: "forceLongPoll", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "sessionParams", name: "sessionParams", anonymous: false, exported: false, typ: mapType, tag: ""}, {prop: "sessionId", name: "sessionId", anonymous: false, exported: false, typ: $emptyInterface, tag: ""}, {prop: "latestConnState", name: "latestConnState", anonymous: false, exported: false, typ: $String, tag: ""}, {prop: "lastActionId", name: "lastActionId", anonymous: false, exported: false, typ: $Int64, tag: ""}, {prop: "sendNotify", name: "sendNotify", anonymous: false, exported: false, typ: chanType, tag: ""}, {prop: "sendBuffer", name: "sendBuffer", anonymous: false, exported: false, typ: sliceType$5, tag: ""}, {prop: "numSent", name: "numSent", anonymous: false, exported: false, typ: $Int, tag: ""}, {prop: "sendEventAck", name: "sendEventAck", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "receivedEventId", name: "receivedEventId", anonymous: false, exported: false, typ: $Int64, tag: ""}, {prop: "ackedEventId", name: "ackedEventId", anonymous: false, exported: false, typ: $Int64, tag: ""}, {prop: "closeNotify", name: "closeNotify", anonymous: false, exported: false, typ: chanType, tag: ""}, {prop: "closed", name: "closed", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "running", name: "running", anonymous: false, exported: false, typ: $Bool, tag: ""}]);
+	Session.init("github.com/ninchat/ninchat-go", [{prop: "OnSessionEvent", name: "OnSessionEvent", anonymous: false, exported: true, typ: funcType$2, tag: ""}, {prop: "OnEvent", name: "OnEvent", anonymous: false, exported: true, typ: funcType$2, tag: ""}, {prop: "OnClose", name: "OnClose", anonymous: false, exported: true, typ: funcType, tag: ""}, {prop: "OnConnState", name: "OnConnState", anonymous: false, exported: true, typ: funcType$3, tag: ""}, {prop: "OnConnActive", name: "OnConnActive", anonymous: false, exported: true, typ: funcType, tag: ""}, {prop: "OnLog", name: "OnLog", anonymous: false, exported: true, typ: funcType$4, tag: ""}, {prop: "Address", name: "Address", anonymous: false, exported: true, typ: $String, tag: ""}, {prop: "forceLongPoll", name: "forceLongPoll", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "mutex", name: "mutex", anonymous: false, exported: false, typ: sync.Mutex, tag: ""}, {prop: "sessionParams", name: "sessionParams", anonymous: false, exported: false, typ: mapType, tag: ""}, {prop: "sessionId", name: "sessionId", anonymous: false, exported: false, typ: $emptyInterface, tag: ""}, {prop: "latestConnState", name: "latestConnState", anonymous: false, exported: false, typ: $String, tag: ""}, {prop: "lastActionId", name: "lastActionId", anonymous: false, exported: false, typ: $Int64, tag: ""}, {prop: "sendNotify", name: "sendNotify", anonymous: false, exported: false, typ: chanType, tag: ""}, {prop: "sendBuffer", name: "sendBuffer", anonymous: false, exported: false, typ: sliceType$5, tag: ""}, {prop: "numSent", name: "numSent", anonymous: false, exported: false, typ: $Int, tag: ""}, {prop: "sendEventAck", name: "sendEventAck", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "receivedEventId", name: "receivedEventId", anonymous: false, exported: false, typ: $Int64, tag: ""}, {prop: "ackedEventId", name: "ackedEventId", anonymous: false, exported: false, typ: $Int64, tag: ""}, {prop: "closeNotify", name: "closeNotify", anonymous: false, exported: false, typ: chanType, tag: ""}, {prop: "closed", name: "closed", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "running", name: "running", anonymous: false, exported: false, typ: $Bool, tag: ""}]);
 	transport.init([ptrType$11, $String], [$Bool, $Bool], false);
 	timer.init("github.com/ninchat/ninchat-go", [{prop: "C", name: "C", anonymous: false, exported: true, typ: chanType, tag: ""}, {prop: "id", name: "id", anonymous: false, exported: false, typ: ptrType$4, tag: ""}]);
 	webSocket.init("github.com/ninchat/ninchat-go", [{prop: "notify", name: "notify", anonymous: false, exported: false, typ: chanType, tag: ""}, {prop: "goingAway", name: "goingAway", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "err", name: "err", anonymous: false, exported: false, typ: $error, tag: ""}, {prop: "impl", name: "impl", anonymous: false, exported: false, typ: ptrType$4, tag: ""}, {prop: "open", name: "open", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "buf", name: "buf", anonymous: false, exported: false, typ: sliceType$6, tag: ""}]);
@@ -4751,6 +5243,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		$r = errors.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = js.$init(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		$r = sort.$init(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = sync.$init(); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		xhrType = null;
 		xhrRequestHeaderSupport = false;
 		webSocketClass = null;
@@ -5249,7 +5742,8 @@ $packages["ninchatclient/lib"] = (function() {
 	};
 	SessionAdapter.prototype.SetAddress = function(value) { return this.$val.SetAddress(value); };
 	SessionAdapter.ptr.prototype.Send = function(params, payload) {
-		var _entry, _tuple, action, adapter, found, p, params, payload, result, value;
+		var _entry, _r, _tuple, action, adapter, found, p, params, payload, result, value, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _entry = $f._entry; _r = $f._r; _tuple = $f._tuple; action = $f.action; adapter = $f.adapter; found = $f.found; p = $f.p; params = $f.params; payload = $f.payload; result = $f.result; value = $f.value; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		result = null;
 		adapter = this;
 		action = new ninchat.Action.ptr(params, WrapPayload(payload), $throwNilPointerError, new $Int64(0, 0));
@@ -5265,13 +5759,15 @@ $packages["ninchatclient/lib"] = (function() {
 			action.OnReply = $methodVal(p, "OnReply");
 			result = p.Object();
 		}
-		adapter.Session.Send(action);
-		return result;
+		_r = adapter.Session.Send(action); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		_r;
+		$s = -1; return result;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: SessionAdapter.ptr.prototype.Send }; } $f._entry = _entry; $f._r = _r; $f._tuple = _tuple; $f.action = action; $f.adapter = adapter; $f.found = found; $f.p = p; $f.params = params; $f.payload = payload; $f.result = result; $f.value = value; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	SessionAdapter.prototype.Send = function(params, payload) { return this.$val.Send(params, payload); };
 	newSession = function() {
 		var adapter, session;
-		session = new ninchat.Session.ptr($throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, "", false, false, $ifaceNil, "", new $Int64(0, 0), $chanNil, sliceType$4.nil, 0, false, new $Int64(0, 0), new $Int64(0, 0), $chanNil, false, false);
+		session = new ninchat.Session.ptr($throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, "", false, new $packages["sync"].Mutex.ptr(0, 0), false, $ifaceNil, "", new $Int64(0, 0), $chanNil, sliceType$4.nil, 0, false, new $Int64(0, 0), new $Int64(0, 0), $chanNil, false, false);
 		adapter = NewSessionAdapter(session);
 		return $makeMap($String.keyFor, [{ k: "onSessionEvent", v: new funcType$4($methodVal(adapter, "OnSessionEvent")) }, { k: "onEvent", v: new funcType$4($methodVal(adapter, "OnEvent")) }, { k: "onClose", v: new funcType$4($methodVal(adapter, "OnClose")) }, { k: "onConnState", v: new funcType$4($methodVal(adapter, "OnConnState")) }, { k: "onConnActive", v: new funcType$4($methodVal(adapter, "OnConnActive")) }, { k: "onLog", v: new funcType$4($methodVal(adapter, "OnLog")) }, { k: "setParams", v: new funcType$5($methodVal(session, "SetParams")) }, { k: "setTransport", v: new funcType$6(setTransport) }, { k: "setAddress", v: new funcType$6($methodVal(adapter, "SetAddress")) }, { k: "open", v: new funcType$7($methodVal(session, "Open")) }, { k: "close", v: new funcType$7($methodVal(session, "Close")) }, { k: "send", v: new funcType$8($methodVal(adapter, "Send")) }]);
 	};
