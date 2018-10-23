@@ -19,7 +19,6 @@ gen/ninchatclient.js gen/ninchatclient.min.js: $(wildcard src/ninchatclient/*.go
 	$(GOPHERJS) build -o gen/ninchatclient.js ninchatclient
 	$(GOPHERJS) build -m -o gen/ninchatclient.min.js ninchatclient
 	$(GOFMT) -d -s src/ninchatclient
-	$(GO) vet -tags=js ninchatclient
 
 docs/ninchatclient.md: docs/ninchatclient.js
 	$(MARKDOX) -o $@ docs/ninchatclient.js

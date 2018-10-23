@@ -103,6 +103,9 @@ var $subslice = function(slice, low, high, max) {
   if (low < 0 || high < low || max < high || high > slice.$capacity || max > slice.$capacity) {
     $throwRuntimeError("slice bounds out of range");
   }
+  if (slice === slice.constructor.nil) {
+    return slice;
+  }
   var s = new slice.constructor(slice.$array);
   s.$offset = slice.$offset + low;
   s.$length = high - low;
@@ -897,7 +900,7 @@ var $newType = function(size, kind, string, named, pkg, exported, constructor) {
           };
         };
         fields.forEach(function(f) {
-          if (f.anonymous) {
+          if (f.embedded) {
             $methodSet(f.typ).forEach(function(m) {
               synthesizeMethod(typ, m, f);
               synthesizeMethod(typ.ptr, m, f);
@@ -1037,7 +1040,7 @@ var $methodSet = function(typ) {
       switch (e.typ.kind) {
       case $kindStruct:
         e.typ.fields.forEach(function(f) {
-          if (f.anonymous) {
+          if (f.embedded) {
             var fTyp = f.typ;
             var fIsPtr = (fTyp.kind === $kindPtr);
             next.push({typ: fIsPtr ? fTyp.elem : fTyp, indirect: e.indirect || fIsPtr});
@@ -1337,7 +1340,11 @@ var $assertType = function(value, type, returnTuple) {
     if (returnTuple) {
       return [type.zero(), false];
     }
-    $panic(new $packages["runtime"].TypeAssertionError.ptr("", (value === $ifaceNil ? "" : value.constructor.string), type.string, missingMethod));
+    $panic(new $packages["runtime"].TypeAssertionError.ptr(
+      $packages["runtime"]._type.ptr.nil,
+      (value === $ifaceNil ? $packages["runtime"]._type.ptr.nil : new $packages["runtime"]._type.ptr(value.constructor.string)),
+      new $packages["runtime"]._type.ptr(type.string),
+      missingMethod));
   }
 
   if (!isInterface) {
@@ -2222,12 +2229,34 @@ $packages["github.com/gopherjs/gopherjs/js"] = (function() {
 	};
 	ptrType.methods = [{prop: "Get", name: "Get", pkg: "", typ: $funcType([$String], [ptrType], false)}, {prop: "Set", name: "Set", pkg: "", typ: $funcType([$String, $emptyInterface], [], false)}, {prop: "Delete", name: "Delete", pkg: "", typ: $funcType([$String], [], false)}, {prop: "Length", name: "Length", pkg: "", typ: $funcType([], [$Int], false)}, {prop: "Index", name: "Index", pkg: "", typ: $funcType([$Int], [ptrType], false)}, {prop: "SetIndex", name: "SetIndex", pkg: "", typ: $funcType([$Int, $emptyInterface], [], false)}, {prop: "Call", name: "Call", pkg: "", typ: $funcType([$String, sliceType], [ptrType], true)}, {prop: "Invoke", name: "Invoke", pkg: "", typ: $funcType([sliceType], [ptrType], true)}, {prop: "New", name: "New", pkg: "", typ: $funcType([sliceType], [ptrType], true)}, {prop: "Bool", name: "Bool", pkg: "", typ: $funcType([], [$Bool], false)}, {prop: "String", name: "String", pkg: "", typ: $funcType([], [$String], false)}, {prop: "Int", name: "Int", pkg: "", typ: $funcType([], [$Int], false)}, {prop: "Int64", name: "Int64", pkg: "", typ: $funcType([], [$Int64], false)}, {prop: "Uint64", name: "Uint64", pkg: "", typ: $funcType([], [$Uint64], false)}, {prop: "Float", name: "Float", pkg: "", typ: $funcType([], [$Float64], false)}, {prop: "Interface", name: "Interface", pkg: "", typ: $funcType([], [$emptyInterface], false)}, {prop: "Unsafe", name: "Unsafe", pkg: "", typ: $funcType([], [$Uintptr], false)}];
 	ptrType$1.methods = [{prop: "Error", name: "Error", pkg: "", typ: $funcType([], [$String], false)}, {prop: "Stack", name: "Stack", pkg: "", typ: $funcType([], [$String], false)}];
-	Object.init("github.com/gopherjs/gopherjs/js", [{prop: "object", name: "object", anonymous: false, exported: false, typ: ptrType, tag: ""}]);
-	Error.init("", [{prop: "Object", name: "Object", anonymous: true, exported: true, typ: ptrType, tag: ""}]);
+	Object.init("github.com/gopherjs/gopherjs/js", [{prop: "object", name: "object", embedded: false, exported: false, typ: ptrType, tag: ""}]);
+	Error.init("", [{prop: "Object", name: "Object", embedded: true, exported: true, typ: ptrType, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		init();
+		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.$init = $init;
+	return $pkg;
+})();
+$packages["internal/cpu"] = (function() {
+	var $pkg = {}, $init;
+	$init = function() {
+		$pkg.$init = function() {};
+		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.$init = $init;
+	return $pkg;
+})();
+$packages["internal/bytealg"] = (function() {
+	var $pkg = {}, $init, cpu;
+	cpu = $packages["internal/cpu"];
+	$init = function() {
+		$pkg.$init = function() {};
+		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		$r = cpu.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
 	};
 	$pkg.$init = $init;
@@ -2244,25 +2273,47 @@ $packages["runtime/internal/sys"] = (function() {
 	return $pkg;
 })();
 $packages["runtime"] = (function() {
-	var $pkg = {}, $init, js, sys, TypeAssertionError, errorString, ptrType$4, init, throw$1;
+	var $pkg = {}, $init, js, bytealg, sys, _type, TypeAssertionError, errorString, ptrType, ptrType$4, init, throw$1;
 	js = $packages["github.com/gopherjs/gopherjs/js"];
+	bytealg = $packages["internal/bytealg"];
 	sys = $packages["runtime/internal/sys"];
-	TypeAssertionError = $pkg.TypeAssertionError = $newType(0, $kindStruct, "runtime.TypeAssertionError", true, "runtime", true, function(interfaceString_, concreteString_, assertedString_, missingMethod_) {
+	_type = $pkg._type = $newType(0, $kindStruct, "runtime._type", true, "runtime", false, function(str_) {
 		this.$val = this;
 		if (arguments.length === 0) {
-			this.interfaceString = "";
-			this.concreteString = "";
-			this.assertedString = "";
+			this.str = "";
+			return;
+		}
+		this.str = str_;
+	});
+	TypeAssertionError = $pkg.TypeAssertionError = $newType(0, $kindStruct, "runtime.TypeAssertionError", true, "runtime", true, function(_interface_, concrete_, asserted_, missingMethod_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this._interface = ptrType.nil;
+			this.concrete = ptrType.nil;
+			this.asserted = ptrType.nil;
 			this.missingMethod = "";
 			return;
 		}
-		this.interfaceString = interfaceString_;
-		this.concreteString = concreteString_;
-		this.assertedString = assertedString_;
+		this._interface = _interface_;
+		this.concrete = concrete_;
+		this.asserted = asserted_;
 		this.missingMethod = missingMethod_;
 	});
 	errorString = $pkg.errorString = $newType(8, $kindString, "runtime.errorString", true, "runtime", false, null);
+	ptrType = $ptrType(_type);
 	ptrType$4 = $ptrType(TypeAssertionError);
+	_type.ptr.prototype.string = function() {
+		var t;
+		t = this;
+		return t.str;
+	};
+	_type.prototype.string = function() { return this.$val.string(); };
+	_type.ptr.prototype.pkgpath = function() {
+		var t;
+		t = this;
+		return "";
+	};
+	_type.prototype.pkgpath = function() { return this.$val.pkgpath(); };
 	init = function() {
 		var e, jsPkg;
 		jsPkg = $packages[$externalize("github.com/gopherjs/gopherjs/js", $String)];
@@ -2270,7 +2321,7 @@ $packages["runtime"] = (function() {
 		$jsErrorPtr = jsPkg.Error.ptr;
 		$throwRuntimeError = throw$1;
 		e = $ifaceNil;
-		e = new TypeAssertionError.ptr("", "", "", "");
+		e = new TypeAssertionError.ptr(ptrType.nil, ptrType.nil, ptrType.nil, "");
 		$unused(e);
 	};
 	throw$1 = function(s) {
@@ -2281,19 +2332,29 @@ $packages["runtime"] = (function() {
 	};
 	TypeAssertionError.prototype.RuntimeError = function() { return this.$val.RuntimeError(); };
 	TypeAssertionError.ptr.prototype.Error = function() {
-		var e, inter;
+		var as, cs, e, inter, msg;
 		e = this;
-		inter = e.interfaceString;
-		if (inter === "") {
-			inter = "interface";
+		inter = "interface";
+		if (!(e._interface === ptrType.nil)) {
+			inter = e._interface.string();
 		}
-		if (e.concreteString === "") {
-			return "interface conversion: " + inter + " is nil, not " + e.assertedString;
+		as = e.asserted.string();
+		if (e.concrete === ptrType.nil) {
+			return "interface conversion: " + inter + " is nil, not " + as;
 		}
+		cs = e.concrete.string();
 		if (e.missingMethod === "") {
-			return "interface conversion: " + inter + " is " + e.concreteString + ", not " + e.assertedString;
+			msg = "interface conversion: " + inter + " is " + cs + ", not " + as;
+			if (cs === as) {
+				if (!(e.concrete.pkgpath() === e.asserted.pkgpath())) {
+					msg = msg + (" (types from different packages)");
+				} else {
+					msg = msg + (" (types from different scopes)");
+				}
+			}
+			return msg;
 		}
-		return "interface conversion: " + e.concreteString + " is not " + e.assertedString + ": missing method " + e.missingMethod;
+		return "interface conversion: " + cs + " is not " + as + ": missing method " + e.missingMethod;
 	};
 	TypeAssertionError.prototype.Error = function() { return this.$val.Error(); };
 	errorString.prototype.RuntimeError = function() {
@@ -2307,14 +2368,17 @@ $packages["runtime"] = (function() {
 		return "runtime error: " + (e);
 	};
 	$ptrType(errorString).prototype.Error = function() { return new errorString(this.$get()).Error(); };
+	ptrType.methods = [{prop: "string", name: "string", pkg: "runtime", typ: $funcType([], [$String], false)}, {prop: "pkgpath", name: "pkgpath", pkg: "runtime", typ: $funcType([], [$String], false)}];
 	ptrType$4.methods = [{prop: "RuntimeError", name: "RuntimeError", pkg: "", typ: $funcType([], [], false)}, {prop: "Error", name: "Error", pkg: "", typ: $funcType([], [$String], false)}];
 	errorString.methods = [{prop: "RuntimeError", name: "RuntimeError", pkg: "", typ: $funcType([], [], false)}, {prop: "Error", name: "Error", pkg: "", typ: $funcType([], [$String], false)}];
-	TypeAssertionError.init("runtime", [{prop: "interfaceString", name: "interfaceString", anonymous: false, exported: false, typ: $String, tag: ""}, {prop: "concreteString", name: "concreteString", anonymous: false, exported: false, typ: $String, tag: ""}, {prop: "assertedString", name: "assertedString", anonymous: false, exported: false, typ: $String, tag: ""}, {prop: "missingMethod", name: "missingMethod", anonymous: false, exported: false, typ: $String, tag: ""}]);
+	_type.init("runtime", [{prop: "str", name: "str", embedded: false, exported: false, typ: $String, tag: ""}]);
+	TypeAssertionError.init("runtime", [{prop: "_interface", name: "_interface", embedded: false, exported: false, typ: ptrType, tag: ""}, {prop: "concrete", name: "concrete", embedded: false, exported: false, typ: ptrType, tag: ""}, {prop: "asserted", name: "asserted", embedded: false, exported: false, typ: ptrType, tag: ""}, {prop: "missingMethod", name: "missingMethod", embedded: false, exported: false, typ: $String, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		$r = js.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = sys.$init(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = bytealg.$init(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = sys.$init(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		init();
 		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
 	};
@@ -2344,7 +2408,7 @@ $packages["errors"] = (function() {
 	};
 	errorString.prototype.Error = function() { return this.$val.Error(); };
 	ptrType.methods = [{prop: "Error", name: "Error", pkg: "", typ: $funcType([], [$String], false)}];
-	errorString.init("errors", [{prop: "s", name: "s", anonymous: false, exported: false, typ: $String, tag: ""}]);
+	errorString.init("errors", [{prop: "s", name: "s", embedded: false, exported: false, typ: $String, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -2768,11 +2832,11 @@ $packages["sync"] = (function() {
 	};
 	ptrType.methods = [{prop: "Get", name: "Get", pkg: "", typ: $funcType([], [$emptyInterface], false)}, {prop: "Put", name: "Put", pkg: "", typ: $funcType([$emptyInterface], [], false)}, {prop: "getSlow", name: "getSlow", pkg: "sync", typ: $funcType([], [$emptyInterface], false)}, {prop: "pin", name: "pin", pkg: "sync", typ: $funcType([], [ptrType$7], false)}, {prop: "pinSlow", name: "pinSlow", pkg: "sync", typ: $funcType([], [ptrType$7], false)}];
 	ptrType$16.methods = [{prop: "Lock", name: "Lock", pkg: "", typ: $funcType([], [], false)}, {prop: "Unlock", name: "Unlock", pkg: "", typ: $funcType([], [], false)}];
-	Pool.init("sync", [{prop: "local", name: "local", anonymous: false, exported: false, typ: $UnsafePointer, tag: ""}, {prop: "localSize", name: "localSize", anonymous: false, exported: false, typ: $Uintptr, tag: ""}, {prop: "store", name: "store", anonymous: false, exported: false, typ: sliceType$4, tag: ""}, {prop: "New", name: "New", anonymous: false, exported: true, typ: funcType, tag: ""}]);
-	Mutex.init("sync", [{prop: "state", name: "state", anonymous: false, exported: false, typ: $Int32, tag: ""}, {prop: "sema", name: "sema", anonymous: false, exported: false, typ: $Uint32, tag: ""}]);
-	poolLocalInternal.init("sync", [{prop: "private$0", name: "private", anonymous: false, exported: false, typ: $emptyInterface, tag: ""}, {prop: "shared", name: "shared", anonymous: false, exported: false, typ: sliceType$4, tag: ""}, {prop: "Mutex", name: "Mutex", anonymous: true, exported: true, typ: Mutex, tag: ""}]);
-	poolLocal.init("sync", [{prop: "poolLocalInternal", name: "poolLocalInternal", anonymous: true, exported: false, typ: poolLocalInternal, tag: ""}, {prop: "pad", name: "pad", anonymous: false, exported: false, typ: arrayType$2, tag: ""}]);
-	notifyList.init("sync", [{prop: "wait", name: "wait", anonymous: false, exported: false, typ: $Uint32, tag: ""}, {prop: "notify", name: "notify", anonymous: false, exported: false, typ: $Uint32, tag: ""}, {prop: "lock", name: "lock", anonymous: false, exported: false, typ: $Uintptr, tag: ""}, {prop: "head", name: "head", anonymous: false, exported: false, typ: $UnsafePointer, tag: ""}, {prop: "tail", name: "tail", anonymous: false, exported: false, typ: $UnsafePointer, tag: ""}]);
+	Pool.init("sync", [{prop: "local", name: "local", embedded: false, exported: false, typ: $UnsafePointer, tag: ""}, {prop: "localSize", name: "localSize", embedded: false, exported: false, typ: $Uintptr, tag: ""}, {prop: "store", name: "store", embedded: false, exported: false, typ: sliceType$4, tag: ""}, {prop: "New", name: "New", embedded: false, exported: true, typ: funcType, tag: ""}]);
+	Mutex.init("sync", [{prop: "state", name: "state", embedded: false, exported: false, typ: $Int32, tag: ""}, {prop: "sema", name: "sema", embedded: false, exported: false, typ: $Uint32, tag: ""}]);
+	poolLocalInternal.init("sync", [{prop: "private$0", name: "private", embedded: false, exported: false, typ: $emptyInterface, tag: ""}, {prop: "shared", name: "shared", embedded: false, exported: false, typ: sliceType$4, tag: ""}, {prop: "Mutex", name: "Mutex", embedded: true, exported: true, typ: Mutex, tag: ""}]);
+	poolLocal.init("sync", [{prop: "poolLocalInternal", name: "poolLocalInternal", embedded: true, exported: false, typ: poolLocalInternal, tag: ""}, {prop: "pad", name: "pad", embedded: false, exported: false, typ: arrayType$2, tag: ""}]);
+	notifyList.init("sync", [{prop: "wait", name: "wait", embedded: false, exported: false, typ: $Uint32, tag: ""}, {prop: "notify", name: "notify", embedded: false, exported: false, typ: $Uint32, tag: ""}, {prop: "lock", name: "lock", embedded: false, exported: false, typ: $Uintptr, tag: ""}, {prop: "head", name: "head", embedded: false, exported: false, typ: $UnsafePointer, tag: ""}, {prop: "tail", name: "tail", embedded: false, exported: false, typ: $UnsafePointer, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -5225,18 +5289,18 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	ptrType$11.methods = [{prop: "SetParams", name: "SetParams", pkg: "", typ: $funcType([mapType], [], false)}, {prop: "Open", name: "Open", pkg: "", typ: $funcType([], [], false)}, {prop: "Close", name: "Close", pkg: "", typ: $funcType([], [], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([ptrType$6], [$error], false)}, {prop: "send", name: "send", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6], [], false)}, {prop: "sendAck", name: "sendAck", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "discover", name: "discover", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "connect", name: "connect", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([transport, sliceType, ptrType$9], [$Bool], false)}, {prop: "backOff", name: "backOff", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$9], [$Bool], false)}, {prop: "canLogin", name: "canLogin", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [$Bool], false)}, {prop: "makeCreateSessionAction", name: "makeCreateSessionAction", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [mapType], false)}, {prop: "makeResumeSessionAction", name: "makeResumeSessionAction", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([$Bool], [mapType], false)}, {prop: "handleSessionEvent", name: "handleSessionEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([mapType], [$Bool], false)}, {prop: "handleEvent", name: "handleEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [$Int64, $Bool, $Bool, $Bool], false)}, {prop: "deliverSessionEvent", name: "deliverSessionEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [], false)}, {prop: "deliverEvent", name: "deliverEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [], false)}, {prop: "connState", name: "connState", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([$String], [], false)}, {prop: "connActive", name: "connActive", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "log", name: "log", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([sliceType$1], [], true)}];
 	ptrType$7.methods = [{prop: "Active", name: "Active", pkg: "", typ: $funcType([], [$Bool], false)}, {prop: "Reset", name: "Reset", pkg: "", typ: $funcType([duration], [], false)}, {prop: "Stop", name: "Stop", pkg: "", typ: $funcType([], [], false)}];
 	ptrType$8.methods = [{prop: "send", name: "send", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$4], [$error], false)}, {prop: "sendJSON", name: "sendJSON", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([mapType], [$error], false)}, {prop: "sendPayload", name: "sendPayload", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6], [$error], false)}, {prop: "receive", name: "receive", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [ptrType$4], false)}, {prop: "receiveJSON", name: "receiveJSON", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [mapType, $error], false)}, {prop: "close", name: "close", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}];
-	Action.init("github.com/ninchat/ninchat-go", [{prop: "Params", name: "Params", anonymous: false, exported: true, typ: mapType, tag: ""}, {prop: "Payload", name: "Payload", anonymous: false, exported: true, typ: sliceType$2, tag: ""}, {prop: "OnReply", name: "OnReply", anonymous: false, exported: true, typ: funcType$2, tag: ""}, {prop: "id", name: "id", anonymous: false, exported: false, typ: $Int64, tag: ""}]);
-	Event.init("", [{prop: "Params", name: "Params", anonymous: false, exported: true, typ: mapType, tag: ""}, {prop: "Payload", name: "Payload", anonymous: false, exported: true, typ: sliceType$2, tag: ""}, {prop: "LastReply", name: "LastReply", anonymous: false, exported: true, typ: $Bool, tag: ""}]);
+	Action.init("github.com/ninchat/ninchat-go", [{prop: "Params", name: "Params", embedded: false, exported: true, typ: mapType, tag: ""}, {prop: "Payload", name: "Payload", embedded: false, exported: true, typ: sliceType$2, tag: ""}, {prop: "OnReply", name: "OnReply", embedded: false, exported: true, typ: funcType$2, tag: ""}, {prop: "id", name: "id", embedded: false, exported: false, typ: $Int64, tag: ""}]);
+	Event.init("", [{prop: "Params", name: "Params", embedded: false, exported: true, typ: mapType, tag: ""}, {prop: "Payload", name: "Payload", embedded: false, exported: true, typ: sliceType$2, tag: ""}, {prop: "LastReply", name: "LastReply", embedded: false, exported: true, typ: $Bool, tag: ""}]);
 	Frame.init(js.Object);
-	backoff.init("github.com/ninchat/ninchat-go", [{prop: "lastSlot", name: "lastSlot", anonymous: false, exported: false, typ: $Int, tag: ""}]);
-	Caller.init("", [{prop: "Address", name: "Address", anonymous: false, exported: true, typ: $String, tag: ""}]);
+	backoff.init("github.com/ninchat/ninchat-go", [{prop: "lastSlot", name: "lastSlot", embedded: false, exported: false, typ: $Int, tag: ""}]);
+	Caller.init("", [{prop: "Address", name: "Address", embedded: false, exported: true, typ: $String, tag: ""}]);
 	httpHeader.init($String, $String);
-	httpRequest.init("github.com/ninchat/ninchat-go", [{prop: "Method", name: "Method", anonymous: false, exported: true, typ: $String, tag: ""}, {prop: "URL", name: "URL", anonymous: false, exported: true, typ: $String, tag: ""}, {prop: "Header", name: "Header", anonymous: false, exported: true, typ: httpHeader, tag: ""}, {prop: "data", name: "data", anonymous: false, exported: false, typ: ptrType$4, tag: ""}]);
-	httpResponse.init("github.com/ninchat/ninchat-go", [{prop: "data", name: "data", anonymous: false, exported: false, typ: ptrType$4, tag: ""}, {prop: "err", name: "err", anonymous: false, exported: false, typ: $error, tag: ""}]);
-	Session.init("github.com/ninchat/ninchat-go", [{prop: "OnSessionEvent", name: "OnSessionEvent", anonymous: false, exported: true, typ: funcType$2, tag: ""}, {prop: "OnEvent", name: "OnEvent", anonymous: false, exported: true, typ: funcType$2, tag: ""}, {prop: "OnClose", name: "OnClose", anonymous: false, exported: true, typ: funcType, tag: ""}, {prop: "OnConnState", name: "OnConnState", anonymous: false, exported: true, typ: funcType$3, tag: ""}, {prop: "OnConnActive", name: "OnConnActive", anonymous: false, exported: true, typ: funcType, tag: ""}, {prop: "OnLog", name: "OnLog", anonymous: false, exported: true, typ: funcType$4, tag: ""}, {prop: "Address", name: "Address", anonymous: false, exported: true, typ: $String, tag: ""}, {prop: "forceLongPoll", name: "forceLongPoll", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "mutex", name: "mutex", anonymous: false, exported: false, typ: sync.Mutex, tag: ""}, {prop: "sessionParams", name: "sessionParams", anonymous: false, exported: false, typ: mapType, tag: ""}, {prop: "sessionId", name: "sessionId", anonymous: false, exported: false, typ: $emptyInterface, tag: ""}, {prop: "latestConnState", name: "latestConnState", anonymous: false, exported: false, typ: $String, tag: ""}, {prop: "lastActionId", name: "lastActionId", anonymous: false, exported: false, typ: $Int64, tag: ""}, {prop: "sendNotify", name: "sendNotify", anonymous: false, exported: false, typ: chanType, tag: ""}, {prop: "sendBuffer", name: "sendBuffer", anonymous: false, exported: false, typ: sliceType$5, tag: ""}, {prop: "numSent", name: "numSent", anonymous: false, exported: false, typ: $Int, tag: ""}, {prop: "sendEventAck", name: "sendEventAck", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "receivedEventId", name: "receivedEventId", anonymous: false, exported: false, typ: $Int64, tag: ""}, {prop: "ackedEventId", name: "ackedEventId", anonymous: false, exported: false, typ: $Int64, tag: ""}, {prop: "closeNotify", name: "closeNotify", anonymous: false, exported: false, typ: chanType, tag: ""}, {prop: "closed", name: "closed", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "running", name: "running", anonymous: false, exported: false, typ: $Bool, tag: ""}]);
+	httpRequest.init("github.com/ninchat/ninchat-go", [{prop: "Method", name: "Method", embedded: false, exported: true, typ: $String, tag: ""}, {prop: "URL", name: "URL", embedded: false, exported: true, typ: $String, tag: ""}, {prop: "Header", name: "Header", embedded: false, exported: true, typ: httpHeader, tag: ""}, {prop: "data", name: "data", embedded: false, exported: false, typ: ptrType$4, tag: ""}]);
+	httpResponse.init("github.com/ninchat/ninchat-go", [{prop: "data", name: "data", embedded: false, exported: false, typ: ptrType$4, tag: ""}, {prop: "err", name: "err", embedded: false, exported: false, typ: $error, tag: ""}]);
+	Session.init("github.com/ninchat/ninchat-go", [{prop: "OnSessionEvent", name: "OnSessionEvent", embedded: false, exported: true, typ: funcType$2, tag: ""}, {prop: "OnEvent", name: "OnEvent", embedded: false, exported: true, typ: funcType$2, tag: ""}, {prop: "OnClose", name: "OnClose", embedded: false, exported: true, typ: funcType, tag: ""}, {prop: "OnConnState", name: "OnConnState", embedded: false, exported: true, typ: funcType$3, tag: ""}, {prop: "OnConnActive", name: "OnConnActive", embedded: false, exported: true, typ: funcType, tag: ""}, {prop: "OnLog", name: "OnLog", embedded: false, exported: true, typ: funcType$4, tag: ""}, {prop: "Address", name: "Address", embedded: false, exported: true, typ: $String, tag: ""}, {prop: "forceLongPoll", name: "forceLongPoll", embedded: false, exported: false, typ: $Bool, tag: ""}, {prop: "mutex", name: "mutex", embedded: false, exported: false, typ: sync.Mutex, tag: ""}, {prop: "sessionParams", name: "sessionParams", embedded: false, exported: false, typ: mapType, tag: ""}, {prop: "sessionId", name: "sessionId", embedded: false, exported: false, typ: $emptyInterface, tag: ""}, {prop: "latestConnState", name: "latestConnState", embedded: false, exported: false, typ: $String, tag: ""}, {prop: "lastActionId", name: "lastActionId", embedded: false, exported: false, typ: $Int64, tag: ""}, {prop: "sendNotify", name: "sendNotify", embedded: false, exported: false, typ: chanType, tag: ""}, {prop: "sendBuffer", name: "sendBuffer", embedded: false, exported: false, typ: sliceType$5, tag: ""}, {prop: "numSent", name: "numSent", embedded: false, exported: false, typ: $Int, tag: ""}, {prop: "sendEventAck", name: "sendEventAck", embedded: false, exported: false, typ: $Bool, tag: ""}, {prop: "receivedEventId", name: "receivedEventId", embedded: false, exported: false, typ: $Int64, tag: ""}, {prop: "ackedEventId", name: "ackedEventId", embedded: false, exported: false, typ: $Int64, tag: ""}, {prop: "closeNotify", name: "closeNotify", embedded: false, exported: false, typ: chanType, tag: ""}, {prop: "closed", name: "closed", embedded: false, exported: false, typ: $Bool, tag: ""}, {prop: "running", name: "running", embedded: false, exported: false, typ: $Bool, tag: ""}]);
 	transport.init([ptrType$11, $String], [$Bool, $Bool], false);
-	timer.init("github.com/ninchat/ninchat-go", [{prop: "C", name: "C", anonymous: false, exported: true, typ: chanType, tag: ""}, {prop: "id", name: "id", anonymous: false, exported: false, typ: ptrType$4, tag: ""}]);
-	webSocket.init("github.com/ninchat/ninchat-go", [{prop: "notify", name: "notify", anonymous: false, exported: false, typ: chanType, tag: ""}, {prop: "goingAway", name: "goingAway", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "err", name: "err", anonymous: false, exported: false, typ: $error, tag: ""}, {prop: "impl", name: "impl", anonymous: false, exported: false, typ: ptrType$4, tag: ""}, {prop: "open", name: "open", anonymous: false, exported: false, typ: $Bool, tag: ""}, {prop: "buf", name: "buf", anonymous: false, exported: false, typ: sliceType$6, tag: ""}]);
+	timer.init("github.com/ninchat/ninchat-go", [{prop: "C", name: "C", embedded: false, exported: true, typ: chanType, tag: ""}, {prop: "id", name: "id", embedded: false, exported: false, typ: ptrType$4, tag: ""}]);
+	webSocket.init("github.com/ninchat/ninchat-go", [{prop: "notify", name: "notify", embedded: false, exported: false, typ: chanType, tag: ""}, {prop: "goingAway", name: "goingAway", embedded: false, exported: false, typ: $Bool, tag: ""}, {prop: "err", name: "err", embedded: false, exported: false, typ: $error, tag: ""}, {prop: "impl", name: "impl", embedded: false, exported: false, typ: ptrType$4, tag: ""}, {prop: "open", name: "open", embedded: false, exported: false, typ: $Bool, tag: ""}, {prop: "buf", name: "buf", embedded: false, exported: false, typ: sliceType$6, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -5777,8 +5841,8 @@ $packages["ninchatclient/lib"] = (function() {
 	};
 	ptrType$4.methods = [{prop: "Object", name: "Object", pkg: "", typ: $funcType([], [ptrType], false)}, {prop: "OnReply", name: "OnReply", pkg: "", typ: $funcType([ptrType$1], [], false)}, {prop: "Resolve", name: "Resolve", pkg: "", typ: $funcType([sliceType$3], [], true)}, {prop: "Reject", name: "Reject", pkg: "", typ: $funcType([sliceType$3], [], true)}, {prop: "Notify", name: "Notify", pkg: "", typ: $funcType([sliceType$3], [], true)}, {prop: "invoke", name: "invoke", pkg: "ninchatclient/lib", typ: $funcType([$String, ptrType, sliceType$3], [], true)}];
 	ptrType$5.methods = [{prop: "InvokeOnSessionEvent", name: "InvokeOnSessionEvent", pkg: "", typ: $funcType([$String, ptrType, ptrType$1], [], false)}, {prop: "OnSessionEvent", name: "OnSessionEvent", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "InvokeOnEvent", name: "InvokeOnEvent", pkg: "", typ: $funcType([$String, ptrType, ptrType$1], [], false)}, {prop: "OnEvent", name: "OnEvent", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnClose", name: "OnClose", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnConnState", name: "OnConnState", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnConnActive", name: "OnConnActive", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnLog", name: "OnLog", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "SetAddress", name: "SetAddress", pkg: "", typ: $funcType([$String], [], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([mapType, ptrType], [ptrType], false)}];
-	Promise.init("ninchatclient/lib", [{prop: "OnPanic", name: "OnPanic", anonymous: false, exported: true, typ: funcType$9, tag: ""}, {prop: "fulfillers", name: "fulfillers", anonymous: false, exported: false, typ: sliceType, tag: ""}, {prop: "rejecters", name: "rejecters", anonymous: false, exported: false, typ: sliceType, tag: ""}, {prop: "notifiers", name: "notifiers", anonymous: false, exported: false, typ: sliceType, tag: ""}]);
-	SessionAdapter.init("", [{prop: "Session", name: "Session", anonymous: false, exported: true, typ: ptrType$2, tag: ""}, {prop: "OnPanic", name: "OnPanic", anonymous: false, exported: true, typ: funcType$9, tag: ""}]);
+	Promise.init("ninchatclient/lib", [{prop: "OnPanic", name: "OnPanic", embedded: false, exported: true, typ: funcType$9, tag: ""}, {prop: "fulfillers", name: "fulfillers", embedded: false, exported: false, typ: sliceType, tag: ""}, {prop: "rejecters", name: "rejecters", embedded: false, exported: false, typ: sliceType, tag: ""}, {prop: "notifiers", name: "notifiers", embedded: false, exported: false, typ: sliceType, tag: ""}]);
+	SessionAdapter.init("", [{prop: "Session", name: "Session", embedded: false, exported: true, typ: ptrType$2, tag: ""}, {prop: "OnPanic", name: "OnPanic", embedded: false, exported: true, typ: funcType$9, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
