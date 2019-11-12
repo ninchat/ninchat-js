@@ -1,9 +1,6 @@
 [submodule "src/github.com/inexorabletash/polyfill"]
 	path = src/github.com/inexorabletash/polyfill
 	url = https://github.com/inexorabletash/polyfill.git
-[submodule "src/github.com/gopherjs/gopherjs"]
-	path = src/github.com/gopherjs/gopherjs
-	url = https://github.com/gopherjs/gopherjs.git
-[submodule "src/github.com/ninchat/ninchat-go"]
-	path = src/github.com/ninchat/ninchat-go
+[submodule "gopath/src/github.com/ninchat/ninchat-go"]
+	path = gopath/src/github.com/ninchat/ninchat-go
 	url = https://github.com/ninchat/ninchat-go.git
