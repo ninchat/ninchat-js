@@ -133,6 +133,13 @@ func (adapter *SessionAdapter) OnLog(callback *js.Object) {
 	}
 }
 
+func (adapter *SessionAdapter) SetHeader(key, value string) {
+	if adapter.Session.Header == nil {
+		adapter.Session.Header = make(map[string][]string)
+	}
+	adapter.Session.Header[key] = []string{value}
+}
+
 func (adapter *SessionAdapter) SetAddress(value string) {
 	adapter.Session.Address = value
 }
@@ -161,7 +168,9 @@ func (adapter *SessionAdapter) Send(params map[string]interface{}, payload *js.O
 }
 
 func newSession() map[string]interface{} {
-	session := new(ninchat.Session)
+	session := &ninchat.Session{
+		Header: makeDefaultHeader(),
+	}
 	adapter := NewSessionAdapter(session)
 
 	return map[string]interface{}{
@@ -173,6 +182,7 @@ func newSession() map[string]interface{} {
 		"onLog":          adapter.OnLog,
 		"setParams":      session.SetParams,
 		"setTransport":   setTransport,
+		"setHeader":      adapter.SetHeader,
 		"setAddress":     adapter.SetAddress,
 		"open":           session.Open,
 		"close":          session.Close,

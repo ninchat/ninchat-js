@@ -6,6 +6,24 @@
 NinchatClient = {
 
 	/**
+	 * The default X-User-Agent string.
+	 *
+	 * @type {String}
+	 *
+	 * @name NinchatClient.defaultXUserAgent
+	 */
+	defaultXUserAgent: "",
+
+	/**
+	 * Create a [Caller](#caller) object.
+	 *
+	 * @return {Caller}
+	 *
+	 * @name NinchatClient.newCaller
+	 */
+	newCaller: function() {},
+
+	/**
 	 * Call the sessionless API.  The returned [Promise](#promise) will be
 	 * resolved with an event header array as a parameter to the callback
 	 * function, or rejected on connection error.  Note that `error` events are
@@ -14,7 +32,7 @@ NinchatClient = {
 	 *
 	 * @see https://ninchat.com/api/v2#sessionless-http-calling
 	 *
-	 * @param {Object}   header     Action parameters to send.
+	 * @param {Object}   params     Action parameters to send.
 	 * @param {Function} [onLog]    Message logger.
 	 * @param {String}   [address]  Alternative API endpoint.
 	 *
@@ -22,7 +40,7 @@ NinchatClient = {
 	 *
 	 * @name NinchatClient.call
 	 */
-	call: function(header, onLog, address) {},
+	call: function(params, onLog, address) {},
 
 	/**
 	 * Create an uninitialized [Session](#session) object.
@@ -45,6 +63,65 @@ NinchatClient = {
 	stringifyFrame: function(data) {}
 
 };
+
+/**
+ * Caller holds optional configuration for sessionless API calls.
+ *
+ * Caller objects may be instantiated only via the newCaller function.
+ *
+ * @class
+ */
+function Caller() { return {
+
+	/**
+	 * Set an optional message logger.  It will be called with a single string
+	 * argument.
+	 *
+	 * @param {Function}  callback
+	 *
+	 * @name Caller.onLog
+	 */
+	onLog: function(callback) {},
+
+	/**
+	 * Set an HTTP header.  The key must be in canonical (Title-Case) format.
+	 *
+	 * @see https://golang.org/pkg/net/http/#CanonicalHeaderKey
+	 *
+	 * @param {String}  key
+	 * @param {String}  value
+	 *
+	 * @name Caller.setHeader
+	 */
+	setHeader: function(key, value) {},
+
+	/**
+	 * Use an alternative API endpoint.
+	 *
+	 * @param {String}  address
+	 *
+	 * @name Caller.setAddress
+	 */
+	setAddress: function(address) {},
+
+	/**
+	 * Call the sessionless API.  The returned [Promise](#promise) will be
+	 * resolved with an event header array as a parameter to the callback
+	 * function, or rejected on connection error.  Note that `error` events are
+	 * delivered via the promise's resolve callback, not via the reject
+	 * callback like when using a Session.  The notify callback is not used.
+	 *
+	 * @see https://ninchat.com/api/v2#sessionless-http-calling
+	 *
+	 * @param {Object}  params  Action parameters to send.
+	 *
+	 * @return {Promise}
+	 *
+	 * @name Caller.call
+	 */
+	call: function(params) {}
+
+} };
 
 /**
  * Session hides the details of API connection management.  It needs to be
@@ -141,11 +218,23 @@ function Session() { return {
 	 * Set `create_session` action parameters.  If open() has already been
 	 * called, this takes effect when a session is lost.
 	 *
-	 * @param {Object}  params
+	 * @param {Object}  params  Initial action parameters.
 	 *
 	 * @name Session.setParams
 	 */
 	setParams: function(params) {},
+
+	/**
+	 * Set an HTTP header.  The key must be in canonical (Title-Case) format.
+	 *
+	 * @see https://golang.org/pkg/net/http/#CanonicalHeaderKey
+	 *
+	 * @param {String}  key
+	 * @param {String}  value
+	 *
+	 * @name Session.setHeader
+	 */
+	setHeader: function(key, value) {},
 
 	/**
 	 * Use an alternative API endpoint.
@@ -187,7 +276,7 @@ function Session() { return {
 	 * callback will be called for each event until the final event which
 	 * resolves the promise.
 	 *
-	 * @param {Object}  header     Action parameters to send.
+	 * @param {Object}  params     Action parameters to send.
 	 * @param {Array}   [payload]  Consists of (already encoded) data
 	 *                             frames.
 	 *
@@ -195,7 +284,7 @@ function Session() { return {
 	 *
 	 * @name Session.send
 	 */
-	send: function(header, payload) {}
+	send: function(params, payload) {}
 
 } };
 

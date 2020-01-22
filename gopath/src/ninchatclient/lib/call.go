@@ -5,13 +5,46 @@ import (
 	"github.com/ninchat/ninchat-go"
 )
 
-func call(params map[string]interface{}, onLog *js.Object, address *js.Object) *js.Object {
-	var apihost string
+func newCaller() map[string]interface{} {
+	var (
+		onLog  = js.Undefined
+		caller = ninchat.Caller{
+			Header: makeDefaultHeader(),
+		}
+	)
 
+	return map[string]interface{}{
+		"onLog": func(callback *js.Object) {
+			onLog = callback
+		},
+
+		"setHeader": func(key, value string) {
+			if caller.Header == nil {
+				caller.Header = make(map[string][]string)
+			}
+			caller.Header[key] = []string{value}
+		},
+
+		"setAddress": func(value string) {
+			caller.Address = value
+		},
+
+		"call": func(params map[string]interface{}) *js.Object {
+			return doCall(params, onLog, caller)
+		},
+	}
+}
+
+func call(params map[string]interface{}, onLog *js.Object, address *js.Object) *js.Object {
+	var caller ninchat.Caller
 	if address != js.Undefined {
-		apihost = address.String()
+		caller.Address = address.String()
 	}
 
+	return doCall(params, onLog, caller)
+}
+
+func doCall(params map[string]interface{}, onLog *js.Object, caller ninchat.Caller) *js.Object {
 	p := &Promise{
 		OnPanic: Panicer(func() func(string) {
 			return func(msg string) {
@@ -23,10 +56,6 @@ func call(params map[string]interface{}, onLog *js.Object, address *js.Object) *
 	}
 
 	go func() {
-		caller := ninchat.Caller{
-			Address: apihost,
-		}
-
 		action := &ninchat.Action{
 			Params: params,
 		}

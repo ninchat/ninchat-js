@@ -6,7 +6,19 @@ Ninchat API connection library.
 
 See: https://ninchat.com/api/v2
 
-## NinchatClient.call(header, [onLog], [address])
+## NinchatClient.defaultXUserAgent
+
+The default X-User-Agent string.
+
+## NinchatClient.newCaller()
+
+Create a [Caller](#caller) object.
+
+### Return:
+
+* **Caller** 
+
+## NinchatClient.call(params, [onLog], [address])
 
 Call the sessionless API.  The returned [Promise](#promise) will be
 resolved with an event header array as a parameter to the callback
@@ -18,7 +30,7 @@ See: https://ninchat.com/api/v2#sessionless-http-calling
 
 ### Params:
 
-* **Object** *header* Action parameters to send.
+* **Object** *params* Action parameters to send.
 * **Function** *[onLog]* Message logger.
 * **String** *[address]* Alternative API endpoint.
 
@@ -45,6 +57,58 @@ Convert an event's payload part to a string.
 ### Return:
 
 * **String** 
+
+## Caller
+
+Caller holds optional configuration for sessionless API calls.
+
+Caller objects may be instantiated only via the newCaller function.
+
+## Caller.onLog(callback)
+
+Set an optional message logger.  It will be called with a single string
+argument.
+
+### Params:
+
+* **Function** *callback* 
+
+## Caller.setHeader(key, value)
+
+Set an HTTP header.  The key must be in canonical (Title-Case) format.
+
+See: https://golang.org/pkg/net/http/#CanonicalHeaderKey
+
+### Params:
+
+* **String** *key* 
+* **String** *value* 
+
+## Caller.setAddress(address)
+
+Use an alternative API endpoint.
+
+### Params:
+
+* **String** *address* 
+
+## Caller.call(params)
+
+Call the sessionless API.  The returned [Promise](#promise) will be
+resolved with an event header array as a parameter to the callback
+function, or rejected on connection error.  Note that `error` events are
+delivered via the promise's resolve callback, not via the reject
+callback like when using a Session.  The notify callback is not used.
+
+See: https://ninchat.com/api/v2#sessionless-http-calling
+
+### Params:
+
+* **Object** *params* Action parameters to send.
+
+### Return:
+
+* **Promise** 
 
 ## Session
 
@@ -135,7 +199,18 @@ called, this takes effect when a session is lost.
 
 ### Params:
 
-* **Object** *params* 
+* **Object** *params* Initial action parameters.
+
+## Session.setHeader(key, value)
+
+Set an HTTP header.  The key must be in canonical (Title-Case) format.
+
+See: https://golang.org/pkg/net/http/#CanonicalHeaderKey
+
+### Params:
+
+* **String** *key* 
+* **String** *value* 
 
 ## Session.setAddress(address)
 
@@ -153,7 +228,7 @@ Create a session on the server.
 
 Close the session on the server.
 
-## Session.send(header, [payload])
+## Session.send(params, [payload])
 
 Send an action.
 
@@ -173,7 +248,7 @@ resolves the promise.
 
 ### Params:
 
-* **Object** *header* Action parameters to send.
+* **Object** *params* Action parameters to send.
 * **Array** *[payload]* Consists of (already encoded) data                             frames.
 
 ### Return:
