@@ -22301,17 +22301,16 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: webSocketSend }; } $f._key = _key; $f._key$1 = _key$1; $f._r$1 = _r$1; $f._selection = _selection; $f._tuple = _tuple; $f.action = action; $f.action$1 = action$1; $f.closeSession = closeSession; $f.err = err; $f.err$1 = err$1; $f.err$2 = err$2; $f.err$3 = err$3; $f.err$4 = err$4; $f.fail = fail; $f.keeper = keeper; $f.s = s; $f.sending = sending; $f.ws = ws; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.x$3 = x$3; $f.x$4 = x$4; $f.x$5 = x$5; $f.x$6 = x$6; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	webSocketReceive = function(s, ws, fail) {
-		var _r$1, _r$2, _selection, _selection$1, _tuple, _tuple$1, _tuple$2, ackNeeded, acker, connected, d, d$1, data, data$1, err, event, fail, frames, gotEvents, hostHealthy, n, needsAck, ok, params, remain, s, sessionLost, text, watchdog, watchdogTime, ws, wsNotify, x, x$1, $s, $deferred, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r$1 = $f._r$1; _r$2 = $f._r$2; _selection = $f._selection; _selection$1 = $f._selection$1; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; ackNeeded = $f.ackNeeded; acker = $f.acker; connected = $f.connected; d = $f.d; d$1 = $f.d$1; data = $f.data; data$1 = $f.data$1; err = $f.err; event = $f.event; fail = $f.fail; frames = $f.frames; gotEvents = $f.gotEvents; hostHealthy = $f.hostHealthy; n = $f.n; needsAck = $f.needsAck; ok = $f.ok; params = $f.params; remain = $f.remain; s = $f.s; sessionLost = $f.sessionLost; text = $f.text; watchdog = $f.watchdog; watchdogTime = $f.watchdogTime; ws = $f.ws; wsNotify = $f.wsNotify; x = $f.x; x$1 = $f.x$1; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
+		var _r$1, _r$2, _selection, _selection$1, _tuple, _tuple$1, _tuple$2, ackNeeded, acker, connected, data, data$1, err, event, fail, frames, gotEvents, hostHealthy, n, needsAck, ok, params, remain, s, sessionLost, text, watchdog, watchdogTime, ws, wsNotify, x, x$1, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r$1 = $f._r$1; _r$2 = $f._r$2; _selection = $f._selection; _selection$1 = $f._selection$1; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; ackNeeded = $f.ackNeeded; acker = $f.acker; connected = $f.connected; data = $f.data; data$1 = $f.data$1; err = $f.err; event = $f.event; fail = $f.fail; frames = $f.frames; gotEvents = $f.gotEvents; hostHealthy = $f.hostHealthy; n = $f.n; needsAck = $f.needsAck; ok = $f.ok; params = $f.params; remain = $f.remain; s = $f.s; sessionLost = $f.sessionLost; text = $f.text; watchdog = $f.watchdog; watchdogTime = $f.watchdogTime; ws = $f.ws; wsNotify = $f.wsNotify; x = $f.x; x$1 = $f.x$1; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $deferred.index = $curGoroutine.deferStack.length; $curGoroutine.deferStack.push($deferred);
 		gotEvents = false;
 		hostHealthy = false;
 		wsNotify = ws.notify;
 		connected = true;
 		event = ptrType.nil;
 		frames = 0;
-		d = jitterDuration(new duration(0, 64000), 0.3);
-		watchdogTime = timeAdd(timeNow(), d);
-		watchdog = newTimer(d);
+		watchdogTime = timeAdd(timeNow(), jitterDuration(new duration(0, 64000), 0.3));
+		watchdog = newTimer(jitterDuration(new duration(0, 3000), 0.4321));
 		$deferred.push([$methodVal(watchdog, "Stop"), []]);
 		acker = newTimer(new duration(-1, 4294967295));
 		$deferred.push([$methodVal(acker, "Stop"), []]);
@@ -22333,10 +22332,9 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 					if (data === null) {
 						/* break; */ $s = 4; continue;
 					}
-					d$1 = jitterDuration(new duration(0, 64000), 0.7);
-					watchdogTime = timeAdd(timeNow(), d$1);
+					watchdogTime = timeAdd(timeNow(), jitterDuration(new duration(0, 64000), 0.7));
 					if (!watchdog.Active()) {
-						watchdog.Reset(d$1);
+						watchdog.Reset(jitterDuration(new duration(0, 3000), 0.4321));
 					}
 					$r = s.connActive(); /* */ $s = 12; case 12: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					text = stringData(data);
@@ -22480,7 +22478,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 			/* } */ case 48:
 		/* } */ $s = 1; continue; case 2:
 		$s = -1; return [gotEvents, hostHealthy];
-		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [gotEvents, hostHealthy]; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: webSocketReceive }; } $f._r$1 = _r$1; $f._r$2 = _r$2; $f._selection = _selection; $f._selection$1 = _selection$1; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.ackNeeded = ackNeeded; $f.acker = acker; $f.connected = connected; $f.d = d; $f.d$1 = d$1; $f.data = data; $f.data$1 = data$1; $f.err = err; $f.event = event; $f.fail = fail; $f.frames = frames; $f.gotEvents = gotEvents; $f.hostHealthy = hostHealthy; $f.n = n; $f.needsAck = needsAck; $f.ok = ok; $f.params = params; $f.remain = remain; $f.s = s; $f.sessionLost = sessionLost; $f.text = text; $f.watchdog = watchdog; $f.watchdogTime = watchdogTime; $f.ws = ws; $f.wsNotify = wsNotify; $f.x = x; $f.x$1 = x$1; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [gotEvents, hostHealthy]; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: webSocketReceive }; } $f._r$1 = _r$1; $f._r$2 = _r$2; $f._selection = _selection; $f._selection$1 = _selection$1; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.ackNeeded = ackNeeded; $f.acker = acker; $f.connected = connected; $f.data = data; $f.data$1 = data$1; $f.err = err; $f.event = event; $f.fail = fail; $f.frames = frames; $f.gotEvents = gotEvents; $f.hostHealthy = hostHealthy; $f.n = n; $f.needsAck = needsAck; $f.ok = ok; $f.params = params; $f.remain = remain; $f.s = s; $f.sessionLost = sessionLost; $f.text = text; $f.watchdog = watchdog; $f.watchdogTime = watchdogTime; $f.ws = ws; $f.wsNotify = wsNotify; $f.x = x; $f.x$1 = x$1; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	ptrType$6.methods = [{prop: "String", name: "String", pkg: "", typ: $funcType([], [$String], false)}, {prop: "GetID", name: "GetID", pkg: "", typ: $funcType([], [$Int64, $error], false)}];
 	ptrType.methods = [{prop: "Bool", name: "Bool", pkg: "", typ: $funcType([$String], [$Bool], false)}, {prop: "Int", name: "Int", pkg: "", typ: $funcType([$String], [$Int, $Bool], false)}, {prop: "Int64", name: "Int64", pkg: "", typ: $funcType([$String], [$Int64, $Bool], false)}, {prop: "Float64", name: "Float64", pkg: "", typ: $funcType([$String], [$Float64, $Bool], false)}, {prop: "Str", name: "Str", pkg: "", typ: $funcType([$String], [$String, $Bool], false)}, {prop: "Array", name: "Array", pkg: "", typ: $funcType([$String], [sliceType, $Bool], false)}, {prop: "Map", name: "Map", pkg: "", typ: $funcType([$String], [mapType, $Bool], false)}, {prop: "String", name: "String", pkg: "", typ: $funcType([], [$String], false)}, {prop: "initLastReply", name: "initLastReply", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6], [], false)}, {prop: "getError", name: "getError", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [$String, $String, $Bool, $error], false)}];
