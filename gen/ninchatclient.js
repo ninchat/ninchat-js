@@ -2343,14 +2343,19 @@ $packages["runtime"] = (function() {
 		$unused(e);
 	};
 	GOROOT = function() {
-		var goroot, process;
+		var process, v, v$1;
 		process = $global.process;
 		if (process === undefined) {
 			return "/";
 		}
-		goroot = process.env.GOROOT;
-		if (!(goroot === undefined)) {
-			return $internalize(goroot, $String);
+		v = process.env.GOPHERJS_GOROOT;
+		if (!(v === undefined)) {
+			return $internalize(v, $String);
+		} else {
+			v$1 = process.env.GOROOT;
+			if (!(v$1 === undefined)) {
+				return $internalize(v$1, $String);
+			}
 		}
 		return "/usr/local/go";
 	};
