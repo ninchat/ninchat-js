@@ -20335,9 +20335,10 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	};
 	Event.prototype.initLastReply = function(action) { return this.$val.initLastReply(action); };
 	Event.ptr.prototype.getError = function() {
-		var _1, _entry, _entry$1, _entry$2, _entry$3, _tuple, _tuple$1, err, errorReason, errorType, event, found, found$1, sessionLost, x, x$1;
+		var _1, _entry, _entry$1, _entry$2, _entry$3, _entry$4, _tuple, _tuple$1, err, errorReason, errorType, event, found, found$1, sessionLost, userAuthLost, x, x$1, x$2;
 		errorType = "";
 		errorReason = "";
+		userAuthLost = false;
 		sessionLost = false;
 		err = $ifaceNil;
 		event = this;
@@ -20345,7 +20346,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		x = _tuple[0];
 		found = _tuple[1];
 		if (!found || !($assertType(x, $String) === "error")) {
-			return [errorType, errorReason, sessionLost, err];
+			return [errorType, errorReason, userAuthLost, sessionLost, err];
 		}
 		errorType = $assertType((_entry$1 = event.Params[$String.keyFor("error_type")], _entry$1 !== undefined ? _entry$1.v : $ifaceNil), $String);
 		x$1 = (_entry$2 = event.Params[$String.keyFor("error_reason")], _entry$2 !== undefined ? _entry$2.v : $ifaceNil);
@@ -20356,12 +20357,16 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 			_tuple$1 = (_entry$3 = event.Params[$String.keyFor("action_id")], _entry$3 !== undefined ? [_entry$3.v, true] : [$ifaceNil, false]);
 			found$1 = _tuple$1[1];
 			if (found$1) {
-				return [errorType, errorReason, sessionLost, err];
+				return [errorType, errorReason, userAuthLost, sessionLost, err];
 			}
 		}
 		_1 = errorType;
 		if (_1 === ("session_not_found")) {
 			sessionLost = true;
+			x$2 = (_entry$4 = event.Params[$String.keyFor("user_auth_deleted")], _entry$4 !== undefined ? _entry$4.v : $ifaceNil);
+			if (!($interfaceIsEqual(x$2, $ifaceNil))) {
+				userAuthLost = $assertType(x$2, $Bool);
+			}
 			if (!(errorReason === "")) {
 				err = errors.New("error: " + errorType + " (" + errorReason + ")");
 			} else {
@@ -20374,7 +20379,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 				err = errors.New("error: " + errorType);
 			}
 		}
-		return [errorType, errorReason, sessionLost, err];
+		return [errorType, errorReason, userAuthLost, sessionLost, err];
 	};
 	Event.prototype.getError = function() { return this.$val.getError(); };
 	singleFrame = function(x) {
@@ -21562,8 +21567,8 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	};
 	Session.prototype.handleSessionEvent = function(params) { return this.$val.handleSessionEvent(params); };
 	Session.ptr.prototype.handleEvent = function(event) {
-		var _r$1, _tuple, _tuple$1, _tuple$2, action, actionId, err, errorReason, errorType, event, eventId, i, needsAck, ok, s, sessionLost, x, x$1, x$2, x$3, x$4, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r$1 = $f._r$1; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; action = $f.action; actionId = $f.actionId; err = $f.err; errorReason = $f.errorReason; errorType = $f.errorType; event = $f.event; eventId = $f.eventId; i = $f.i; needsAck = $f.needsAck; ok = $f.ok; s = $f.s; sessionLost = $f.sessionLost; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; x$3 = $f.x$3; x$4 = $f.x$4; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _r$1, _tuple, _tuple$1, _tuple$2, action, actionId, err, errorReason, errorType, event, eventId, i, needsAck, ok, s, sessionLost, userAuthLost, x, x$1, x$2, x$3, x$4, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r$1 = $f._r$1; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; _tuple$2 = $f._tuple$2; action = $f.action; actionId = $f.actionId; err = $f.err; errorReason = $f.errorReason; errorType = $f.errorType; event = $f.event; eventId = $f.eventId; i = $f.i; needsAck = $f.needsAck; ok = $f.ok; s = $f.s; sessionLost = $f.sessionLost; userAuthLost = $f.userAuthLost; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; x$3 = $f.x$3; x$4 = $f.x$4; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		actionId = [actionId];
 		s = [s];
 		actionId[0] = new $Int64(0, 0);
@@ -21626,12 +21631,16 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		_tuple$2 = event.getError();
 		errorType = _tuple$2[0];
 		errorReason = _tuple$2[1];
-		sessionLost = _tuple$2[2];
-		err = _tuple$2[3];
+		userAuthLost = _tuple$2[2];
+		sessionLost = _tuple$2[3];
+		err = _tuple$2[4];
 		/* */ if (!($interfaceIsEqual(err, $ifaceNil))) { $s = 14; continue; }
 		/* */ $s = 15; continue;
 		/* if (!($interfaceIsEqual(err, $ifaceNil))) { */ case 14:
 			$r = s[0].log(new sliceType([new $String("event:"), err])); /* */ $s = 16; case 16: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			if (userAuthLost) {
+				delete s[0].sessionParams[$String.keyFor("user_auth")];
+			}
 			/* */ if (sessionLost) { $s = 17; continue; }
 			/* */ $s = 18; continue;
 			/* if (sessionLost) { */ case 17:
@@ -21653,7 +21662,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		$r = s[0].deliverEvent(event); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		ok = true;
 		$s = -1; return [actionId[0], sessionLost, needsAck, ok];
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.handleEvent }; } $f._r$1 = _r$1; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.action = action; $f.actionId = actionId; $f.err = err; $f.errorReason = errorReason; $f.errorType = errorType; $f.event = event; $f.eventId = eventId; $f.i = i; $f.needsAck = needsAck; $f.ok = ok; $f.s = s; $f.sessionLost = sessionLost; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.x$3 = x$3; $f.x$4 = x$4; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.handleEvent }; } $f._r$1 = _r$1; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.action = action; $f.actionId = actionId; $f.err = err; $f.errorReason = errorReason; $f.errorType = errorType; $f.event = event; $f.eventId = eventId; $f.i = i; $f.needsAck = needsAck; $f.ok = ok; $f.s = s; $f.sessionLost = sessionLost; $f.userAuthLost = userAuthLost; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.x$3 = x$3; $f.x$4 = x$4; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	Session.prototype.handleEvent = function(event) { return this.$val.handleEvent(event); };
 	Session.ptr.prototype.deliverSessionEvent = function(event) {
@@ -22481,7 +22490,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [gotEvents, hostHealthy]; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: webSocketReceive }; } $f._r$1 = _r$1; $f._r$2 = _r$2; $f._selection = _selection; $f._selection$1 = _selection$1; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f._tuple$2 = _tuple$2; $f.ackNeeded = ackNeeded; $f.acker = acker; $f.connected = connected; $f.data = data; $f.data$1 = data$1; $f.err = err; $f.event = event; $f.fail = fail; $f.frames = frames; $f.gotEvents = gotEvents; $f.hostHealthy = hostHealthy; $f.n = n; $f.needsAck = needsAck; $f.ok = ok; $f.params = params; $f.remain = remain; $f.s = s; $f.sessionLost = sessionLost; $f.text = text; $f.watchdog = watchdog; $f.watchdogTime = watchdogTime; $f.ws = ws; $f.wsNotify = wsNotify; $f.x = x; $f.x$1 = x$1; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	ptrType$6.methods = [{prop: "String", name: "String", pkg: "", typ: $funcType([], [$String], false)}, {prop: "GetID", name: "GetID", pkg: "", typ: $funcType([], [$Int64, $error], false)}];
-	ptrType.methods = [{prop: "Bool", name: "Bool", pkg: "", typ: $funcType([$String], [$Bool], false)}, {prop: "Int", name: "Int", pkg: "", typ: $funcType([$String], [$Int, $Bool], false)}, {prop: "Int64", name: "Int64", pkg: "", typ: $funcType([$String], [$Int64, $Bool], false)}, {prop: "Float64", name: "Float64", pkg: "", typ: $funcType([$String], [$Float64, $Bool], false)}, {prop: "Str", name: "Str", pkg: "", typ: $funcType([$String], [$String, $Bool], false)}, {prop: "Array", name: "Array", pkg: "", typ: $funcType([$String], [sliceType, $Bool], false)}, {prop: "Map", name: "Map", pkg: "", typ: $funcType([$String], [mapType, $Bool], false)}, {prop: "String", name: "String", pkg: "", typ: $funcType([], [$String], false)}, {prop: "initLastReply", name: "initLastReply", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6], [], false)}, {prop: "getError", name: "getError", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [$String, $String, $Bool, $error], false)}];
+	ptrType.methods = [{prop: "Bool", name: "Bool", pkg: "", typ: $funcType([$String], [$Bool], false)}, {prop: "Int", name: "Int", pkg: "", typ: $funcType([$String], [$Int, $Bool], false)}, {prop: "Int64", name: "Int64", pkg: "", typ: $funcType([$String], [$Int64, $Bool], false)}, {prop: "Float64", name: "Float64", pkg: "", typ: $funcType([$String], [$Float64, $Bool], false)}, {prop: "Str", name: "Str", pkg: "", typ: $funcType([$String], [$String, $Bool], false)}, {prop: "Array", name: "Array", pkg: "", typ: $funcType([$String], [sliceType, $Bool], false)}, {prop: "Map", name: "Map", pkg: "", typ: $funcType([$String], [mapType, $Bool], false)}, {prop: "String", name: "String", pkg: "", typ: $funcType([], [$String], false)}, {prop: "initLastReply", name: "initLastReply", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6], [], false)}, {prop: "getError", name: "getError", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [$String, $String, $Bool, $Bool, $error], false)}];
 	ptrType$9.methods = [{prop: "success", name: "success", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "failure", name: "failure", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([duration], [duration], false)}];
 	ptrType$10.methods = [{prop: "Call", name: "Call", pkg: "", typ: $funcType([ptrType$6], [sliceType$3, $error], false)}];
 	ptrType$11.methods = [{prop: "SetParams", name: "SetParams", pkg: "", typ: $funcType([mapType], [], false)}, {prop: "Open", name: "Open", pkg: "", typ: $funcType([], [], false)}, {prop: "Close", name: "Close", pkg: "", typ: $funcType([], [], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([ptrType$6], [$error], false)}, {prop: "send", name: "send", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6], [], false)}, {prop: "sendAck", name: "sendAck", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "discover", name: "discover", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "connect", name: "connect", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([transport, sliceType$1, ptrType$9], [$Bool], false)}, {prop: "backOff", name: "backOff", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$9], [$Bool], false)}, {prop: "canLogin", name: "canLogin", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [$Bool], false)}, {prop: "makeCreateSessionAction", name: "makeCreateSessionAction", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [mapType], false)}, {prop: "makeResumeSessionAction", name: "makeResumeSessionAction", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([$Bool], [mapType], false)}, {prop: "handleSessionEvent", name: "handleSessionEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([mapType], [$Bool], false)}, {prop: "handleEvent", name: "handleEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [$Int64, $Bool, $Bool, $Bool], false)}, {prop: "deliverSessionEvent", name: "deliverSessionEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [], false)}, {prop: "deliverEvent", name: "deliverEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [], false)}, {prop: "deliverReply", name: "deliverReply", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6, ptrType], [], false)}, {prop: "connState", name: "connState", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([$String], [], false)}, {prop: "connActive", name: "connActive", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "log", name: "log", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([sliceType], [], true)}, {prop: "closeWebSocket", name: "closeWebSocket", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$8], [], false)}];
