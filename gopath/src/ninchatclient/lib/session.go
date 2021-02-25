@@ -144,6 +144,10 @@ func (adapter *SessionAdapter) SetAddress(value string) {
 	adapter.Session.Address = value
 }
 
+func (adapter *SessionAdapter) SetDisableLongPoll(disabled bool) {
+	adapter.Session.DisableLongPoll = disabled
+}
+
 func (adapter *SessionAdapter) Send(params map[string]interface{}, payload *js.Object) (result *js.Object) {
 	action := &ninchat.Action{
 		Params:  params,
@@ -174,19 +178,20 @@ func newSession() map[string]interface{} {
 	adapter := NewSessionAdapter(session)
 
 	return map[string]interface{}{
-		"onSessionEvent": adapter.OnSessionEvent,
-		"onEvent":        adapter.OnEvent,
-		"onClose":        adapter.OnClose,
-		"onConnState":    adapter.OnConnState,
-		"onConnActive":   adapter.OnConnActive,
-		"onLog":          adapter.OnLog,
-		"setParams":      session.SetParams,
-		"setTransport":   setTransport,
-		"setHeader":      adapter.SetHeader,
-		"setAddress":     adapter.SetAddress,
-		"open":           session.Open,
-		"close":          session.Close,
-		"send":           adapter.Send,
+		"onSessionEvent":     adapter.OnSessionEvent,
+		"onEvent":            adapter.OnEvent,
+		"onClose":            adapter.OnClose,
+		"onConnState":        adapter.OnConnState,
+		"onConnActive":       adapter.OnConnActive,
+		"onLog":              adapter.OnLog,
+		"setParams":          session.SetParams,
+		"setTransport":       setTransport,
+		"setHeader":          adapter.SetHeader,
+		"setAddress":         adapter.SetAddress,
+		"setDisableLongPoll": adapter.SetDisableLongPoll,
+		"open":               session.Open,
+		"close":              session.Close,
+		"send":               adapter.Send,
 	}
 }
 

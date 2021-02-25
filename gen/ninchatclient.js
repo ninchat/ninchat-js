@@ -20009,7 +20009,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		this.data = data_;
 		this.err = err_;
 	});
-	Session = $pkg.Session = $newType(0, $kindStruct, "ninchat.Session", true, "github.com/ninchat/ninchat-go", true, function(OnSessionEvent_, OnEvent_, OnClose_, OnConnState_, OnConnActive_, OnLog_, Header_, Address_, forceLongPoll_, mutex_, sessionParams_, sessionId_, latestConnState_, lastActionId_, sendNotify_, sendBuffer_, numSent_, sendEventAck_, receivedEventId_, ackedEventId_, closeNotify_, closed_, running_, test_) {
+	Session = $pkg.Session = $newType(0, $kindStruct, "ninchat.Session", true, "github.com/ninchat/ninchat-go", true, function(OnSessionEvent_, OnEvent_, OnClose_, OnConnState_, OnConnActive_, OnLog_, Header_, Address_, DisableLongPoll_, forceLongPoll_, mutex_, sessionParams_, sessionId_, latestConnState_, lastActionId_, sendNotify_, sendBuffer_, numSent_, sendEventAck_, receivedEventId_, ackedEventId_, closeNotify_, closed_, running_, test_) {
 		this.$val = this;
 		if (arguments.length === 0) {
 			this.OnSessionEvent = $throwNilPointerError;
@@ -20020,6 +20020,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 			this.OnLog = $throwNilPointerError;
 			this.Header = false;
 			this.Address = "";
+			this.DisableLongPoll = false;
 			this.forceLongPoll = false;
 			this.mutex = new sync.Mutex.ptr(0, 0);
 			this.sessionParams = false;
@@ -20046,6 +20047,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		this.OnLog = OnLog_;
 		this.Header = Header_;
 		this.Address = Address_;
+		this.DisableLongPoll = DisableLongPoll_;
 		this.forceLongPoll = forceLongPoll_;
 		this.mutex = mutex_;
 		this.sessionParams = sessionParams_;
@@ -21138,6 +21140,9 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		if (s.sessionParams === false) {
 			$panic(new $String("session parameters not defined"));
 		}
+		if (s.DisableLongPoll && !webSocketSupported) {
+			$panic(new $String("websocket not supported by browser"));
+		}
 		s.sendNotify = new $Chan(structType, 1);
 		s.closeNotify = new $Chan(structType, 1);
 		s.running = true;
@@ -21316,23 +21321,27 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 							/* continue; */ $s = 3; continue;
 						/* } */ case 20:
 					/* } */ case 18:
-					_r$4 = s[0].connect(longPollTransport, hosts, backoff$1[0]); /* */ $s = 22; case 22: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
-					_r$4;
+					/* */ if (!s[0].DisableLongPoll) { $s = 22; continue; }
+					/* */ $s = 23; continue;
+					/* if (!s[0].DisableLongPoll) { */ case 22:
+						_r$4 = s[0].connect(longPollTransport, hosts, backoff$1[0]); /* */ $s = 24; case 24: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
+						_r$4;
+					/* } */ case 23:
 					$s = 15; continue;
 				/* } else { */ case 14:
-					$r = s[0].log(new sliceType([new $String("endpoint discovery:"), err$1])); /* */ $s = 23; case 23: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$r = s[0].log(new sliceType([new $String("endpoint discovery:"), err$1])); /* */ $s = 25; case 25: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				/* } */ case 15:
 				$s = 11; continue;
 			/* } else if (_selection[0] === 1) { */ case 10:
-				$r = s[0].mutex.Lock(); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = s[0].mutex.Lock(); /* */ $s = 26; case 26: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = -1; return;
 			/* } */ case 11:
-			_r$5 = s[0].backOff(backoff$1[0]); /* */ $s = 27; case 27: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
-			/* */ if (!_r$5) { $s = 25; continue; }
-			/* */ $s = 26; continue;
-			/* if (!_r$5) { */ case 25:
+			_r$5 = s[0].backOff(backoff$1[0]); /* */ $s = 29; case 29: if($c) { $c = false; _r$5 = _r$5.$blk(); } if (_r$5 && _r$5.$blk !== undefined) { break s; }
+			/* */ if (!_r$5) { $s = 27; continue; }
+			/* */ $s = 28; continue;
+			/* if (!_r$5) { */ case 27:
 				$s = -1; return;
-			/* } */ case 26:
+			/* } */ case 28:
 		/* } */ $s = 3; continue; case 4:
 		$s = -1; return;
 		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Session.ptr.prototype.discover }; } $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._r$5 = _r$5; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.backoff$1 = backoff$1; $f.endpoint = endpoint; $f.err = err; $f.err$1 = err$1; $f.hosts = hosts; $f.request = request; $f.response = response; $f.s = s; $f.url = url; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
@@ -22504,7 +22513,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	Caller.init("", [{prop: "Header", name: "Header", embedded: false, exported: true, typ: mapType$1, tag: ""}, {prop: "Address", name: "Address", embedded: false, exported: true, typ: $String, tag: ""}]);
 	httpRequest.init("github.com/ninchat/ninchat-go", [{prop: "Method", name: "Method", embedded: false, exported: true, typ: $String, tag: ""}, {prop: "URL", name: "URL", embedded: false, exported: true, typ: $String, tag: ""}, {prop: "Header", name: "Header", embedded: false, exported: true, typ: mapType$1, tag: ""}, {prop: "data", name: "data", embedded: false, exported: false, typ: ptrType$4, tag: ""}]);
 	httpResponse.init("github.com/ninchat/ninchat-go", [{prop: "data", name: "data", embedded: false, exported: false, typ: ptrType$4, tag: ""}, {prop: "err", name: "err", embedded: false, exported: false, typ: $error, tag: ""}]);
-	Session.init("github.com/ninchat/ninchat-go", [{prop: "OnSessionEvent", name: "OnSessionEvent", embedded: false, exported: true, typ: funcType$2, tag: ""}, {prop: "OnEvent", name: "OnEvent", embedded: false, exported: true, typ: funcType$2, tag: ""}, {prop: "OnClose", name: "OnClose", embedded: false, exported: true, typ: funcType, tag: ""}, {prop: "OnConnState", name: "OnConnState", embedded: false, exported: true, typ: funcType$3, tag: ""}, {prop: "OnConnActive", name: "OnConnActive", embedded: false, exported: true, typ: funcType, tag: ""}, {prop: "OnLog", name: "OnLog", embedded: false, exported: true, typ: funcType$4, tag: ""}, {prop: "Header", name: "Header", embedded: false, exported: true, typ: mapType$1, tag: ""}, {prop: "Address", name: "Address", embedded: false, exported: true, typ: $String, tag: ""}, {prop: "forceLongPoll", name: "forceLongPoll", embedded: false, exported: false, typ: $Bool, tag: ""}, {prop: "mutex", name: "mutex", embedded: false, exported: false, typ: sync.Mutex, tag: ""}, {prop: "sessionParams", name: "sessionParams", embedded: false, exported: false, typ: mapType, tag: ""}, {prop: "sessionId", name: "sessionId", embedded: false, exported: false, typ: $emptyInterface, tag: ""}, {prop: "latestConnState", name: "latestConnState", embedded: false, exported: false, typ: $String, tag: ""}, {prop: "lastActionId", name: "lastActionId", embedded: false, exported: false, typ: $Int64, tag: ""}, {prop: "sendNotify", name: "sendNotify", embedded: false, exported: false, typ: chanType, tag: ""}, {prop: "sendBuffer", name: "sendBuffer", embedded: false, exported: false, typ: sliceType$5, tag: ""}, {prop: "numSent", name: "numSent", embedded: false, exported: false, typ: $Int, tag: ""}, {prop: "sendEventAck", name: "sendEventAck", embedded: false, exported: false, typ: $Bool, tag: ""}, {prop: "receivedEventId", name: "receivedEventId", embedded: false, exported: false, typ: $Int64, tag: ""}, {prop: "ackedEventId", name: "ackedEventId", embedded: false, exported: false, typ: $Int64, tag: ""}, {prop: "closeNotify", name: "closeNotify", embedded: false, exported: false, typ: chanType, tag: ""}, {prop: "closed", name: "closed", embedded: false, exported: false, typ: $Bool, tag: ""}, {prop: "running", name: "running", embedded: false, exported: false, typ: $Bool, tag: ""}, {prop: "test", name: "test", embedded: false, exported: false, typ: testSupport, tag: ""}]);
+	Session.init("github.com/ninchat/ninchat-go", [{prop: "OnSessionEvent", name: "OnSessionEvent", embedded: false, exported: true, typ: funcType$2, tag: ""}, {prop: "OnEvent", name: "OnEvent", embedded: false, exported: true, typ: funcType$2, tag: ""}, {prop: "OnClose", name: "OnClose", embedded: false, exported: true, typ: funcType, tag: ""}, {prop: "OnConnState", name: "OnConnState", embedded: false, exported: true, typ: funcType$3, tag: ""}, {prop: "OnConnActive", name: "OnConnActive", embedded: false, exported: true, typ: funcType, tag: ""}, {prop: "OnLog", name: "OnLog", embedded: false, exported: true, typ: funcType$4, tag: ""}, {prop: "Header", name: "Header", embedded: false, exported: true, typ: mapType$1, tag: ""}, {prop: "Address", name: "Address", embedded: false, exported: true, typ: $String, tag: ""}, {prop: "DisableLongPoll", name: "DisableLongPoll", embedded: false, exported: true, typ: $Bool, tag: ""}, {prop: "forceLongPoll", name: "forceLongPoll", embedded: false, exported: false, typ: $Bool, tag: ""}, {prop: "mutex", name: "mutex", embedded: false, exported: false, typ: sync.Mutex, tag: ""}, {prop: "sessionParams", name: "sessionParams", embedded: false, exported: false, typ: mapType, tag: ""}, {prop: "sessionId", name: "sessionId", embedded: false, exported: false, typ: $emptyInterface, tag: ""}, {prop: "latestConnState", name: "latestConnState", embedded: false, exported: false, typ: $String, tag: ""}, {prop: "lastActionId", name: "lastActionId", embedded: false, exported: false, typ: $Int64, tag: ""}, {prop: "sendNotify", name: "sendNotify", embedded: false, exported: false, typ: chanType, tag: ""}, {prop: "sendBuffer", name: "sendBuffer", embedded: false, exported: false, typ: sliceType$5, tag: ""}, {prop: "numSent", name: "numSent", embedded: false, exported: false, typ: $Int, tag: ""}, {prop: "sendEventAck", name: "sendEventAck", embedded: false, exported: false, typ: $Bool, tag: ""}, {prop: "receivedEventId", name: "receivedEventId", embedded: false, exported: false, typ: $Int64, tag: ""}, {prop: "ackedEventId", name: "ackedEventId", embedded: false, exported: false, typ: $Int64, tag: ""}, {prop: "closeNotify", name: "closeNotify", embedded: false, exported: false, typ: chanType, tag: ""}, {prop: "closed", name: "closed", embedded: false, exported: false, typ: $Bool, tag: ""}, {prop: "running", name: "running", embedded: false, exported: false, typ: $Bool, tag: ""}, {prop: "test", name: "test", embedded: false, exported: false, typ: testSupport, tag: ""}]);
 	transport.init([ptrType$11, $String], [$Bool, $Bool], false);
 	testSupport.init("", []);
 	timer.init("github.com/ninchat/ninchat-go", [{prop: "C", name: "C", embedded: false, exported: true, typ: chanType, tag: ""}, {prop: "id", name: "id", embedded: false, exported: false, typ: ptrType$4, tag: ""}]);
@@ -22534,7 +22543,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	return $pkg;
 })();
 $packages["ninchatclient/lib"] = (function() {
-	var $pkg = {}, $init, js, ninchat, Promise, SessionAdapter, ptrType, funcType, funcType$1, sliceType, funcType$2, mapType, funcType$3, sliceType$1, sliceType$2, sliceType$3, sliceType$4, funcType$4, funcType$5, funcType$6, funcType$7, ptrType$1, ptrType$2, ptrType$3, sliceType$5, funcType$8, funcType$9, funcType$10, ptrType$4, funcType$11, ptrType$5, newCaller, call, doCall, makeDefaultHeader, Init, Panicer, WrapPayload, UnwrapPayload, NewSessionAdapter, newSession, setTransport;
+	var $pkg = {}, $init, js, ninchat, Promise, SessionAdapter, ptrType, funcType, funcType$1, sliceType, funcType$2, mapType, funcType$3, sliceType$1, sliceType$2, sliceType$3, sliceType$4, funcType$4, funcType$5, funcType$6, funcType$7, ptrType$1, ptrType$2, ptrType$3, sliceType$5, funcType$8, funcType$9, funcType$10, funcType$11, ptrType$4, funcType$12, ptrType$5, newCaller, call, doCall, makeDefaultHeader, Init, Panicer, WrapPayload, UnwrapPayload, NewSessionAdapter, newSession, setTransport;
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	ninchat = $packages["github.com/ninchat/ninchat-go"];
 	Promise = $pkg.Promise = $newType(0, $kindStruct, "clientlib.Promise", true, "ninchatclient/lib", true, function(OnPanic_, fulfillers_, rejecters_, notifiers_) {
@@ -22581,10 +22590,11 @@ $packages["ninchatclient/lib"] = (function() {
 	ptrType$3 = $ptrType(ninchat.Action);
 	sliceType$5 = $sliceType(ptrType$3);
 	funcType$8 = $funcType([mapType], [], false);
-	funcType$9 = $funcType([], [], false);
-	funcType$10 = $funcType([mapType, ptrType], [ptrType], false);
+	funcType$9 = $funcType([$Bool], [], false);
+	funcType$10 = $funcType([], [], false);
+	funcType$11 = $funcType([mapType, ptrType], [ptrType], false);
 	ptrType$4 = $ptrType(Promise);
-	funcType$11 = $funcType([$String, $emptyInterface], [], false);
+	funcType$12 = $funcType([$String, $emptyInterface], [], false);
 	ptrType$5 = $ptrType(SessionAdapter);
 	newCaller = function() {
 		var caller, onLog;
@@ -23059,6 +23069,12 @@ $packages["ninchatclient/lib"] = (function() {
 		adapter.Session.Address = value;
 	};
 	SessionAdapter.prototype.SetAddress = function(value) { return this.$val.SetAddress(value); };
+	SessionAdapter.ptr.prototype.SetDisableLongPoll = function(disabled) {
+		var adapter, disabled;
+		adapter = this;
+		adapter.Session.DisableLongPoll = disabled;
+	};
+	SessionAdapter.prototype.SetDisableLongPoll = function(disabled) { return this.$val.SetDisableLongPoll(disabled); };
 	SessionAdapter.ptr.prototype.Send = function(params, payload) {
 		var _entry, _r, _tuple, action, adapter, found, p, params, payload, result, value, $s, $r;
 		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _entry = $f._entry; _r = $f._r; _tuple = $f._tuple; action = $f.action; adapter = $f.adapter; found = $f.found; p = $f.p; params = $f.params; payload = $f.payload; result = $f.result; value = $f.value; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
@@ -23085,18 +23101,18 @@ $packages["ninchatclient/lib"] = (function() {
 	SessionAdapter.prototype.Send = function(params, payload) { return this.$val.Send(params, payload); };
 	newSession = function() {
 		var adapter, session;
-		session = new ninchat.Session.ptr($throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, makeDefaultHeader(), "", false, new $packages["sync"].Mutex.ptr(0, 0), false, $ifaceNil, "", new $Int64(0, 0), $chanNil, sliceType$5.nil, 0, false, new $Int64(0, 0), new $Int64(0, 0), $chanNil, false, false, new ninchat.testSupport.ptr());
+		session = new ninchat.Session.ptr($throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, $throwNilPointerError, makeDefaultHeader(), "", false, false, new $packages["sync"].Mutex.ptr(0, 0), false, $ifaceNil, "", new $Int64(0, 0), $chanNil, sliceType$5.nil, 0, false, new $Int64(0, 0), new $Int64(0, 0), $chanNil, false, false, new ninchat.testSupport.ptr());
 		adapter = NewSessionAdapter(session);
-		return $makeMap($String.keyFor, [{ k: "onSessionEvent", v: new funcType($methodVal(adapter, "OnSessionEvent")) }, { k: "onEvent", v: new funcType($methodVal(adapter, "OnEvent")) }, { k: "onClose", v: new funcType($methodVal(adapter, "OnClose")) }, { k: "onConnState", v: new funcType($methodVal(adapter, "OnConnState")) }, { k: "onConnActive", v: new funcType($methodVal(adapter, "OnConnActive")) }, { k: "onLog", v: new funcType($methodVal(adapter, "OnLog")) }, { k: "setParams", v: new funcType$8($methodVal(session, "SetParams")) }, { k: "setTransport", v: new funcType$2(setTransport) }, { k: "setHeader", v: new funcType$1($methodVal(adapter, "SetHeader")) }, { k: "setAddress", v: new funcType$2($methodVal(adapter, "SetAddress")) }, { k: "open", v: new funcType$9($methodVal(session, "Open")) }, { k: "close", v: new funcType$9($methodVal(session, "Close")) }, { k: "send", v: new funcType$10($methodVal(adapter, "Send")) }]);
+		return $makeMap($String.keyFor, [{ k: "onSessionEvent", v: new funcType($methodVal(adapter, "OnSessionEvent")) }, { k: "onEvent", v: new funcType($methodVal(adapter, "OnEvent")) }, { k: "onClose", v: new funcType($methodVal(adapter, "OnClose")) }, { k: "onConnState", v: new funcType($methodVal(adapter, "OnConnState")) }, { k: "onConnActive", v: new funcType($methodVal(adapter, "OnConnActive")) }, { k: "onLog", v: new funcType($methodVal(adapter, "OnLog")) }, { k: "setParams", v: new funcType$8($methodVal(session, "SetParams")) }, { k: "setTransport", v: new funcType$2(setTransport) }, { k: "setHeader", v: new funcType$1($methodVal(adapter, "SetHeader")) }, { k: "setAddress", v: new funcType$2($methodVal(adapter, "SetAddress")) }, { k: "setDisableLongPoll", v: new funcType$9($methodVal(adapter, "SetDisableLongPoll")) }, { k: "open", v: new funcType$10($methodVal(session, "Open")) }, { k: "close", v: new funcType$10($methodVal(session, "Close")) }, { k: "send", v: new funcType$11($methodVal(adapter, "Send")) }]);
 	};
 	setTransport = function(param) {
 		var param;
 		console.log("NinchatClient.Session.setTransport doesn't do anything anymore");
 	};
 	ptrType$4.methods = [{prop: "Object", name: "Object", pkg: "", typ: $funcType([], [ptrType], false)}, {prop: "OnReply", name: "OnReply", pkg: "", typ: $funcType([ptrType$1], [], false)}, {prop: "Resolve", name: "Resolve", pkg: "", typ: $funcType([sliceType$4], [], true)}, {prop: "Reject", name: "Reject", pkg: "", typ: $funcType([sliceType$4], [], true)}, {prop: "Notify", name: "Notify", pkg: "", typ: $funcType([sliceType$4], [], true)}, {prop: "invoke", name: "invoke", pkg: "ninchatclient/lib", typ: $funcType([$String, ptrType, sliceType$4], [], true)}];
-	ptrType$5.methods = [{prop: "InvokeOnSessionEvent", name: "InvokeOnSessionEvent", pkg: "", typ: $funcType([$String, ptrType, ptrType$1], [], false)}, {prop: "OnSessionEvent", name: "OnSessionEvent", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "InvokeOnEvent", name: "InvokeOnEvent", pkg: "", typ: $funcType([$String, ptrType, ptrType$1], [], false)}, {prop: "OnEvent", name: "OnEvent", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnClose", name: "OnClose", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnConnState", name: "OnConnState", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnConnActive", name: "OnConnActive", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnLog", name: "OnLog", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "SetHeader", name: "SetHeader", pkg: "", typ: $funcType([$String, $String], [], false)}, {prop: "SetAddress", name: "SetAddress", pkg: "", typ: $funcType([$String], [], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([mapType, ptrType], [ptrType], false)}];
-	Promise.init("ninchatclient/lib", [{prop: "OnPanic", name: "OnPanic", embedded: false, exported: true, typ: funcType$11, tag: ""}, {prop: "fulfillers", name: "fulfillers", embedded: false, exported: false, typ: sliceType$1, tag: ""}, {prop: "rejecters", name: "rejecters", embedded: false, exported: false, typ: sliceType$1, tag: ""}, {prop: "notifiers", name: "notifiers", embedded: false, exported: false, typ: sliceType$1, tag: ""}]);
-	SessionAdapter.init("", [{prop: "Session", name: "Session", embedded: false, exported: true, typ: ptrType$2, tag: ""}, {prop: "OnPanic", name: "OnPanic", embedded: false, exported: true, typ: funcType$11, tag: ""}]);
+	ptrType$5.methods = [{prop: "InvokeOnSessionEvent", name: "InvokeOnSessionEvent", pkg: "", typ: $funcType([$String, ptrType, ptrType$1], [], false)}, {prop: "OnSessionEvent", name: "OnSessionEvent", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "InvokeOnEvent", name: "InvokeOnEvent", pkg: "", typ: $funcType([$String, ptrType, ptrType$1], [], false)}, {prop: "OnEvent", name: "OnEvent", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnClose", name: "OnClose", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnConnState", name: "OnConnState", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnConnActive", name: "OnConnActive", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "OnLog", name: "OnLog", pkg: "", typ: $funcType([ptrType], [], false)}, {prop: "SetHeader", name: "SetHeader", pkg: "", typ: $funcType([$String, $String], [], false)}, {prop: "SetAddress", name: "SetAddress", pkg: "", typ: $funcType([$String], [], false)}, {prop: "SetDisableLongPoll", name: "SetDisableLongPoll", pkg: "", typ: $funcType([$Bool], [], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([mapType, ptrType], [ptrType], false)}];
+	Promise.init("ninchatclient/lib", [{prop: "OnPanic", name: "OnPanic", embedded: false, exported: true, typ: funcType$12, tag: ""}, {prop: "fulfillers", name: "fulfillers", embedded: false, exported: false, typ: sliceType$1, tag: ""}, {prop: "rejecters", name: "rejecters", embedded: false, exported: false, typ: sliceType$1, tag: ""}, {prop: "notifiers", name: "notifiers", embedded: false, exported: false, typ: sliceType$1, tag: ""}]);
+	SessionAdapter.init("", [{prop: "Session", name: "Session", embedded: false, exported: true, typ: ptrType$2, tag: ""}, {prop: "OnPanic", name: "OnPanic", embedded: false, exported: true, typ: funcType$12, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
