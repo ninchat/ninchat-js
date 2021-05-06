@@ -147,16 +147,22 @@ func (adapter *SessionAdapter) Send(params map[string]interface{}, payload *js.O
 		if value != nil {
 			println("NinchatClient.Session.send called incorrectly with an action_id value")
 		}
+
+		adapter.Session.Send(action)
 	} else {
 		p := &Promise{
 			OnPanic: adapter.OnPanic,
 		}
 
 		action.OnReply = p.OnReply
+		adapter.Session.Send(action)
+
+		n := params["action_id"].(int64)
+		p.actionID = &n
+
 		result = p.Object()
 	}
 
-	adapter.Session.Send(action)
 	return
 }
 
