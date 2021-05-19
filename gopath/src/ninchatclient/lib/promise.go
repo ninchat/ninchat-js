@@ -11,6 +11,7 @@ type Promise struct {
 	fulfillers []*js.Object
 	rejecters  []*js.Object
 	notifiers  []*js.Object
+	actionID   *int64 // JavaScript property exists if this is non-nil.
 }
 
 func (p *Promise) Object() (o *js.Object) {
@@ -31,6 +32,10 @@ func (p *Promise) Object() (o *js.Object) {
 
 		return o
 	})
+
+	if p.actionID != nil {
+		o.Set("actionId", *p.actionID)
+	}
 
 	return
 }
