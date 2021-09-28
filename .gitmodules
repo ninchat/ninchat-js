@@ -1,6 +1,3 @@
 [submodule "src/github.com/inexorabletash/polyfill"]
 	path = src/github.com/inexorabletash/polyfill
 	url = https://github.com/inexorabletash/polyfill.git
-[submodule "gopath/src/github.com/ninchat/ninchat-go"]
-	path = gopath/src/github.com/ninchat/ninchat-go
-	url = https://github.com/ninchat/ninchat-go.git

@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/gopherjs/gopherjs/js"
 
-	clientlib "ninchatclient/lib"
+	clientlib "github.com/ninchat/ninchat-js/ninchatclient/lib"
 )
 
 const (
