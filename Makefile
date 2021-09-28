@@ -1,17 +1,15 @@
 GO		:= go
-GOPHERJS	:= $(GO) run github.com/gopherjs/gopherjs
+GOPHERJS	:= gopherjs
 MARKDOX		:= markdox
 
 DOCKER		:= docker
 DOCKER_TAG	:= ninchat-js
 DOCKER_BROWSER	:= chromium-browser --no-sandbox
 
-GOPATH		:= $(shell pwd)/gopath
-
 build:
 	@ mkdir -p gen
-	GOPATH=$(GOPATH) $(GOPHERJS) build -o gen/ninchatclient.js ninchatclient
-	GOPATH=$(GOPATH) $(GOPHERJS) build -m -o gen/ninchatclient.min.js ninchatclient
+	$(GOPHERJS) build -o gen/ninchatclient.js ./ninchatclient
+	$(GOPHERJS) build -m -o gen/ninchatclient.min.js ./ninchatclient
 	$(MARKDOX) -o docs/ninchatclient.md docs/ninchatclient.js
 
 container-for-testing:
