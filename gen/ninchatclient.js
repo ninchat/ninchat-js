@@ -21731,12 +21731,14 @@ $packages["os"] = (function() {
 		process = $global.process;
 		if (!(process === undefined)) {
 			argv = process.argv;
-			$pkg.Args = $makeSlice(sliceType, ($parseInt(argv.length) - 1 >> 0));
-			i = 0;
-			while (true) {
-				if (!(i < ($parseInt(argv.length) - 1 >> 0))) { break; }
-				((i < 0 || i >= $pkg.Args.$length) ? ($throwRuntimeError("index out of range"), undefined) : $pkg.Args.$array[$pkg.Args.$offset + i] = $internalize(argv[(i + 1 >> 0)], $String));
-				i = i + (1) >> 0;
+			if (!(argv === undefined)) {
+				$pkg.Args = $makeSlice(sliceType, ($parseInt(argv.length) - 1 >> 0));
+				i = 0;
+				while (true) {
+					if (!(i < ($parseInt(argv.length) - 1 >> 0))) { break; }
+					((i < 0 || i >= $pkg.Args.$length) ? ($throwRuntimeError("index out of range"), undefined) : $pkg.Args.$array[$pkg.Args.$offset + i] = $internalize(argv[(i + 1 >> 0)], $String));
+					i = i + (1) >> 0;
+				}
 			}
 		}
 		if ($pkg.Args.$length === 0) {
