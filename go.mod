@@ -3,7 +3,7 @@ module github.com/ninchat/ninchat-js
 go 1.17
 
 require (
-	github.com/gopherjs/gopherjs v0.0.0-20210918183006-daae65060a40
+	github.com/gopherjs/gopherjs v0.0.0-20210929192900-a930101f3d15
 	github.com/ninchat/ninchat-go v1.5.0
 )
 
