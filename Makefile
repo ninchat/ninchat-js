@@ -1,5 +1,5 @@
 GO		:= go
-GOPHERJS	:= gopherjs
+GOPHERJS	:= $(GO) run github.com/gopherjs/gopherjs
 MARKDOX		:= markdox
 
 DOCKER		:= docker
