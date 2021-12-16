@@ -1,6 +1,5 @@
 GO		:= go
 GOPHERJS	:= $(GO) run github.com/gopherjs/gopherjs
-MARKDOX		:= markdox
 
 DOCKER		:= docker
 DOCKER_TAG	:= ninchat-js
@@ -10,7 +9,6 @@ build:
 	@ mkdir -p gen
 	$(GOPHERJS) build -o gen/ninchatclient.js ./ninchatclient
 	$(GOPHERJS) build -m -o gen/ninchatclient.min.js ./ninchatclient
-	$(MARKDOX) -o docs/ninchatclient.md docs/ninchatclient.js
 
 container-for-testing:
 	$(DOCKER) build -t $(DOCKER_TAG) .

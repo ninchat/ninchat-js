@@ -228,6 +228,12 @@ Create a session on the server.
 
 Close the session on the server.
 
+## Session.reconnect()
+
+Reconnect now, if reconnection process is currently waiting to retry.  This
+gives a hint that network conditions have changed.  It is safe to call this at
+any time.
+
 ## Session.send(params, [payload])
 
 Send an action.

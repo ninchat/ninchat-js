@@ -197,6 +197,7 @@ func newSession() map[string]interface{} {
 		"setDisableLongPoll": adapter.SetDisableLongPoll,
 		"open":               session.Open,
 		"close":              session.Close,
+		"reconnect":          session.Reconnect,
 		"send":               adapter.Send,
 	}
 }

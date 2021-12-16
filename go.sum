@@ -311,8 +311,8 @@ github.com/neelance/sourcemap v0.0.0-20151028013722-8c68805598ab/go.mod h1:Qr6/a
 github.com/neelance/sourcemap v0.0.0-20200213170602-2833bce08e4c h1:bY6ktFuJkt+ZXkX0RChQch2FtHpWQLVS8Qo1YasiIVk=
 github.com/neelance/sourcemap v0.0.0-20200213170602-2833bce08e4c/go.mod h1:Qr6/a/Q4r9LP1IltGz7tA7iOK1WonHEYhu1HRBA7ZiM=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
-github.com/ninchat/ninchat-go v1.5.0 h1:iF8sfnCCydWrBTlXy/GvBoukQ8AwZBs9WiadhfMVxV8=
-github.com/ninchat/ninchat-go v1.5.0/go.mod h1:HpkVAbLgQ7keMbu8QxEbE/AruEEPzRV0mN1fYMfd9pg=
+github.com/ninchat/ninchat-go v1.5.1-0.20211216103012-869669db022f h1:/bdoUq5FdnM8iIsl8IIHyQJToBex/KIi/ALutpVB6dA=
+github.com/ninchat/ninchat-go v1.5.1-0.20211216103012-869669db022f/go.mod h1:vB+QCQTGqE1FogLBNdAzPRn0uw5BM1SINPImD4RhWWI=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pascaldekloe/goe v0.1.0/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pelletier/go-toml v1.9.3/go.mod h1:u1nR/EPcESfeI/szUZKdtJ0xRNbUoANCkoOuaOx1Y+c=
