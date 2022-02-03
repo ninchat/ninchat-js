@@ -1,7 +1,7 @@
 "use strict";
 (function() {
 
-var $goVersion = "go1.17.5";
+var $goVersion = "go1.17.6";
 Error.stackTraceLimit = Infinity;
 
 var $global, $module;
@@ -25823,7 +25823,7 @@ $packages["fmt"] = (function() {
 	return $pkg;
 })();
 $packages["github.com/ninchat/ninchat-go"] = (function() {
-	var $pkg = {}, $init, errors, fmt, js, runtime, sort, sync, Action, Event, Frame, backoff, Caller, httpRequest, httpResponse, Session, transport, testSupport, duration, timeTime, timer, webSocket, sliceType, sliceType$1, mapType, sliceType$2, ptrType, sliceType$3, ptrType$1, ptrType$2, sliceType$4, ptrType$3, funcType, ptrType$4, ptrType$5, structType, ptrType$6, sliceType$5, ptrType$7, ptrType$8, sliceType$6, funcType$1, funcType$2, ptrType$9, ptrType$10, mapType$1, ptrType$11, funcType$3, funcType$4, chanType, chanType$1, ptrType$12, errNoActionID, xhrType, xhrRequestHeaderSupport, sessionEventAckWindow, webSocketClass, webSocketSupported, _r, getAddress, getEndpointHosts, singleFrame, emptyData, dataLength, stringData, StringifyFrame, jsError, prepareHeader, newJSONRequest, getJSONRequestResponseChannel, getResponseChannel, init, newGetRequest, newDataRequest, getResponseData, putResponseToChannel, jitterFloat64, jitterDuration, jitterInt64, jsonMarshal, jsonUnmarshalArray, jsonUnmarshalObject, jsonParse, longPollBinaryPayload, longPollTransport, longPollTransfer, longPollPing, longPollClose, logErrorResponseLockless, randFloat64, timeNow, timeAdd, timeSub, newTimer, init$1, getUserAgent, newWebSocket, webSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive;
+	var $pkg = {}, $init, errors, fmt, js, runtime, sort, sync, Action, Event, Frame, backoff, Caller, httpRequest, httpResponse, Session, transport, testSupport, duration, timeTime, timer, webSocket, sliceType, sliceType$1, mapType, sliceType$2, ptrType, sliceType$3, ptrType$1, ptrType$2, sliceType$4, ptrType$3, funcType, ptrType$4, ptrType$5, structType, ptrType$6, sliceType$5, ptrType$7, sliceType$6, funcType$1, ptrType$8, funcType$2, ptrType$9, ptrType$10, mapType$1, ptrType$11, funcType$3, funcType$4, chanType, chanType$1, ptrType$12, errNoActionID, xhrType, xhrRequestHeaderSupport, sessionEventAckWindow, webSocketClass, webSocketSupported, _r, getAddress, getEndpointHosts, singleFrame, emptyData, dataLength, stringData, StringifyFrame, jsError, prepareHeader, newJSONRequest, getJSONRequestResponseChannel, getResponseChannel, init, newGetRequest, newDataRequest, getResponseData, putResponseToChannel, jitterFloat64, jitterDuration, jitterInt64, jsonMarshal, jsonUnmarshalArray, jsonUnmarshalObject, jsonParse, longPollBinaryPayload, longPollTransport, longPollTransfer, longPollPing, longPollClose, logErrorResponseLockless, randFloat64, timeNow, timeAdd, timeSub, newTimer, init$1, getUserAgent, newWebSocket, webSocketTransport, webSocketHandshake, webSocketSend, webSocketReceive;
 	errors = $packages["errors"];
 	fmt = $packages["fmt"];
 	js = $packages["github.com/gopherjs/gopherjs/js"];
@@ -26013,9 +26013,9 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	ptrType$6 = $ptrType(Action);
 	sliceType$5 = $sliceType(ptrType$6);
 	ptrType$7 = $ptrType(timer);
-	ptrType$8 = $ptrType(webSocket);
 	sliceType$6 = $sliceType(ptrType$4);
 	funcType$1 = $funcType([ptrType$4], [], false);
+	ptrType$8 = $ptrType(webSocket);
 	funcType$2 = $funcType([ptrType], [], false);
 	ptrType$9 = $ptrType(backoff);
 	ptrType$10 = $ptrType(Caller);
@@ -27748,6 +27748,19 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: Session.ptr.prototype.log }; } $f.s = s; $f.tokens = tokens; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	Session.prototype.log = function(tokens) { return this.$val.log(tokens); };
+	Session.ptr.prototype.nonunlockingLog = function(tokens) {
+		var s, tokens, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; s = $f.s; tokens = $f.tokens; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		s = this;
+		/* */ if (!(s.OnLog === $throwNilPointerError)) { $s = 1; continue; }
+		/* */ $s = 2; continue;
+		/* if (!(s.OnLog === $throwNilPointerError)) { */ case 1:
+			$r = s.OnLog(tokens); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		/* } */ case 2:
+		$s = -1; return;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.nonunlockingLog }; } $f.s = s; $f.tokens = tokens; $f.$s = $s; $f.$r = $r; return $f;
+	};
+	Session.prototype.nonunlockingLog = function(tokens) { return this.$val.nonunlockingLog(tokens); };
 	testSupport.ptr.prototype.setWebSocket = function(param) {
 		var param;
 	};
@@ -27831,98 +27844,184 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		}
 		return $pkg.DefaultUserAgent;
 	};
-	newWebSocket = function(url, header, timeout) {
-		var clearTimeout, closeNotify, header, notifyClosed, timeout, timeoutId, url, ws;
-		ws = ptrType$8.nil;
-		ws = new webSocket.ptr(new $Chan(structType, 1), false, $ifaceNil, new (webSocketClass)($externalize(url, $String)), false, sliceType$6.nil, getUserAgent(header));
-		ws.impl.binaryType = $externalize("arraybuffer", $String);
-		notifyClosed = false;
-		closeNotify = (function() {
-			if (!notifyClosed) {
-				notifyClosed = true;
-				$go((function() {
-					$close(ws.notify);
-				}), []);
-			}
-		});
-		timeoutId = $global.setTimeout($externalize((function $b() {
-			var $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			ws.err = errors.New("timeout");
-			$r = closeNotify(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$s = -1; return;
-			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$s = $s; $f.$r = $r; return $f;
-		}), funcType), $externalize(timeout, duration));
-		clearTimeout = (function() {
-			if (!(timeoutId === null)) {
-				$global.clearTimeout(timeoutId);
-				timeoutId = null;
-			}
-		});
-		ws.impl.onopen = $externalize((function $b(param) {
-			var param, $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; param = $f.param; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			$r = clearTimeout(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			if (!($interfaceIsEqual(ws.err, $ifaceNil))) {
-				ws.impl.close();
-				$s = -1; return;
-			}
-			ws.open = true;
-			$go((function $b() {
+	newWebSocket = function(host, header, timeout, log) {
+		var _r$1, connect, deadline, header, host, log, notifyClosed, poked, timeout, ws, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r$1 = $f._r$1; connect = $f.connect; deadline = $f.deadline; header = $f.header; host = $f.host; log = $f.log; notifyClosed = $f.notifyClosed; poked = $f.poked; timeout = $f.timeout; ws = $f.ws; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		connect = [connect];
+		deadline = [deadline];
+		host = [host];
+		log = [log];
+		notifyClosed = [notifyClosed];
+		poked = [poked];
+		timeout = [timeout];
+		ws = [ws];
+		deadline[0] = timeAdd(timeNow(), timeout[0]);
+		ws[0] = new webSocket.ptr(new $Chan(structType, 1), false, $ifaceNil, null, false, sliceType$6.nil, getUserAgent(header));
+		poked[0] = false;
+		notifyClosed[0] = false;
+		connect[0] = $throwNilPointerError;
+		connect[0] = (function(connect, deadline, host, log, notifyClosed, poked, timeout, ws) { return function() {
+			var clearTimeout, closeNotify, impl, stale, timeoutId;
+			impl = new (webSocketClass)($externalize("wss://" + host[0] + "/v2/socket", $String));
+			impl.binaryType = $externalize("arraybuffer", $String);
+			stale = false;
+			closeNotify = (function(connect, deadline, host, log, notifyClosed, poked, timeout, ws) { return function() {
+				if (!notifyClosed[0]) {
+					notifyClosed[0] = true;
+					$go((function(connect, deadline, host, log, notifyClosed, poked, timeout, ws) { return function() {
+						$close(ws[0].notify);
+					}; })(connect, deadline, host, log, notifyClosed, poked, timeout, ws), []);
+				}
+			}; })(connect, deadline, host, log, notifyClosed, poked, timeout, ws);
+			timeoutId = $global.setTimeout($externalize((function(connect, deadline, host, log, notifyClosed, poked, timeout, ws) { return function $b() {
 				var $s, $r;
 				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-				/* */ if (!notifyClosed) { $s = 1; continue; }
-				/* */ $s = 2; continue;
-				/* if (!notifyClosed) { */ case 1:
-					$r = $send(ws.notify, $clone(new structType.ptr(), structType)); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 2:
+				if (stale) {
+					$s = -1; return;
+				}
+				ws[0].err = errors.New("timeout");
+				$r = closeNotify(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 				$s = -1; return;
 				/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$s = $s; $f.$r = $r; return $f;
-			}), []);
-			$s = -1; return;
-			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.param = param; $f.$s = $s; $f.$r = $r; return $f;
-		}), funcType$1);
-		ws.impl.onmessage = $externalize((function(object) {
-			var object;
-			ws.buf = $append(ws.buf, object.data);
-			$go((function $b() {
-				var _selection, $r;
-				/* */ var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _selection = $f._selection; $r = $f.$r; }
-				if (!notifyClosed) {
-					_selection = $select([[ws.notify, new structType.ptr()], []]);
-					if (_selection[0] === 0) {
-					} else if (_selection[0] === 1) {
-					}
+			}; })(connect, deadline, host, log, notifyClosed, poked, timeout, ws), funcType), $externalize(timeout[0], duration));
+			clearTimeout = (function(connect, deadline, host, log, notifyClosed, poked, timeout, ws) { return function() {
+				if (!(timeoutId === null)) {
+					$global.clearTimeout(timeoutId);
+					timeoutId = null;
 				}
-				/* */ if ($f === undefined) { $f = { $blk: $b }; } $f._selection = _selection; $f.$r = $r; return $f;
-			}), []);
-		}), funcType$1);
-		ws.impl.onclose = $externalize((function $b(object) {
-			var object, $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; object = $f.object; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			ws.goingAway = (($parseInt(object.code) >> 0) === 1001);
-			ws.open = false;
-			$r = closeNotify(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$s = -1; return;
-			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.object = object; $f.$s = $s; $f.$r = $r; return $f;
-		}), funcType$1);
-		ws.impl.onerror = $externalize((function $b(object) {
-			var msg, object, $s, $r;
-			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; msg = $f.msg; object = $f.object; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
-			$r = clearTimeout(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			if ($interfaceIsEqual(ws.err, $ifaceNil)) {
+			}; })(connect, deadline, host, log, notifyClosed, poked, timeout, ws);
+			impl.onopen = $externalize((function(connect, deadline, host, log, notifyClosed, poked, timeout, ws) { return function $b(param) {
+				var param, $s, $r;
+				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; param = $f.param; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+				$r = clearTimeout(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				if (stale) {
+					$s = -1; return;
+				}
+				if (!($interfaceIsEqual(ws[0].err, $ifaceNil))) {
+					impl.close();
+					$s = -1; return;
+				}
+				ws[0].open = true;
+				$go((function(connect, deadline, host, log, notifyClosed, poked, timeout, ws) { return function $b() {
+					var $s, $r;
+					/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+					/* */ if (!notifyClosed[0]) { $s = 1; continue; }
+					/* */ $s = 2; continue;
+					/* if (!notifyClosed[0]) { */ case 1:
+						$r = $send(ws[0].notify, $clone(new structType.ptr(), structType)); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* } */ case 2:
+					$s = -1; return;
+					/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.$s = $s; $f.$r = $r; return $f;
+				}; })(connect, deadline, host, log, notifyClosed, poked, timeout, ws), []);
+				$s = -1; return;
+				/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.param = param; $f.$s = $s; $f.$r = $r; return $f;
+			}; })(connect, deadline, host, log, notifyClosed, poked, timeout, ws), funcType$1);
+			impl.onmessage = $externalize((function(connect, deadline, host, log, notifyClosed, poked, timeout, ws) { return function(object) {
+				var object;
+				if (stale) {
+					return;
+				}
+				ws[0].buf = $append(ws[0].buf, object.data);
+				$go((function(connect, deadline, host, log, notifyClosed, poked, timeout, ws) { return function $b() {
+					var _selection, $r;
+					/* */ var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _selection = $f._selection; $r = $f.$r; }
+					if (!notifyClosed[0]) {
+						_selection = $select([[ws[0].notify, new structType.ptr()], []]);
+						if (_selection[0] === 0) {
+						} else if (_selection[0] === 1) {
+						}
+					}
+					/* */ if ($f === undefined) { $f = { $blk: $b }; } $f._selection = _selection; $f.$r = $r; return $f;
+				}; })(connect, deadline, host, log, notifyClosed, poked, timeout, ws), []);
+			}; })(connect, deadline, host, log, notifyClosed, poked, timeout, ws), funcType$1);
+			impl.onclose = $externalize((function(connect, deadline, host, log, notifyClosed, poked, timeout, ws) { return function $b(object) {
+				var object, $s, $r;
+				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; object = $f.object; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+				if (stale) {
+					$s = -1; return;
+				}
+				ws[0].goingAway = (($parseInt(object.code) >> 0) === 1001);
+				ws[0].open = false;
+				$r = closeNotify(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$s = -1; return;
+				/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.object = object; $f.$s = $s; $f.$r = $r; return $f;
+			}; })(connect, deadline, host, log, notifyClosed, poked, timeout, ws), funcType$1);
+			impl.onerror = $externalize((function(connect, deadline, host, log, notifyClosed, poked, timeout, ws) { return function $b(object) {
+				var _tuple, err, msg, object, origin, pendingErr, req, $s, $r;
+				/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _tuple = $f._tuple; err = $f.err; msg = $f.msg; object = $f.object; origin = $f.origin; pendingErr = $f.pendingErr; req = $f.req; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+				pendingErr = [pendingErr];
+				req = [req];
+				$r = clearTimeout(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				if (stale) {
+					$s = -1; return;
+				}
+				/* */ if (!($interfaceIsEqual(ws[0].err, $ifaceNil))) { $s = 2; continue; }
+				/* */ $s = 3; continue;
+				/* if (!($interfaceIsEqual(ws[0].err, $ifaceNil))) { */ case 2:
+					$r = closeNotify(); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$s = -1; return;
+				/* } */ case 3:
+				pendingErr[0] = $ifaceNil;
 				msg = object.message;
 				if (!(msg === undefined)) {
-					ws.err = errors.New("websocket onerror: message: " + $internalize(msg, $String));
+					pendingErr[0] = errors.New("websocket onerror: message: " + $internalize(msg, $String));
 				} else {
-					ws.err = errors.New("websocket onerror: " + $internalize(object, $String));
+					pendingErr[0] = errors.New("websocket onerror: " + $internalize(object, $String));
 				}
-			}
-			$r = closeNotify(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			$s = -1; return;
-			/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f.msg = msg; $f.object = object; $f.$s = $s; $f.$r = $r; return $f;
-		}), funcType$1);
-		return ws;
+				timeout[0] = timeSub(deadline[0], timeNow());
+				/* */ if (poked[0] || (timeout[0].$high < 0 || (timeout[0].$high === 0 && timeout[0].$low <= 0))) { $s = 5; continue; }
+				/* */ $s = 6; continue;
+				/* if (poked[0] || (timeout[0].$high < 0 || (timeout[0].$high === 0 && timeout[0].$low <= 0))) { */ case 5:
+					ws[0].err = pendingErr[0];
+					$r = closeNotify(); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$s = -1; return;
+				/* } */ case 6:
+				origin = "https://" + host[0];
+				$r = log[0](new sliceType([new $String("poking"), new $String(origin)])); /* */ $s = 8; case 8: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				_tuple = newGetRequest(origin + "/v2/endpoint", false);
+				req[0] = _tuple[0];
+				err = _tuple[1];
+				if (!($interfaceIsEqual(err, $ifaceNil))) {
+					$panic(err);
+				}
+				poked[0] = true;
+				stale = true;
+				$go((function(connect, deadline, host, log, notifyClosed, pendingErr, poked, req, timeout, ws) { return function $b() {
+					var _r$1, _r$2, _tuple$1, err$1, $s, $r;
+					/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r$1 = $f._r$1; _r$2 = $f._r$2; _tuple$1 = $f._tuple$1; err$1 = $f.err$1; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+					_r$1 = getResponseData(req[0], timeout[0]); /* */ $s = 1; case 1: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+					_tuple$1 = _r$1;
+					err$1 = _tuple$1[1];
+					/* */ if ($interfaceIsEqual(err$1, $ifaceNil)) { $s = 2; continue; }
+					/* */ $s = 3; continue;
+					/* if ($interfaceIsEqual(err$1, $ifaceNil)) { */ case 2:
+						timeout[0] = timeSub(deadline[0], timeNow());
+						/* */ if ((timeout[0].$high > 0 || (timeout[0].$high === 0 && timeout[0].$low > 0))) { $s = 5; continue; }
+						/* */ $s = 6; continue;
+						/* if ((timeout[0].$high > 0 || (timeout[0].$high === 0 && timeout[0].$low > 0))) { */ case 5:
+							$r = log[0](new sliceType([new $String("retrying same websocket host once more")])); /* */ $s = 7; case 7: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+							_r$2 = connect[0](); /* */ $s = 8; case 8: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+							ws[0].impl = _r$2;
+							$s = -1; return;
+						/* } */ case 6:
+						$s = 4; continue;
+					/* } else { */ case 3:
+						$r = log[0](new sliceType([new $String("poke error:"), err$1])); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					/* } */ case 4:
+					ws[0].err = pendingErr[0];
+					$r = closeNotify(); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$s = -1; return;
+					/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._r$1 = _r$1; $f._r$2 = _r$2; $f._tuple$1 = _tuple$1; $f.err$1 = err$1; $f.$s = $s; $f.$r = $r; return $f;
+				}; })(connect, deadline, host, log, notifyClosed, pendingErr, poked, req, timeout, ws), []);
+				$s = -1; return;
+				/* */ } return; } if ($f === undefined) { $f = { $blk: $b }; } $f._tuple = _tuple; $f.err = err; $f.msg = msg; $f.object = object; $f.origin = origin; $f.pendingErr = pendingErr; $f.req = req; $f.$s = $s; $f.$r = $r; return $f;
+			}; })(connect, deadline, host, log, notifyClosed, poked, timeout, ws), funcType$1);
+			return impl;
+		}; })(connect, deadline, host, log, notifyClosed, poked, timeout, ws);
+		_r$1 = connect[0](); /* */ $s = 1; case 1: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+		ws[0].impl = _r$1;
+		$s = -1; return ws[0];
+		/* */ } return; } if ($f === undefined) { $f = { $blk: newWebSocket }; } $f._r$1 = _r$1; $f.connect = connect; $f.deadline = deadline; $f.header = header; $f.host = host; $f.log = log; $f.notifyClosed = notifyClosed; $f.poked = poked; $f.timeout = timeout; $f.ws = ws; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	webSocket.ptr.prototype.sendInitialJSON = function(object) {
 		var $24r, _key, _r$1, object, ws, $s, $r;
@@ -28057,8 +28156,8 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	};
 	webSocket.prototype.close = function() { return this.$val.close(); };
 	webSocketTransport = function(s, host) {
-		var $24r, _r$1, _r$2, _selection, _tuple, _tuple$1, connWorked, connected, goingAway, gotOnline, host, hostHealthy, s, ws, $s, $deferred, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $24r = $f.$24r; _r$1 = $f._r$1; _r$2 = $f._r$2; _selection = $f._selection; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; connWorked = $f.connWorked; connected = $f.connected; goingAway = $f.goingAway; gotOnline = $f.gotOnline; host = $f.host; hostHealthy = $f.hostHealthy; s = $f.s; ws = $f.ws; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $curGoroutine.deferStack.push($deferred);
+		var $24r, _r$1, _r$2, _r$3, _selection, _tuple, _tuple$1, connWorked, connected, goingAway, gotOnline, host, hostHealthy, s, ws, $s, $deferred, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $24r = $f.$24r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _selection = $f._selection; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; connWorked = $f.connWorked; connected = $f.connected; goingAway = $f.goingAway; gotOnline = $f.gotOnline; host = $f.host; hostHealthy = $f.hostHealthy; s = $f.s; ws = $f.ws; $s = $f.$s; $deferred = $f.$deferred; $r = $f.$r; } var $err = null; try { s: while (true) { switch ($s) { case 0: $deferred = []; $curGoroutine.deferStack.push($deferred);
 		ws = [ws];
 		connWorked = false;
 		gotOnline = false;
@@ -28071,62 +28170,63 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		/* while (true) { */ case 1:
 			gotOnline = false;
 			hostHealthy = false;
-			$r = s.log(new sliceType([new $String("connecting to"), new $String(host)])); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			ws[0] = newWebSocket("wss://" + host + "/v2/socket", s.Header, jitterDuration(new duration(0, 9000), 0.1));
+			$r = s.log(new sliceType([new $String("connecting to"), new $String("wss://" + host)])); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_r$1 = newWebSocket(host, s.Header, jitterDuration(new duration(0, 9000), 0.1), $methodVal(s, "nonunlockingLog")); /* */ $s = 4; case 4: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+			ws[0] = _r$1;
 			s.test.setWebSocket(ws[0]);
-			$r = s.mutex.Unlock(); /* */ $s = 4; case 4: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			_r$1 = $select([[ws[0].notify], [s.closeNotify]]); /* */ $s = 5; case 5: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-			_selection = _r$1;
-			/* */ if (_selection[0] === 0) { $s = 6; continue; }
-			/* */ if (_selection[0] === 1) { $s = 7; continue; }
-			/* */ $s = 8; continue;
-			/* if (_selection[0] === 0) { */ case 6:
+			$r = s.mutex.Unlock(); /* */ $s = 5; case 5: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			_r$2 = $select([[ws[0].notify], [s.closeNotify]]); /* */ $s = 6; case 6: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+			_selection = _r$2;
+			/* */ if (_selection[0] === 0) { $s = 7; continue; }
+			/* */ if (_selection[0] === 1) { $s = 8; continue; }
+			/* */ $s = 9; continue;
+			/* if (_selection[0] === 0) { */ case 7:
 				_tuple = _selection[1];
 				connected = _tuple[1];
-				$r = s.mutex.Lock(); /* */ $s = 9; case 9: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* */ if (connected) { $s = 10; continue; }
-				/* */ if (!($interfaceIsEqual(ws[0].err, $ifaceNil))) { $s = 11; continue; }
-				/* */ $s = 12; continue;
-				/* if (connected) { */ case 10:
-					$r = s.connState("connected"); /* */ $s = 14; case 14: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$r = s.mutex.Lock(); /* */ $s = 10; case 10: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* */ if (connected) { $s = 11; continue; }
+				/* */ if (!($interfaceIsEqual(ws[0].err, $ifaceNil))) { $s = 12; continue; }
+				/* */ $s = 13; continue;
+				/* if (connected) { */ case 11:
+					$r = s.connState("connected"); /* */ $s = 15; case 15: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 					connWorked = true;
-					_r$2 = webSocketHandshake(s, ws[0]); /* */ $s = 15; case 15: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-					_tuple$1 = _r$2;
+					_r$3 = webSocketHandshake(s, ws[0]); /* */ $s = 16; case 16: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+					_tuple$1 = _r$3;
 					gotOnline = _tuple$1[0];
 					hostHealthy = _tuple$1[1];
-					$s = 13; continue;
-				/* } else if (!($interfaceIsEqual(ws[0].err, $ifaceNil))) { */ case 11:
-					$r = s.log(new sliceType([new $String("connection failed:"), ws[0].err])); /* */ $s = 16; case 16: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-					$s = 13; continue;
-				/* } else { */ case 12:
-					$r = s.log(new sliceType([new $String("connection failed")])); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				/* } */ case 13:
-				$s = 8; continue;
-			/* } else if (_selection[0] === 1) { */ case 7:
-				$r = s.mutex.Lock(); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* } */ case 8:
+					$s = 14; continue;
+				/* } else if (!($interfaceIsEqual(ws[0].err, $ifaceNil))) { */ case 12:
+					$r = s.log(new sliceType([new $String("connection failed:"), ws[0].err])); /* */ $s = 17; case 17: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+					$s = 14; continue;
+				/* } else { */ case 13:
+					$r = s.log(new sliceType([new $String("connection failed")])); /* */ $s = 18; case 18: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				/* } */ case 14:
+				$s = 9; continue;
+			/* } else if (_selection[0] === 1) { */ case 8:
+				$r = s.mutex.Lock(); /* */ $s = 19; case 19: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 9:
 			goingAway = ws[0].goingAway;
 			s.closeWebSocket(ws[0]);
 			ws[0] = ptrType$8.nil;
-			/* */ if (goingAway) { $s = 19; continue; }
-			/* */ $s = 20; continue;
-			/* if (goingAway) { */ case 19:
-				$r = s.log(new sliceType([new $String("disconnected (server is going away)")])); /* */ $s = 22; case 22: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-				$s = 21; continue;
-			/* } else { */ case 20:
-				$r = s.log(new sliceType([new $String("disconnected")])); /* */ $s = 23; case 23: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-			/* } */ case 21:
+			/* */ if (goingAway) { $s = 20; continue; }
+			/* */ $s = 21; continue;
+			/* if (goingAway) { */ case 20:
+				$r = s.log(new sliceType([new $String("disconnected (server is going away)")])); /* */ $s = 23; case 23: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+				$s = 22; continue;
+			/* } else { */ case 21:
+				$r = s.log(new sliceType([new $String("disconnected")])); /* */ $s = 24; case 24: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+			/* } */ case 22:
 			s.test.webSocketDisconnected();
-			/* */ if (!gotOnline || !hostHealthy || !s.running || goingAway) { $s = 24; continue; }
-			/* */ $s = 25; continue;
-			/* if (!gotOnline || !hostHealthy || !s.running || goingAway) { */ case 24:
+			/* */ if (!gotOnline || !hostHealthy || !s.running || goingAway) { $s = 25; continue; }
+			/* */ $s = 26; continue;
+			/* if (!gotOnline || !hostHealthy || !s.running || goingAway) { */ case 25:
 				$24r = [connWorked, gotOnline];
-				$s = 26; case 26: return $24r;
-			/* } */ case 25:
+				$s = 27; case 27: return $24r;
+			/* } */ case 26:
 		$s = 1; continue;
 		case 2:
 		$s = -1; return [connWorked, gotOnline];
-		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [connWorked, gotOnline]; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: webSocketTransport }; } $f.$24r = $24r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.connWorked = connWorked; $f.connected = connected; $f.goingAway = goingAway; $f.gotOnline = gotOnline; $f.host = host; $f.hostHealthy = hostHealthy; $f.s = s; $f.ws = ws; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
+		/* */ } return; } } catch(err) { $err = err; $s = -1; } finally { $callDeferred($deferred, $err); if (!$curGoroutine.asleep) { return  [connWorked, gotOnline]; } if($curGoroutine.asleep) { if ($f === undefined) { $f = { $blk: webSocketTransport }; } $f.$24r = $24r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._selection = _selection; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.connWorked = connWorked; $f.connected = connected; $f.goingAway = goingAway; $f.gotOnline = gotOnline; $f.host = host; $f.hostHealthy = hostHealthy; $f.s = s; $f.ws = ws; $f.$s = $s; $f.$deferred = $deferred; $f.$r = $r; return $f; } }
 	};
 	webSocketHandshake = function(s, ws) {
 		var $24r, $24r$1, $24r$2, $24r$3, $24r$4, _r$1, _r$2, _r$3, _r$4, _r$5, _r$6, _selection, _tuple, _tuple$1, _tuple$2, connected, done, err, err$1, fail, gotEvents, gotOnline, hostHealthy, params, params$1, s, timer$1, ws, $s, $deferred, $r;
@@ -28555,7 +28655,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	ptrType.methods = [{prop: "Bool", name: "Bool", pkg: "", typ: $funcType([$String], [$Bool], false)}, {prop: "Int", name: "Int", pkg: "", typ: $funcType([$String], [$Int, $Bool], false)}, {prop: "Int64", name: "Int64", pkg: "", typ: $funcType([$String], [$Int64, $Bool], false)}, {prop: "Float64", name: "Float64", pkg: "", typ: $funcType([$String], [$Float64, $Bool], false)}, {prop: "Str", name: "Str", pkg: "", typ: $funcType([$String], [$String, $Bool], false)}, {prop: "Array", name: "Array", pkg: "", typ: $funcType([$String], [sliceType, $Bool], false)}, {prop: "Map", name: "Map", pkg: "", typ: $funcType([$String], [mapType, $Bool], false)}, {prop: "String", name: "String", pkg: "", typ: $funcType([], [$String], false)}, {prop: "initLastReply", name: "initLastReply", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6], [], false)}, {prop: "getError", name: "getError", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [$String, $String, $Bool, $Bool, $error], false)}];
 	ptrType$9.methods = [{prop: "success", name: "success", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "failure", name: "failure", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([duration], [duration], false)}];
 	ptrType$10.methods = [{prop: "Call", name: "Call", pkg: "", typ: $funcType([ptrType$6], [sliceType$3, $error], false)}];
-	ptrType$11.methods = [{prop: "SetParams", name: "SetParams", pkg: "", typ: $funcType([mapType], [], false)}, {prop: "Open", name: "Open", pkg: "", typ: $funcType([], [], false)}, {prop: "Close", name: "Close", pkg: "", typ: $funcType([], [], false)}, {prop: "Reconnect", name: "Reconnect", pkg: "", typ: $funcType([], [], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([ptrType$6], [$error], false)}, {prop: "send", name: "send", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6], [], false)}, {prop: "sendAck", name: "sendAck", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "discover", name: "discover", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "connect", name: "connect", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([transport, sliceType$1, ptrType$9], [$Bool], false)}, {prop: "backOff", name: "backOff", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$9], [$Bool], false)}, {prop: "canLogin", name: "canLogin", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [$Bool], false)}, {prop: "makeCreateSessionAction", name: "makeCreateSessionAction", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [mapType], false)}, {prop: "makeResumeSessionAction", name: "makeResumeSessionAction", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([$Bool], [mapType], false)}, {prop: "handleSessionEvent", name: "handleSessionEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([mapType], [$Bool], false)}, {prop: "handleEvent", name: "handleEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [$Int64, $Bool, $Bool, $Bool], false)}, {prop: "deliverSessionEvent", name: "deliverSessionEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [], false)}, {prop: "deliverEvent", name: "deliverEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [], false)}, {prop: "deliverReply", name: "deliverReply", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6, ptrType], [], false)}, {prop: "connState", name: "connState", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([$String], [], false)}, {prop: "connActive", name: "connActive", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "log", name: "log", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([sliceType], [], true)}, {prop: "closeWebSocket", name: "closeWebSocket", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$8], [], false)}];
+	ptrType$11.methods = [{prop: "SetParams", name: "SetParams", pkg: "", typ: $funcType([mapType], [], false)}, {prop: "Open", name: "Open", pkg: "", typ: $funcType([], [], false)}, {prop: "Close", name: "Close", pkg: "", typ: $funcType([], [], false)}, {prop: "Reconnect", name: "Reconnect", pkg: "", typ: $funcType([], [], false)}, {prop: "Send", name: "Send", pkg: "", typ: $funcType([ptrType$6], [$error], false)}, {prop: "send", name: "send", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6], [], false)}, {prop: "sendAck", name: "sendAck", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "discover", name: "discover", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "connect", name: "connect", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([transport, sliceType$1, ptrType$9], [$Bool], false)}, {prop: "backOff", name: "backOff", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$9], [$Bool], false)}, {prop: "canLogin", name: "canLogin", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [$Bool], false)}, {prop: "makeCreateSessionAction", name: "makeCreateSessionAction", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [mapType], false)}, {prop: "makeResumeSessionAction", name: "makeResumeSessionAction", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([$Bool], [mapType], false)}, {prop: "handleSessionEvent", name: "handleSessionEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([mapType], [$Bool], false)}, {prop: "handleEvent", name: "handleEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [$Int64, $Bool, $Bool, $Bool], false)}, {prop: "deliverSessionEvent", name: "deliverSessionEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [], false)}, {prop: "deliverEvent", name: "deliverEvent", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType], [], false)}, {prop: "deliverReply", name: "deliverReply", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6, ptrType], [], false)}, {prop: "connState", name: "connState", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([$String], [], false)}, {prop: "connActive", name: "connActive", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "log", name: "log", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([sliceType], [], true)}, {prop: "nonunlockingLog", name: "nonunlockingLog", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([sliceType], [], true)}, {prop: "closeWebSocket", name: "closeWebSocket", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$8], [], false)}];
 	ptrType$12.methods = [{prop: "setWebSocket", name: "setWebSocket", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$8], [], false)}, {prop: "webSocketDisconnected", name: "webSocketDisconnected", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}, {prop: "shouldAbortConn", name: "shouldAbortConn", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [$Bool], false)}];
 	ptrType$7.methods = [{prop: "Active", name: "Active", pkg: "", typ: $funcType([], [$Bool], false)}, {prop: "Reset", name: "Reset", pkg: "", typ: $funcType([duration], [], false)}, {prop: "Stop", name: "Stop", pkg: "", typ: $funcType([], [], false)}];
 	ptrType$8.methods = [{prop: "sendInitialJSON", name: "sendInitialJSON", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([mapType], [$error], false)}, {prop: "send", name: "send", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$4], [$error], false)}, {prop: "sendJSON", name: "sendJSON", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([mapType], [$error], false)}, {prop: "sendPayload", name: "sendPayload", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([ptrType$6], [$error], false)}, {prop: "receive", name: "receive", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [ptrType$4], false)}, {prop: "receiveJSON", name: "receiveJSON", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [mapType, $error], false)}, {prop: "close", name: "close", pkg: "github.com/ninchat/ninchat-go", typ: $funcType([], [], false)}];
