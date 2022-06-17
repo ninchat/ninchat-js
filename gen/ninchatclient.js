@@ -1,7 +1,7 @@
 "use strict";
 (function() {
 
-var $goVersion = "go1.17.6";
+var $goVersion = "go1.17.11";
 Error.stackTraceLimit = Infinity;
 
 var $global, $module;
@@ -27414,19 +27414,30 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	};
 	Session.prototype.backOff = function(b) { return this.$val.backOff(b); };
 	Session.ptr.prototype.canLogin = function() {
-		var _entry, _entry$1, _entry$2, _entry$3, _entry$4, _entry$5, _entry$6, s;
+		var _entry, _entry$1, _entry$2, _entry$3, _entry$4, _entry$5, _entry$6, _entry$7, _tuple, _tuple$1, found, ok, s, value, x;
 		s = this;
-		if (!($interfaceIsEqual((_entry = s.sessionParams[$String.keyFor("access_key")], _entry !== undefined ? _entry.v : $ifaceNil), $ifaceNil))) {
+		_tuple = (_entry = s.sessionParams[$String.keyFor("user_existing")], _entry !== undefined ? [_entry.v, true] : [$ifaceNil, false]);
+		x = _tuple[0];
+		found = _tuple[1];
+		if (found && !($interfaceIsEqual(x, $ifaceNil))) {
+			_tuple$1 = $assertType(x, $Bool, true);
+			value = _tuple$1[0];
+			ok = _tuple$1[1];
+			if (ok && !value) {
+				return false;
+			}
+		}
+		if (!($interfaceIsEqual((_entry$1 = s.sessionParams[$String.keyFor("access_key")], _entry$1 !== undefined ? _entry$1.v : $ifaceNil), $ifaceNil))) {
 			return true;
 		}
-		if (!($interfaceIsEqual((_entry$1 = s.sessionParams[$String.keyFor("user_id")], _entry$1 !== undefined ? _entry$1.v : $ifaceNil), $ifaceNil))) {
-			return !($interfaceIsEqual((_entry$2 = s.sessionParams[$String.keyFor("user_auth")], _entry$2 !== undefined ? _entry$2.v : $ifaceNil), $ifaceNil)) || !($interfaceIsEqual((_entry$3 = s.sessionParams[$String.keyFor("master_sign")], _entry$3 !== undefined ? _entry$3.v : $ifaceNil), $ifaceNil));
+		if (!($interfaceIsEqual((_entry$2 = s.sessionParams[$String.keyFor("user_id")], _entry$2 !== undefined ? _entry$2.v : $ifaceNil), $ifaceNil))) {
+			return !($interfaceIsEqual((_entry$3 = s.sessionParams[$String.keyFor("user_auth")], _entry$3 !== undefined ? _entry$3.v : $ifaceNil), $ifaceNil)) || !($interfaceIsEqual((_entry$4 = s.sessionParams[$String.keyFor("master_sign")], _entry$4 !== undefined ? _entry$4.v : $ifaceNil), $ifaceNil));
 		}
-		return !($interfaceIsEqual((_entry$4 = s.sessionParams[$String.keyFor("identity_type")], _entry$4 !== undefined ? _entry$4.v : $ifaceNil), $ifaceNil)) && !($interfaceIsEqual((_entry$5 = s.sessionParams[$String.keyFor("identity_name")], _entry$5 !== undefined ? _entry$5.v : $ifaceNil), $ifaceNil)) && !($interfaceIsEqual((_entry$6 = s.sessionParams[$String.keyFor("identity_auth")], _entry$6 !== undefined ? _entry$6.v : $ifaceNil), $ifaceNil));
+		return !($interfaceIsEqual((_entry$5 = s.sessionParams[$String.keyFor("identity_type")], _entry$5 !== undefined ? _entry$5.v : $ifaceNil), $ifaceNil)) && !($interfaceIsEqual((_entry$6 = s.sessionParams[$String.keyFor("identity_name")], _entry$6 !== undefined ? _entry$6.v : $ifaceNil), $ifaceNil)) && !($interfaceIsEqual((_entry$7 = s.sessionParams[$String.keyFor("identity_auth")], _entry$7 !== undefined ? _entry$7.v : $ifaceNil), $ifaceNil));
 	};
 	Session.prototype.canLogin = function() { return this.$val.canLogin(); };
 	Session.ptr.prototype.makeCreateSessionAction = function() {
-		var _1, _entry, _entry$1, _entry$2, _entry$3, _entry$4, _entry$5, _entry$6, _entry$7, _i, _i$1, _key, _key$1, _key$2, _key$3, _key$4, _key$5, _key$6, _key$7, _key$8, _key$9, _keys, _keys$1, _ref, _ref$1, identityType, key, key$1, masterSign, params, s, userAuth, userId, value, value$1;
+		var _1, _entry, _entry$1, _entry$2, _entry$3, _entry$4, _entry$5, _entry$6, _entry$7, _i, _i$1, _key, _key$1, _key$10, _key$2, _key$3, _key$4, _key$5, _key$6, _key$7, _key$8, _key$9, _keys, _keys$1, _ref, _ref$1, identityType, key, key$1, masterSign, params, s, userAuth, userId, value, value$1;
 		params = false;
 		s = this;
 		params = $makeMap($String.keyFor, [{ k: "action", v: new $String("create_session") }]);
@@ -27448,23 +27459,24 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 				_i++;
 			}
 		} else {
+			_key$1 = "user_existing"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$1)] = { k: _key$1, v: new $Bool(true) };
 			userAuth = (_entry$2 = s.sessionParams[$String.keyFor("user_auth")], _entry$2 !== undefined ? _entry$2.v : $ifaceNil);
 			if (!($interfaceIsEqual(userAuth, $ifaceNil))) {
-				_key$1 = "user_id"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$1)] = { k: _key$1, v: userId };
-				_key$2 = "user_auth"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$2)] = { k: _key$2, v: userAuth };
+				_key$2 = "user_id"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$2)] = { k: _key$2, v: userId };
+				_key$3 = "user_auth"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$3)] = { k: _key$3, v: userAuth };
 			} else {
 				masterSign = (_entry$3 = s.sessionParams[$String.keyFor("master_sign")], _entry$3 !== undefined ? _entry$3.v : $ifaceNil);
 				if (!($interfaceIsEqual(masterSign, $ifaceNil))) {
-					_key$3 = "user_id"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$3)] = { k: _key$3, v: userId };
-					_key$4 = "master_sign"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$4)] = { k: _key$4, v: masterSign };
+					_key$4 = "user_id"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$4)] = { k: _key$4, v: userId };
+					_key$5 = "master_sign"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$5)] = { k: _key$5, v: masterSign };
 				} else {
 					identityType = (_entry$4 = s.sessionParams[$String.keyFor("identity_type")], _entry$4 !== undefined ? _entry$4.v : $ifaceNil);
 					if (!($interfaceIsEqual(identityType, $ifaceNil))) {
-						_key$5 = "identity_type"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$5)] = { k: _key$5, v: identityType };
-						_key$6 = "identity_name"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$6)] = { k: _key$6, v: (_entry$5 = s.sessionParams[$String.keyFor("identity_name")], _entry$5 !== undefined ? _entry$5.v : $ifaceNil) };
-						_key$7 = "identity_auth"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$7)] = { k: _key$7, v: (_entry$6 = s.sessionParams[$String.keyFor("identity_auth")], _entry$6 !== undefined ? _entry$6.v : $ifaceNil) };
+						_key$6 = "identity_type"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$6)] = { k: _key$6, v: identityType };
+						_key$7 = "identity_name"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$7)] = { k: _key$7, v: (_entry$5 = s.sessionParams[$String.keyFor("identity_name")], _entry$5 !== undefined ? _entry$5.v : $ifaceNil) };
+						_key$8 = "identity_auth"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$8)] = { k: _key$8, v: (_entry$6 = s.sessionParams[$String.keyFor("identity_auth")], _entry$6 !== undefined ? _entry$6.v : $ifaceNil) };
 					} else {
-						_key$8 = "user_id"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$8)] = { k: _key$8, v: userId };
+						_key$9 = "user_id"; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$9)] = { k: _key$9, v: userId };
 					}
 				}
 			}
@@ -27481,9 +27493,9 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 				key$1 = _entry$7.k;
 				value$1 = _entry$7.v;
 				_1 = key$1;
-				if (_1 === ("user_id") || _1 === ("user_auth") || _1 === ("identity_type") || _1 === ("identity_name") || _1 === ("identity_auth") || _1 === ("access_key") || _1 === ("master_sign")) {
+				if (_1 === ("user_id") || _1 === ("user_auth") || _1 === ("user_existing") || _1 === ("identity_type") || _1 === ("identity_name") || _1 === ("identity_auth") || _1 === ("access_key") || _1 === ("master_sign")) {
 				} else {
-					_key$9 = key$1; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$9)] = { k: _key$9, v: value$1 };
+					_key$10 = key$1; (params || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$10)] = { k: _key$10, v: value$1 };
 				}
 				_i$1++;
 			}
@@ -27505,8 +27517,8 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 	};
 	Session.prototype.makeResumeSessionAction = function(session) { return this.$val.makeResumeSessionAction(session); };
 	Session.ptr.prototype.handleSessionEvent = function(params) {
-		var _1, _entry, _entry$1, _entry$2, _entry$3, _i, _key, _key$1, _key$2, _ref, _tuple, _tuple$1, errorType, event, newValue, ok, param, params, quit, s, x, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _1 = $f._1; _entry = $f._entry; _entry$1 = $f._entry$1; _entry$2 = $f._entry$2; _entry$3 = $f._entry$3; _i = $f._i; _key = $f._key; _key$1 = $f._key$1; _key$2 = $f._key$2; _ref = $f._ref; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; errorType = $f.errorType; event = $f.event; newValue = $f.newValue; ok = $f.ok; param = $f.param; params = $f.params; quit = $f.quit; s = $f.s; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _1, _entry, _entry$1, _entry$2, _entry$3, _i, _key, _key$1, _key$2, _key$3, _ref, _tuple, _tuple$1, errorType, event, newValue, ok, param, params, quit, s, x, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _1 = $f._1; _entry = $f._entry; _entry$1 = $f._entry$1; _entry$2 = $f._entry$2; _entry$3 = $f._entry$3; _i = $f._i; _key = $f._key; _key$1 = $f._key$1; _key$2 = $f._key$2; _key$3 = $f._key$3; _ref = $f._ref; _tuple = $f._tuple; _tuple$1 = $f._tuple$1; errorType = $f.errorType; event = $f.event; newValue = $f.newValue; ok = $f.ok; param = $f.param; params = $f.params; quit = $f.quit; s = $f.s; x = $f.x; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		ok = false;
 		s = this;
 		event = new Event.ptr(params, sliceType$2.nil, false);
@@ -27531,10 +27543,11 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		delete s.sessionParams[$String.keyFor("identity_attrs")];
 		delete s.sessionParams[$String.keyFor("access_key")];
 		delete s.sessionParams[$String.keyFor("master_sign")];
-		_key = "user_id"; (s.sessionParams || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key)] = { k: _key, v: (_entry = event.Params[$String.keyFor("user_id")], _entry !== undefined ? _entry.v : $ifaceNil) };
+		_key = "user_existing"; (s.sessionParams || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key)] = { k: _key, v: new $Bool(true) };
+		_key$1 = "user_id"; (s.sessionParams || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$1)] = { k: _key$1, v: (_entry = event.Params[$String.keyFor("user_id")], _entry !== undefined ? _entry.v : $ifaceNil) };
 		x = (_entry$1 = event.Params[$String.keyFor("user_auth")], _entry$1 !== undefined ? _entry$1.v : $ifaceNil);
 		if (!($interfaceIsEqual(x, $ifaceNil))) {
-			_key$1 = "user_auth"; (s.sessionParams || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$1)] = { k: _key$1, v: x };
+			_key$2 = "user_auth"; (s.sessionParams || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$2)] = { k: _key$2, v: x };
 		}
 		_ref = new sliceType$1(["identity_type", "identity_name", "identity_auth"]);
 		_i = 0;
@@ -27544,7 +27557,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 			newValue = (_entry$2 = s.sessionParams[$String.keyFor(param + "_new")], _entry$2 !== undefined ? _entry$2.v : $ifaceNil);
 			if (!($interfaceIsEqual(newValue, $ifaceNil))) {
 				delete s.sessionParams[$String.keyFor(param + "_new")];
-				_key$2 = param; (s.sessionParams || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$2)] = { k: _key$2, v: newValue };
+				_key$3 = param; (s.sessionParams || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(_key$3)] = { k: _key$3, v: newValue };
 			}
 			_i++;
 		}
@@ -27559,7 +27572,7 @@ $packages["github.com/ninchat/ninchat-go"] = (function() {
 		$r = s.log(new sliceType([new $String("session created")])); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		ok = true;
 		$s = -1; return ok;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.handleSessionEvent }; } $f._1 = _1; $f._entry = _entry; $f._entry$1 = _entry$1; $f._entry$2 = _entry$2; $f._entry$3 = _entry$3; $f._i = _i; $f._key = _key; $f._key$1 = _key$1; $f._key$2 = _key$2; $f._ref = _ref; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.errorType = errorType; $f.event = event; $f.newValue = newValue; $f.ok = ok; $f.param = param; $f.params = params; $f.quit = quit; $f.s = s; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Session.ptr.prototype.handleSessionEvent }; } $f._1 = _1; $f._entry = _entry; $f._entry$1 = _entry$1; $f._entry$2 = _entry$2; $f._entry$3 = _entry$3; $f._i = _i; $f._key = _key; $f._key$1 = _key$1; $f._key$2 = _key$2; $f._key$3 = _key$3; $f._ref = _ref; $f._tuple = _tuple; $f._tuple$1 = _tuple$1; $f.errorType = errorType; $f.event = event; $f.newValue = newValue; $f.ok = ok; $f.param = param; $f.params = params; $f.quit = quit; $f.s = s; $f.x = x; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	Session.prototype.handleSessionEvent = function(params) { return this.$val.handleSessionEvent(params); };
 	Session.ptr.prototype.handleEvent = function(event) {
