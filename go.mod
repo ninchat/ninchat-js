@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/gopherjs/gopherjs v1.17.2
-	github.com/ninchat/ninchat-go v1.6.1
+	github.com/ninchat/ninchat-go v1.6.2
 )
 
 require (

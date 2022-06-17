@@ -302,6 +302,8 @@ github.com/neelance/sourcemap v0.0.0-20200213170602-2833bce08e4c/go.mod h1:Qr6/a
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
 github.com/ninchat/ninchat-go v1.6.1 h1:2vFIHIDxRJXtK+3URvkk8i1yjiUb+sOts5JUHvJqWXs=
 github.com/ninchat/ninchat-go v1.6.1/go.mod h1:vB+QCQTGqE1FogLBNdAzPRn0uw5BM1SINPImD4RhWWI=
+github.com/ninchat/ninchat-go v1.6.2 h1:qxYPoRw7Vhx0PnBixpFzHOa/IKupf5o1Nf3Z2cpZRxc=
+github.com/ninchat/ninchat-go v1.6.2/go.mod h1:vB+QCQTGqE1FogLBNdAzPRn0uw5BM1SINPImD4RhWWI=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pascaldekloe/goe v0.1.0/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pelletier/go-toml v1.9.3/go.mod h1:u1nR/EPcESfeI/szUZKdtJ0xRNbUoANCkoOuaOx1Y+c=
